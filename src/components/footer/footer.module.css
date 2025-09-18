@@ -1,0 +1,124 @@
+
+.footer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    background-color: var(--graphite);
+}
+
+.content {
+    max-width: 1230px;
+    width: 100%;
+    padding: 0px 25px;
+    box-sizing: border-box;
+}
+
+.top {
+    padding: 80px 0px 70px 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-sizing: border-box;
+
+    @media (max-width: 1020px) {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+
+    @media (max-width: 580px) {
+        padding-top: 50px;
+    }
+}
+
+.logo_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+
+    & h1 {
+        color: var(--white);
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 2px;
+        
+        @media (max-width: 580px) {
+            font-size: 11px;
+        }
+    }
+
+    @media (max-width: 1020px) {
+        order: 1;
+        margin-bottom: 8px;
+    }
+}
+
+.navigation {
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+
+    @media (max-width: 1020px) {
+        order: 3;
+        gap: 40px;
+    }
+}
+
+.navigation_col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @media (max-width: 1020px) {
+        flex-direction: row;
+        gap: 40px;
+    }
+}
+
+.navi_link {
+    min-width: 50px;
+    color: var(--white);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.bottom {
+    border-top: 1px solid rgb(255, 255, 255, 0.1);
+    padding: 30px 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: var(--white);
+    font-size: 14px;
+}
+
+.contact_con {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 25px;
+
+    @media (max-width: 1020px) {
+        order: 2;
+        flex-direction: row;
+    }
+}
+
+.contact_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact {
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 400;
+}

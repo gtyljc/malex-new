@@ -1,0 +1,44 @@
+
+:root {
+
+	/* main colors */
+	--white: #FFFFFF;
+	--dodger-blue: #2690EE;
+	--azur-blue: #1980DA;
+	--ice-blue: #F4F7FF;
+	--black: #000000;
+	--graphite: #282828;
+
+	/* sizes */
+
+	/* header */
+	--header-height: 90px;
+	--header-mobile-menu-width: 280px;
+
+	@media (max-width: 580px) {
+        --header-height: 70px;
+    }
+
+}
+
+* {
+	margin: 0px;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+button {
+	border: none;
+	padding: 0px;
+	background: none;
+	cursor: pointer;
+}

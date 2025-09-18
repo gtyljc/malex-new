@@ -1,0 +1,29 @@
+
+.main {
+    max-width: 1230px;
+    width: 100%;
+    margin: calc(var(--header-height) + 10px) auto;
+}
+
+.hero {
+    border-radius: 10px;
+    background-color: var(--ice-blue);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.row_con {
+    inset: 0;
+    overflow: hidden;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.banner {
+    display: flex;
+    flex-direction: row;
+    
+}

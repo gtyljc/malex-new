@@ -1,0 +1,149 @@
+
+/* 
+    Adaptation points:
+    - width 1100px -> tablet
+    - width 580px -> mobile
+*/
+
+.header {
+    height: var(--header-height);
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--white);
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    padding: 0px 20px;
+    box-sizing: border-box;
+}
+
+.content {
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+
+    @media (max-width: 1100px){
+        display: none;
+    }
+}
+
+.navi_link {
+    color: var(--black);
+    font-size: 14px;
+    text-decoration: none;
+
+    &:hover {
+        color: var(--dodger-blue);
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 580px){
+        font-size: 18px;
+    }
+}
+
+.left {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+
+    & .contact_row {
+        @media (max-width: 1100px){
+            display: none;
+        }
+    }
+}
+
+.contact_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact {
+    font-size: 16px;
+
+    @media (max-width: 580px){
+        font-size: 20px;
+    }
+}
+
+.interactive {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+
+    
+    @media (max-width: 580px){
+        gap: 15px;
+    }
+}
+
+.mobile_menu_btn {
+    --size: 48px;
+
+    width: var(--size);
+    height: var(--size);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: 1100px){
+        display: flex;
+    }
+}
+
+.mobile_menu_overlap {
+    inset: 0;
+    position: fixed;
+    background-color: rgba(40, 40, 40, 0.45);
+    margin-top: var(--header-height);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.mobile_menu_overlap_closed {
+    background: none;
+    pointer-events: none;
+}
+
+.mobile_menu {
+    width: var(--header-mobile-menu-width);
+    padding-left: 50px;
+    padding-top: 50px;
+    box-sizing: border-box;
+    background-color: var(--white);
+    position: relative;
+    right: 0px;
+    transition: right 0.25s cubic-bezier(0.86, 0, 0.07, 1);
+
+    & .contact_row {
+        margin-top: 70px;
+    }
+}
+
+.mobile_menu_closed {
+    right: calc(-1 * var(--header-mobile-menu-width));
+}
+
+.mobile_navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}

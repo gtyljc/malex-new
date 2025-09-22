@@ -2,12 +2,17 @@
 // tools
 import Link from "next/link";
 import Image from "next/image";
+import clsx from "clsx";
 
-// content
-import styles from "./footer.module.css";
+// components
 import Logo from "@/components/logo/logo";
 import CallIcon from "@/components/call-icon/call-icon";
-import email from "./email.svg"
+
+// css
+import styles from "./footer.module.css";
+
+// images
+import email from "./email.svg";
 
 export default function Footer(){
     return (
@@ -20,12 +25,32 @@ export default function Footer(){
                     </Link>
                     <nav className={styles.navigation}>
                         <div className={styles.navigation_col}>
-                            <Link href="/" className={styles.navi_link}>Home</Link>
-                            <Link href="/about-us" className={styles.navi_link}>About us</Link>
+                            <Link href="/"  className={
+                                clsx(
+                                    styles.navi_link,
+                                    "s_link"
+                                )
+                            }>Home</Link>
+                            <Link href="/about-us"  className={
+                                clsx(
+                                    styles.navi_link,
+                                    "s_link"
+                                )
+                            }>About us</Link>
                         </div>
                         <div className={styles.navigation_col}>
-                            <Link href="/our-works" className={styles.navi_link}>Our works</Link>
-                            <Link href="/contact" className={styles.navi_link}>Contact</Link>
+                            <Link href="/our-works"  className={
+                                clsx(
+                                    styles.navi_link,
+                                    "s_link"
+                                )
+                            }>Our works</Link>
+                            <Link href="/contact"  className={
+                                clsx(
+                                    styles.navi_link,
+                                    "s_link"
+                                )
+                            }>Contact</Link>
                         </div>
                     </nav>
                     <div className={styles.contact_con}>

@@ -1,4 +1,5 @@
-'use client'
+"use client"
+
 
 // tools
 import Link from "next/link";
@@ -6,11 +7,15 @@ import Image from "next/image";
 import { useState } from "react";
 import clsx from "clsx";
 
-// content
-import AppointmentButton from "@/components/appointment-btn/appointment-btn";
+// components
+import RedirectButton from "@/components/redirect-btn/redirect-btn";
 import Logo from "@/components/logo/logo";
 import CallIcon from "@/components/call-icon/call-icon";
+
+// css
 import styles from "./header.module.css"
+
+// images
 import mobile_svg from "./mobile.svg";
 
 export default function Header(){
@@ -34,14 +39,34 @@ export default function Header(){
     return (
         <header className={styles.header}>
             <div className={styles.content}>
-                <Link href="">
+                <Link href="/">
                     <Logo/>
                 </Link>
                 <nav className={styles.navigation}>
-                    <Link href="/" className={styles.navi_link}>Home</Link>
-                    <Link href="/about" className={styles.navi_link}>About us</Link>
-                    <Link href="/our-works" className={styles.navi_link}>Our works</Link>
-                    <Link href="/contact" className={styles.navi_link}>Contact</Link>
+                    <Link href="/" className={
+                        clsx(
+                            styles.navi_link,
+                            "s_link"
+                        )
+                    }>Home</Link>
+                    <Link href="/about" className={
+                        clsx(
+                            styles.navi_link,
+                            "s_link"
+                        )
+                    }>About us</Link>
+                    <Link href="/our-works" className={
+                        clsx(
+                            styles.navi_link,
+                            "s_link"
+                        )
+                    }>Our works</Link>
+                    <Link href="/contact" className={
+                        clsx(
+                            styles.navi_link,
+                            "s_link"
+                        )
+                    }>Contact</Link>
                 </nav>
                 <div className={styles.left}>
                     <div className={styles.contact_row}>
@@ -49,7 +74,7 @@ export default function Header(){
                         <h1 className={styles.contact}>+13474101444</h1>
                     </div>        
                     <div className={styles.interactive}>
-                        <AppointmentButton label={"Make an appointment"}/>
+                        <RedirectButton label={"Make an appointment"}/>
                         <button 
                             className={styles.mobile_menu_btn}
                             onClick={handleMobileNavigationBtnClick}
@@ -61,34 +86,6 @@ export default function Header(){
                                 alt="Navigation menu" 
                             />
                         </button>
-                    </div>
-                </div>
-            </div>
-            <div 
-                className={
-                    clsx(
-                        styles.mobile_menu_overlap,
-                        !menuState && styles.mobile_menu_overlap_closed,
-                    )
-                }
-            >
-                <div 
-                    className={
-                        clsx(
-                            styles.mobile_menu,
-                            !menuState && styles.mobile_menu_closed,
-                        )
-                    }
-                >
-                    <nav className={styles.mobile_navigation}>
-                        <Link href="/" className={styles.navi_link}>Home</Link>
-                        <Link href="/about-us" className={styles.navi_link}>About us</Link>
-                        <Link href="/our-works" className={styles.navi_link}>Our works</Link>
-                        <Link href="/contact" className={styles.navi_link}>Contact</Link>
-                    </nav>
-                    <div className={styles.contact_row}>
-                        <CallIcon/>
-                        <h1 className={styles.contact}>+13474101444</h1>
                     </div>
                 </div>
             </div>

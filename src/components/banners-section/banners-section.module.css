@@ -1,0 +1,60 @@
+
+:root {
+    --banners-section-left-padding: 70px;
+}
+
+.section {
+    width: 100%;
+    border-radius: 10px;
+    background-color: var(--ice-blue);
+    padding: 25px;
+    padding-left: var(--banners-section-left-padding);
+    box-sizing: border-box;
+    aspect-ratio: 2 / 0.8;
+    position: relative;
+}
+
+.banner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.info {
+    width: 50%;
+}
+
+.title {
+    max-width: 400px;
+    margin-top: 20%;
+    font-weight: 600;
+}
+
+.underlined_title {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.undertitle {
+    max-width: 400px;
+    margin-top: 15px;
+    font-weight: 400;
+}
+
+.interactive {
+    display: flex;
+    flex-direction: row;
+    gap: 35px;
+    margin-top: 40px;
+    align-items: center;
+}
+
+.spb_con {
+    bottom: 45px;
+    left: var(--banners-section-left-padding);
+    position: absolute;
+}

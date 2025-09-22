@@ -1,0 +1,70 @@
+
+.menu_btn {
+    --size: 48px;
+
+    width: var(--size);
+    height: var(--size);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: 1100px){
+        display: flex;
+    }
+}
+
+.overlap {
+    inset: 0;
+    position: fixed;
+    background-color: rgba(40, 40, 40, 0.45);
+    margin-top: var(--header-height);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.overlap_closed {
+    background: none;
+    pointer-events: none;
+}
+
+.menu {
+    width: var(--header-mobile-menu-width);
+    padding-left: 50px;
+    padding-top: 50px;
+    box-sizing: border-box;
+    background-color: var(--white);
+    position: relative;
+    right: 0px;
+    transition: right 0.25s var(--appearing-animation);
+
+    & .contact_row {
+        margin-top: 70px;
+    }
+}
+
+.menu_closed {
+    right: calc(-1 * var(--header-mobile-menu-width));
+}
+
+.navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.navi_link {
+    font-size: 18px;
+}
+
+.contact_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact {
+    font-size: 20px;
+}

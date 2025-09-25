@@ -12,7 +12,7 @@ import CallIcon from "@/components/call-icon/call-icon";
 import styles from "./footer.module.css";
 
 // images
-import email from "./email.svg";
+import email_svg from "./email.svg";
 
 export default function Footer(){
     return (
@@ -62,7 +62,7 @@ export default function Footer(){
                             <Image 
                                 width={24}
                                 height={24}
-                                src={email} 
+                                src={email_svg} 
                                 alt="Malex support email"
                             />
                             <h1 className={styles.contact}>support@malexhandy.com</h1>

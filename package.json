@@ -8,10 +8,16 @@
     "start": "next start"
   },
   "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "@prisma/extension-accelerate": "^2.0.2",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.18",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "sass": "^1.92.1"
+  },
+  "devDependencies": {
+    "prisma": "^6.16.2"
   }
 }

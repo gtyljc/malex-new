@@ -37,7 +37,14 @@ function Banner({title, underlined, undertitle, thumbnail}){
     }
 
     return (
-        <li className={styles.banner}>
+        <li 
+            className={
+                clsx(
+                    styles.banner,
+                    "s_row_e"
+                )
+            }
+        >
             <div className={styles.info}>
                 <AssembledTitle
                     title={title}

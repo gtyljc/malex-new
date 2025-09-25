@@ -21,7 +21,6 @@
     flex-direction: row;
     justify-content: space-between;
     gap: 20px;
-    flex-shrink: 0;
 }
 
 .info {

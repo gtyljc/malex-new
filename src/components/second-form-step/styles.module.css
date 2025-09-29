@@ -1,0 +1,64 @@
+
+.title {
+    margin-bottom: 15px;
+}
+
+.undertitle {
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+.scl_calendar_panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.scl_calendar_btn {
+    --size: 30px;
+
+    width: var(--size);
+    height: var(--size);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.calendar_label_row_con {
+    min-width: 230px;
+}
+
+.table {
+    margin-top: 30px;
+
+    & th, td {
+        --size: 45px;
+
+        width: var(--size);
+        height: var(--size);
+        text-align: center;
+        font-size: 20px;
+        font-weight: 400;
+    }
+}
+
+.day {
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--dodger-blue);
+        color: var(--white);
+    }
+}
+
+.busy_day {
+    background-color: var(--light-gray);
+    color: var(--graphite);
+}
+
+.selected_day {
+    background-color: var(--dodger-blue);
+    color: var(--white);
+}

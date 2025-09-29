@@ -3,13 +3,14 @@
 import { Plus_Jakarta_Sans} from "next/font/google";
 
 // components
-import Header from "@/components/header/header";
-import Footer from "@/components/footer/footer";
-import MainForm from "@/components/main-form/main-form";
-import { MainFormProvider } from "@/components/main-form/ctx";
+import Header from "@/components/header/component";
+import Footer from "@/components/footer/component";
+import MainForm from "@/components/main-form/component";
+import { MainFormProviders } from "@/components/main-form/ctx";
 
 // css
 import "./global.css";
+
 
 // font settings
 const plus_jakarta_sans = Plus_Jakarta_Sans(
@@ -24,12 +25,12 @@ export default function RootLayout({ children }){
     return (
         <html lang="en" className={plus_jakarta_sans.className}>
             <body>
-                <MainFormProvider>
+                <MainFormProviders>
                     <MainForm/>                    
                     <Header/>
                     {children}
-                    {/* <Footer/> */}
-                </MainFormProvider>
+                    <Footer/>
+                </MainFormProviders>
             </body>
         </html>
     )

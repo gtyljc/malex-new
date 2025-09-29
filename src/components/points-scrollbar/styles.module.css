@@ -1,0 +1,34 @@
+
+.bar {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.point {
+    --size: 15px;
+
+    width: var(--size);
+    height: var(--size);
+    background-color: var(--light-gray);
+    border-radius: 50%;
+
+    &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: var(--white);
+        border: 3px solid var(--dodger-blue);
+        box-sizing: border-box;
+        transform: scale(0);
+        transition: transform 0.25s var(--appearing-animation);
+        border-radius: 50%;
+    }
+}
+
+.point_active {
+    &::after {
+        transform: scale(1);
+    }
+}

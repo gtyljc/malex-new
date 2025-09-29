@@ -1,7 +1,0 @@
-
-.btn {
-    --size: 32px;
-
-    width: var(--size);
-    height: var(--size);
-}

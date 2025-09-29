@@ -1,9 +1,9 @@
 
 // components
-import BannersSection from "@/components/banners-section/banners-section"
-import WcuSection from "@/components/wcu-section/wcu-section"
-import ServicesSection from "@/components/services-section/services-section"
-import WorksSection from "@/components/works-section/works-section"
+import BannersSection from "@/components/banners-section/component"
+import WcuSection from "@/components/wcu-section/component"
+import ServicesSection from "@/components/services-section/component"
+import WorksSection from "@/components/works-section/component"
 
 export default async function Page() {    
     return (
@@ -12,6 +12,7 @@ export default async function Page() {
             <WcuSection/>
             <ServicesSection/>
             <WorksSection/>
+            
         </main>
     )
 }

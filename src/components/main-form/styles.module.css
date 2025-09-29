@@ -1,0 +1,58 @@
+:root {
+    --form-top-height: 25px;
+}
+
+.form {
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    background-color: rgba(40, 40, 40, 0.45);
+    z-index: 101;
+    opacity: 1;
+    transition: opacity 0.5s var(--appearing-animation);
+}
+
+.form_closed {
+    pointer-events: none;
+    opacity: 0;
+}
+
+.top {
+    height: var(--form-top-height);
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: absolute;
+    top: 0px;
+}
+
+.close_btn_con {
+    width: var(--form-step-width);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.close_btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+    font-size: 15px;
+    gap: 3px;
+}
+
+.steps_row_con {
+    padding: var(--form-top-height) 0px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.steps_row {
+    transition: transform 0.5s var(--scrolling-animation);
+}

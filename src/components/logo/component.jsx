@@ -1,3 +1,5 @@
+
+// css
 import styles from "./styles.module.css"
 
 export default function Logo({color = "#282828"}){

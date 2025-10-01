@@ -24,11 +24,11 @@ import close_svg from "./close.svg";
 
 
 export default function MainForm() {
-    const steps = [
-        useRef(null),
-        useRef(null),
-        useRef(null)
-    ];
+    // const steps = [
+    //     useRef(null),
+    //     useRef(null),
+    //     useRef(null)
+    // ];
     const { isOpened, closeForm } = useContext(MainFormOpenCtx);
     const { index } = useContext(MainFormStepIndexCtx);
     // const { setSteps } = useContext(MainFormStepsCtx);
@@ -76,22 +76,16 @@ export default function MainForm() {
                             transform: `translateX(${(-index * 100) + "%"})`
                         }
                     }
-                >
-                    <div ref={steps[0]}>
-                        <FirstFormStep
-                            
-                        />
-                    </div>
-                    <div ref={steps[1]}>
-                        <SecondFormStep
-                    
-                        />
-                    </div>
-                    <div ref={steps[2]}>
-                        <ThirdFormStep
-                    
-                        />
-                    </div>
+                >   
+                    <FirstFormStep
+                        
+                    />                    
+                    <SecondFormStep
+                
+                    />
+                    <ThirdFormStep
+                
+                    />
                 </ul>
             </div>
         </form>

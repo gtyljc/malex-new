@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: center;
     gap: 45px;
+    margin-bottom: var(--default-section-bottom-margin);
 }
 
 .cards_con {

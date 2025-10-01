@@ -1,0 +1,39 @@
+
+:root {
+    --about-us-top-content-gap: 30px;
+}
+
+.section {
+    margin-top: 50px;
+}
+
+.title {
+    margin-bottom: 20px;
+}
+
+.undertitle {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.colored {
+    color: var(--dodger-blue);
+    font-weight: 700;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    gap: var(--about-us-top-content-gap);
+}
+
+.column {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--about-us-top-content-gap);
+}
+
+.fat {
+    font-weight: 700;
+}

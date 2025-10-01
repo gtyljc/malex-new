@@ -87,25 +87,39 @@ function _BannersSection() {
 
     useEffect(
         () => {
-            setTimeout(
+            const timer = setInterval(
                 () => {
                     index < pointsNum - 1 ? setIndex(index + 1): setIndex(0)
                 },
                 1000 * scrollDelay
             )
+
+            return () => clearInterval(timer);
         }
     );
 
     return (
         <section className={styles.section}>
-            <div className="s_row_con">
+            <div 
+                className={
+                    clsx(
+                        "s_row_con",
+                        styles.banners_row_con
+                    )
+                }
+            >
                 <ul 
-                    className="s_row" 
+                    className={
+                        clsx(
+                            "s_row",
+                            styles.banners_row
+                        )
+                    }
                     style={
                         {
                             transform: `translateX(-${index * (100 + row_gap)}%)`,
                             gap: `${row_gap}%`,
-                            transitionDuration: 0.8 // sec
+                            transitionDuration: "1.5s" // sec
                         }
                     }
                 >

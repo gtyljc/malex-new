@@ -1,0 +1,10 @@
+
+.title {
+    margin-bottom: 30px;
+}
+
+.btns_con {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}

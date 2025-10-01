@@ -10,7 +10,7 @@
 .content {
     max-width: 1230px;
     width: 100%;
-    padding: 0px 25px;
+    padding: 0px var(--default-content-padding);
     box-sizing: border-box;
 }
 

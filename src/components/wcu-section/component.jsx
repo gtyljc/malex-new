@@ -12,6 +12,7 @@ import quality_svg from "./quality.svg"
 import effiency_svg from "./efficiency.svg"
 import transparency_svg from "./transparency.svg"
 
+
 function WcuCard({title, undertitle, icon}) {
     return (
         <li className={styles.card}>

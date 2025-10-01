@@ -19,17 +19,17 @@ export default function MainFormStepWrapper(
     }
 ){
     const { sclForward } = useContext(MainFormStepIndexCtx);
-    
-    function handleNextBtnClick(){
-        if (nextCheck){
-            const { steps } = useContext(MainFormStepsCtx);
+    // const { steps } = useContext(MainFormStepsCtx);
 
-            // hide others
-            for(let i = 0; i < steps.length; i++) {        
-                if(i != useContext(MainFormStepIndexCtx).index){
-                    steps[i].styles.display = "none";
-                }
-            }
+    function handleNextBtnClick(){
+        if (nextCheck()){
+
+            // // hide others
+            // for(let i = 0; i < steps.length; i++) {        
+            //     if(i != useContext(MainFormStepIndexCtx).index){
+            //         steps[i].styles.display = "none";
+            //     }
+            // }
 
             sclForward();
         }

@@ -3,7 +3,7 @@
 import Image from "next/image"
 
 // components
-import RedirectButton from "@/components/redirect-btn/component"
+import RedirectButton from "@components/redirect-btn/component"
 
 // css
 import styles from "./styles.module.css"

@@ -8,7 +8,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
 
 // components
-import MainFormStepWrapper from "@/components/main-form-step-wrapper/component";
+import MainFormStepWrapper from "@components/main-form-step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";

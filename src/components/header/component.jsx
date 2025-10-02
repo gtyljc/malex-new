@@ -5,14 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { useContext } from "react";
-import { MainFormOpenCtx } from "@/components/main-form/ctx";
-import { MobileMenuProvider, MobileMenuCtx } from "@/components/mobile-menu/ctx";
+import { MainFormOpenCtx } from "@components/main-form/ctx";
+import { MobileMenuProvider, MobileMenuCtx } from "@components/mobile-menu/ctx";
 
 // components
-import RedirectButton from "@/components/redirect-btn/component";
-import Logo from "@/components/logo/component";
-import CallIcon from "@/components/call-icon/component";
-import MobileMenu from "@/components/mobile-menu/component";
+import RedirectButton from "@components/redirect-btn/component";
+import Logo from "@components/logo/component";
+import CallIcon from "@components/call-icon/component";
+import MobileMenu from "@components/mobile-menu/component";
 
 // css
 import styles from "./styles.module.css";

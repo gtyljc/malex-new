@@ -3,10 +3,10 @@
 import { Plus_Jakarta_Sans} from "next/font/google";
 
 // components
-import Header from "@/components/header/component";
-import Footer from "@/components/footer/component";
-import MainForm from "@/components/main-form/component";
-import { MainFormProviders } from "@/components/main-form/ctx";
+import Header from "@components/header/component";
+import Footer from "@components/footer/component";
+import MainForm from "@components/main-form/component";
+import { MainFormProviders } from "@components/main-form/ctx";
 
 // css
 import "./global.css";

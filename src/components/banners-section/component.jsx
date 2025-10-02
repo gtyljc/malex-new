@@ -5,11 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { useEffect, useContext } from "react";
-import { PointsScrollbarProviders, PointsScrollbarCurrentIndexCtx } from "@/components/points-scrollbar/ctx";
+import {
+    PointsScrollbarProviders, 
+    PointsScrollbarCurrentIndexCtx 
+} from "@components/points-scrollbar/ctx";
 
 // components
-import PoinsScrollbar from "@/components/points-scrollbar/component";
-import RedirectButton from "@/components/redirect-btn/component";
+import PoinsScrollbar from "@components/points-scrollbar/component";
+import RedirectButton from "@components/redirect-btn/component";
 
 // css
 import styles from "./styles.module.css";

@@ -5,8 +5,8 @@ import Image from "next/image";
 import clsx from "clsx";
 
 // components
-import Logo from "@/components/logo/component";
-import CallIcon from "@/components/call-icon/component";
+import Logo from "@components/logo/component";
+import CallIcon from "@components/call-icon/component";
 
 // css
 import styles from "./styles.module.css";

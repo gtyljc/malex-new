@@ -3,7 +3,7 @@
 import clsx from "clsx";
 
 // component
-import RedirectButton from "@/components/redirect-btn/component";
+import RedirectButton from "@components/redirect-btn/component";
 
 // css
 import styles from "./styles.module.css";

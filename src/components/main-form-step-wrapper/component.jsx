@@ -3,10 +3,13 @@
 // tools
 import clsx from "clsx";
 import { useContext } from "react";
-import { MainFormStepIndexCtx, MainFormStepsCtx } from "@/components/main-form/ctx";
+import { 
+    MainFormStepIndexCtx, 
+    MainFormStepsCtx 
+} from "@components/main-form/ctx";
 
 // components
-import RedirectButton from "@/components/redirect-btn/component";
+import RedirectButton from "@components/redirect-btn/component";
 
 // css
 import styles from "./styles.module.css";
@@ -14,7 +17,9 @@ import styles from "./styles.module.css";
 
 export default function MainFormStepWrapper(
     {
-        children, 
+        children,
+        nextBtnLabel = "next",
+        nextBtnType = "blue",
         nextCheck // nextCheck must return true (successfully validated) or false (not validated)
     }
 ){
@@ -47,7 +52,8 @@ export default function MainFormStepWrapper(
             <div className={styles.step}>
                 {children}
                 <RedirectButton
-                    label="Next"
+                    label={nextBtnLabel}
+                    type={nextBtnType}
                     onClick={handleNextBtnClick}
                     style={{marginTop: "25px"}}                 
                 />

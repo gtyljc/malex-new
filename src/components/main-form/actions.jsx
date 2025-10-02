@@ -1,6 +1,5 @@
 "use server";
 
-
 // main form receiver
 export async function createAppointment(formData){  
     // const parsed = createAppointmentSchema.safeParse(formData);

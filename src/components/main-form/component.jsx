@@ -12,9 +12,9 @@ import {
 } from "./ctx";
 
 // components
-import FirstFormStep from "@/components/first-form-step/component";
-import SecondFormStep from "@/components/second-form-step/component";
-import ThirdFormStep from "@/components/third-form-step/component";
+import FirstFormStep from "@components/first-form-step/component";
+import SecondFormStep from "@components/second-form-step/component";
+import ThirdFormStep from "@components/third-form-step/component";
 
 // css
 import styles from "./styles.module.css";

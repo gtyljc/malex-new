@@ -4,10 +4,10 @@
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { firstStepSchema } from "./schemas";
+import { MainFormSchema } from "@components/main-form/schemas";
 
 // components
-import MainFormStepWrapper from "@/components/main-form-step-wrapper/component";
+import MainFormStepWrapper from "@components/main-form-step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
@@ -34,7 +34,7 @@ export default function FirstFormStep() {
             resetOptions: {
                 keepDefaultValues: true
             },
-            resolver: zodResolver(firstStepSchema),
+            resolver: zodResolver(MainFormSchema),
             mode: "onChange"
         }
     );

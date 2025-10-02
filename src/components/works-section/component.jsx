@@ -4,8 +4,8 @@ import Image from "next/image";
 import clsx from "clsx";
 
 // components
-import RedirectButton from "@/components/redirect-btn/component";
-import ScrollProgressBar from "@/components/points-scrollbar/component";
+import RedirectButton from "@components/redirect-btn/component";
+import ScrollProgressBar from "@components/points-scrollbar/component";
 
 // css
 import styles from "./styles.module.css";

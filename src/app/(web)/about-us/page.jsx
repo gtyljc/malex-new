@@ -1,9 +1,9 @@
 
 // components
-import PathToPage from "@/components/path-to-page/component";
-import AboutUsTop from "@/components/about-us-top/component";
-import AboutUsMiddle from "@/components/about-us-middle/component";
-import AboutUsBottom from "@/components/about-us-bottom/component";
+import PathToPage from "@components/path-to-page/component";
+import AboutUsTop from "@components/about-us-top/component";
+import AboutUsMiddle from "@components/about-us-middle/component";
+import AboutUsBottom from "@components/about-us-bottom/component";
 
 export default async function Page() {    
     return (

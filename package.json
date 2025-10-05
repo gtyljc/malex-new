@@ -9,12 +9,11 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@prisma/client": "^6.16.2",
+    "@prisma/client": "^6.16.3",
     "@prisma/extension-accelerate": "^2.0.2",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
     "next": "15.5.3",
-    "ra-data-simple-rest": "^5.11.4",
     "react": "19.1.0",
     "react-admin": "^5.11.4",
     "react-dom": "19.1.0",
@@ -22,6 +21,6 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "prisma": "^6.16.2"
+    "prisma": "^6.16.3"
   }
 }

@@ -2,10 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@lib/*": ["./lib/*"],
-      "@prisma/*": ["./prisma/prisma/*"] 
+      "@app/*": ["./src/app/*"], // access to rounting
+      "@web/*": ["./src/components/web/*"], // access to web components
+      "@admin/*": ["./src/components/admin/*"], // access to admin components
+      "@db/*": ["./prisma/*"] // access to DB
     }
   }
 }

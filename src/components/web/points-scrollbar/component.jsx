@@ -1,6 +1,6 @@
 "use client"
 
-// tools
+// others
 import { useContext, useMemo } from "react";
 import { PointsScrollbarCurrentIndexCtx } from "./ctx";
 

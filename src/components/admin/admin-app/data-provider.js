@@ -81,10 +81,20 @@ class DataProvider {
     // all queries must be object that contains db request and follow the Prisma's rules
 
     // get a list of records based on sort, filter, and pagination
+    //
     // params: {
     //     pagination: { page: number, perPage: number },
     //     sort: { field: string, order: 'ASC' | 'DESC' },
     //     filter: any
+    // }
+    // 
+    // response: {
+    //     data: Record,
+    //     total?: number,
+    //     pageInfo: {
+    //         hasNextPage: boolean;
+    //         hasPreviousPage: boolean;
+    //     }
     // }
 
     async getList(resource, params) {
@@ -105,6 +115,10 @@ class DataProvider {
     // params: {
     //     id: Identifier
     // }
+    // 
+    // response: {
+    //     data: Record
+    // }
 
     async getOne(resource, params) {
         const id = parseInt(params.id);
@@ -122,6 +136,10 @@ class DataProvider {
     //
     // params: {
     //     ids: Identifier[]
+    // }
+    // 
+    // response: {
+    //     data: Record[]
     // }
 
     async getMany(resource, params) {
@@ -145,6 +163,10 @@ class DataProvider {
     //     sort: { field: string, order: 'ASC' | 'DESC' };
     //     filter: any;
     // }
+    // 
+    // response: {
+    //     data: Record[]
+    // }
 
     async getManyReference(resource, params) {
         const id = parseInt(params.id);
@@ -167,6 +189,10 @@ class DataProvider {
     //
     // params: {
     //     data: Partial<Record>
+    // }
+    // 
+    // response: {
+    //     data: Record
     // }
 
     async create(resource, params) {
@@ -197,6 +223,10 @@ class DataProvider {
     //     id: Identifier,
     //     data: Partial<Record>
     // }
+    //
+    // response: {
+    //     data: Record
+    // }
 
     async update(resource, params) {
 
@@ -210,7 +240,7 @@ class DataProvider {
             method: "update",
             query: {
                 data: params.data,
-                ...addFilterToQuery({ id })
+                ...this.#addFilterToQuery({ id })
             }
         };
 
@@ -222,6 +252,10 @@ class DataProvider {
     // params: {
     //      ids: Identifier[],
     //     data: Partial<Record>
+    // }
+    //
+    // response: {
+    //     data: Identifier[]
     // }
 
     async updateMany(resource, params) {
@@ -242,6 +276,10 @@ class DataProvider {
     // params: {
     //     id: Identifier
     // }
+    //
+    // response: {
+    //     data: Record
+    // }
 
     async delete(resource, params) {
         const id = parseInt(params.id);
@@ -259,6 +297,10 @@ class DataProvider {
     //
     // params: {
     //     ids: Identifier[]
+    // }
+    //
+    // response: {
+    //     data: Identifier[]
     // }
 
     async deleteMany(resource, params) {

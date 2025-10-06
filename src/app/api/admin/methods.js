@@ -132,7 +132,7 @@ export class MethodsWithImageSupport extends Methods{
     // you can find documentation at https://developers.cloudflare.com/api/resources/images/
     //
     // The model that will be used by this class must contain at least
-    // two fields: img_urls, img_id, they respond fields at Cloudflare API ( id & variants )
+    // two fields: img_id, img_urls they respond fields at Cloudflare API ( id & variants )
     // You can change their names at the constructor
 
     constructor(...args){
@@ -166,7 +166,7 @@ export class MethodsWithImageSupport extends Methods{
         delete query.data[process.env.NEXT_PUBLIC_IMAGE_KEYWORD];
         
         // adds model's field that contains image id
-        query.data[this.imgIdCol] = img.data.id;
+        query.data[this.imgIdCol] = response.data.id;
 
         return query;
     }
@@ -183,7 +183,9 @@ export class MethodsWithImageSupport extends Methods{
             )
         }
         else {
-            response.data[0][this.imgUrlsCol] = response.data[0][this.imgUrlsCol].map( 
+            console.log(response);
+
+            response.data[this.imgUrlsCol] = response.data[this.imgUrlsCol].map( 
                 url => { return { url } } 
             )
         }
@@ -194,13 +196,10 @@ export class MethodsWithImageSupport extends Methods{
     // parsers img_id basing on record id and deletes it from cloudflare
     // and returns DB query back
     async #deleteImage(query, many=false){ // many => if method deletes a lot of records
-        
-        async function findImageId(id){ // id => id of record
+        const findImageId = async (id) => { // id => id of record
             return await prisma[this.modelName].findFirst(
                 {
-                    select: {
-                        [this.imgIdCol]: true
-                    }, 
+                    select: { [this.imgIdCol]: true }, 
                     where: id
                 }
             );
@@ -212,7 +211,7 @@ export class MethodsWithImageSupport extends Methods{
             }
         }
         else {
-            await findAndDelete();
+            await findImageId(query.id);
         }
 
         return query;
@@ -233,13 +232,13 @@ export class MethodsWithImageSupport extends Methods{
     async update(query) {
         const updatedQuery = await this.#saveImage(await this.#deleteImage(query));
 
-        await super.update(updatedQuery);
+        return await super.update(updatedQuery);
     }
 
     async updateMany(query) {
         const updatedQuery = await this.#saveImage(await this.#deleteImage(query, true));
 
-        await super.updateMany(updatedQuery);
+       return await super.updateMany(updatedQuery);
     }
 
     async delete(query) {

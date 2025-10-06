@@ -1,6 +1,5 @@
 
-import Methods from "@app/api/admin/methods";
-import { runMethod } from "@app/api/admin/methods";
+import { runMethod, Methods } from "@app/api/admin/methods";
 
 
 const m = new Methods("Appointment"); // uses Appointment model

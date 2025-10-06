@@ -1,5 +1,5 @@
 
-// tools
+// others
 import Image from "next/image";
 import clsx from "clsx";
 

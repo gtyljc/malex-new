@@ -1,6 +1,6 @@
 "use client";
 
-// tools
+// others
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

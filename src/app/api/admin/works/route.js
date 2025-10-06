@@ -1,12 +1,9 @@
 
-import Methods from "@app/api/admin/methods";
-import { runMethod } from "@app/api/admin/methods";
-import CloudflareImages from "@app/api/cloudflare-images";
-import prisma from "@db/prisma-client";
+import { runMethod, MethodsWithImageSupport } from "@app/api/admin/methods";
 
 
-const m = new WorksMethods("Work"); // uses Work model
+const m = new MethodsWithImageSupport("Work"); // uses Work model
 
 export async function POST(request) {
-    return await runMethod(request, m)
+    return await runMethod(request, m);
 }

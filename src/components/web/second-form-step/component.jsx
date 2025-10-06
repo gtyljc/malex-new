@@ -1,6 +1,6 @@
 "use client";
 
-// tools
+// others
 import Image from "next/image";
 import { useState, useContext, createContext } from "react";
 import * as dayjs from "dayjs";

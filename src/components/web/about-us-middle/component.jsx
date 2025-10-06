@@ -1,5 +1,5 @@
 
-// tools
+// others
 import Image from "next/image";
 
 // css
@@ -9,7 +9,6 @@ import styles from "./styles.module.css";
 import experience_svg from "./experience.svg";
 import client_svg from "./client.svg";
 import certicate_svg from "./certificate.svg";
-
 
 function Card({ label, img }){
     return(

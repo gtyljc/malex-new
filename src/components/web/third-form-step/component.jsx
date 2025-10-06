@@ -1,5 +1,5 @@
 
-// tools
+// others
 import clsx from "clsx";
 
 // components

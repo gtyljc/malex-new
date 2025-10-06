@@ -1,12 +1,12 @@
 
-// tools
+// others
 import { Plus_Jakarta_Sans} from "next/font/google";
 
 // components
-import Header from "@components/web/header/component";
-import Footer from "@components/web/footer/component";
-import MainForm from "@components/web/main-form/component";
-import { MainFormProviders } from "@components/web/main-form/ctx";
+import Header from "@web/header/component";
+import Footer from "@web/footer/component";
+import MainForm from "@web/main-form/component";
+import { MainFormProviders } from "@web/main-form/ctx";
 
 // css
 import "./global.css";

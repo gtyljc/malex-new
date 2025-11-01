@@ -1,7 +1,6 @@
 
-// tools
+// others
 import { Plus_Jakarta_Sans} from "next/font/google";
-
 
 // font settings
 const plus_jakarta_sans = Plus_Jakarta_Sans(

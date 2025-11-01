@@ -1,51 +1,73 @@
+"use client";
 
 // others
 import clsx from "clsx";
+import dayjs from "dayjs";
+import objectSupport from "dayjs/plugin/objectSupport";
+import { useState, createContext, useContext } from "react";
 
 // components
-import MainFormStepWrapper from "@web/main-form-step-wrapper/component";
+import FormStepWrapper from "@web/form-step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
 
+dayjs.extend(objectSupport);
 
-function AppointmentTime(){
+const TimeSelectCtx = createContext();
 
+function Time({ date }){
+    const { setTime, currentTime } = useContext(TimeSelectCtx);
+
+    return (
+        <div
+            className={
+                clsx(
+                    (currentTime != null && date.format("LT") == currentTime.format("LT")) && styles.selected_time,
+                    styles.time
+                )
+            } 
+            onClick={() => setTime(date)}
+        >
+            <span>{date.format("LT")}</span>        
+        </div>
+    )
 }
 
-function SelectTime(){
+function TimeSelect(){
+    const start = dayjs({hour: 8});
+    const end = dayjs({hour: 16});
+    const STEP = 0.5; // hours
     const arr = [];
+    let h_offset = 0;
 
-    // for(let i = 0){
+    for(let i = 0; i < parseInt(end.diff(start, "hour") / STEP) + 1; i++){        
+        arr.push(<Time date={start.add({hour: h_offset})}/>);
 
-    // }
+        h_offset += STEP;
+    }
 
-    return arr;
+    return (
+        <div className={styles.time_select}>
+            {arr}
+        </div>
+    );
 }
 
 export default function ThirdFormStep() {
-
+    const [currentTime, setTime] = useState(null);
 
     return (
-        <MainFormStepWrapper
-            nextCheck={
-                () => {
-
-                }
-            }
+        <FormStepWrapper
+            nextCheck={() => currentTime != null ? true: false}
+            hasSubmitBtn={true}
         >
-            <h1 
-                className={
-                    clsx(
-                        styles.title,
-                        "s_title"
-                    )
-                }
-            >
-                Make an appointment
-            </h1>
-            <h2 className={styles.undertitle}>Select a date</h2>
-            <SelectTime/>
-        </MainFormStepWrapper>
+            { currentTime && <input type="hidden" name="time" value={currentTime.toISOString()} /> }
+            
+            <h2 className={styles.undertitle}>Select a time</h2>
+            <TimeSelectCtx.Provider value={{setTime, currentTime}}>
+                <TimeSelect/>
+            </TimeSelectCtx.Provider>
+        </FormStepWrapper>
     )    
 };

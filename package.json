@@ -8,19 +8,24 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/client": "^4.0.7",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.16.3",
     "@prisma/extension-accelerate": "^2.0.2",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
     "next": "15.5.3",
+    "ra-auth-google": "^3.0.0",
     "react": "19.1.0",
     "react-admin": "^5.11.4",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.63.0",
+    "rxjs": "^7.8.2",
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "eslint": "^9.38.0",
     "prisma": "^6.16.3"
   }
 }

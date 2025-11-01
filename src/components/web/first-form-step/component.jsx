@@ -4,14 +4,29 @@
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MainFormSchema } from "@web/main-form/schemas";
+import * as z from "zod";
 
 // components
-import MainFormStepWrapper from "@web/main-form-step-wrapper/component";
+import FormStepWrapper from "@web/form-step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
 
+// regexs
+const enRegex = /^[A-Za-z]+$/;
+const phoneRegex = /^(?:\+[1-9][0-9]{7,14}|[0-9]{10})$/;
+const onlyDecimalRegex = /[^\d+]/g;
+
+const schema = z.object(
+    {
+        name: z.string().min(1).max(50).regex(enRegex),
+        surname: z.string().min(1).max(50).regex(enRegex),
+        address: z.string().min(1).max(255),
+        job_desc: z.string().min(1).max(500),
+        bwt: z.enum(["whatsapp", "text", "phone"]),
+        number: z.string().transform(v => v.replace(onlyDecimalRegex, "")).refine(v => phoneRegex.test(v))
+    }
+);
 
 // should be insert in ul
 export default function FirstFormStep() {
@@ -19,8 +34,7 @@ export default function FirstFormStep() {
         register,
         formState,
         formState: { errors }, 
-        trigger, 
-        reset 
+        trigger,
     } = useForm(
         {
             defaultValues: {
@@ -34,39 +48,22 @@ export default function FirstFormStep() {
             resetOptions: {
                 keepDefaultValues: true
             },
-            resolver: zodResolver(MainFormSchema),
+            resolver: zodResolver(schema),
             mode: "onChange"
         }
     );
 
     return (
-        <MainFormStepWrapper 
+        <FormStepWrapper 
             nextCheck={ 
                 e => {
-                    trigger(); 
-                    
-                    if(formState.isValid) {
-                        return true;
-                    }
-                    else {
-                        reset();
+                    trigger().then();
 
-                        return false;
-                    }
+                    return formState.isValid;
                 }
             }
         >
             <div className={styles.content}>
-                <h1 
-                    className={
-                        clsx(
-                            styles.title,
-                            "s_title"
-                        )
-                    }
-                >
-                    Make an appointment
-                </h1>
                 <div className={styles.row}>
                     <div className={
                             clsx(
@@ -163,6 +160,6 @@ export default function FirstFormStep() {
                     </div>
                 </div>
             </div>
-        </MainFormStepWrapper>
+        </FormStepWrapper>
     )
 }

@@ -7,7 +7,7 @@ import {
 } from "react-admin";
 
 
-export default function AppointmentsList(){
+export default function AppointmentList(){
     const listFilters = [
         <SearchInput source="name" alwaysOn/>
     ]

@@ -9,7 +9,7 @@ import {
 import { required } from "react-admin";
 import dayjs from "dayjs";
 
-export default function WorksCreateForm() {
+export default function WorkCreateForm() {
     return (
         <SimpleForm>
             <ImageInput source={process.env.NEXT_PUBLIC_IMAGE_KEYWORD} validate={required()} >

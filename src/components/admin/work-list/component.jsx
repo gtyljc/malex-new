@@ -9,7 +9,7 @@ import {
 } from "react-admin"
 
 
-export default function WorksList(){
+export default function WorkList(){
     return (
         <List>
             <DataTable>

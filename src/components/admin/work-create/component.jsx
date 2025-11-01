@@ -1,8 +1,8 @@
 
 import { Create } from "react-admin"
-import WorksCreateForm from "@admin/works-create-form/component"
+import WorksCreateForm from "@admin/work-create-form/component"
 
-export default function WorksCreate(){
+export default function WorkCreate(){
     return (
         <Create>
             <WorksCreateForm/>

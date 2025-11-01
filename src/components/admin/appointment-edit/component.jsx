@@ -1,7 +1,7 @@
 
 import { Edit, SimpleForm, TextInput } from "react-admin"
 
-export default function AppointmentsEdit() {
+export default function AppointmentEdit() {
     return (
         <Edit>
             <SimpleForm>

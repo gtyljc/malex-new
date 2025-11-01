@@ -2,13 +2,10 @@
 
 import dynamic from "next/dynamic";
 
-
 // wrapper for AdminApp
 const Admin = dynamic(
     () => import("@admin/admin-app/component"), 
-    {
-        ssr: false,
-    }
+    { ssr: false }
 );
 
 export default Admin;

@@ -7,17 +7,19 @@ import Link from "next/link";
 // css
 import styles from "./styles.module.css";
 
-
 export default function RedirectButton(
     {
         label,
         type = "blue", // blue / white
-        onClick = () => {},
         style = {},
         isLink = false, 
-        href = ""
+        href = "",
+        isSubmit = "",
+        onClick = () => {}
     }
 ) {
+
+    // redirect btn as link
     if(isLink){
         return (
             <Link 
@@ -34,9 +36,12 @@ export default function RedirectButton(
             </Link>
         )
     }
-    else {
+    
+    // redirect btn as submit btn of form
+    if(isSubmit) {
         return (
-            <button 
+            <input
+                type="submit"
                 className={
                     clsx(
                         styles.btn,
@@ -45,9 +50,24 @@ export default function RedirectButton(
                 }
                 style={style}
                 onClick={onClick}
-            >
-                <span>{label}</span>
-            </button>
+                value={label}
+            />
         )
     }
+
+    return (
+        <button 
+            className={
+                clsx(
+                    styles.btn,
+                    type == "blue" ? styles.btn_blue: styles.btn_white
+                )
+            }
+            style={style}
+            onClick={onClick}
+            type="button"
+        >
+            <span>{label}</span>
+        </button>
+    )
 }

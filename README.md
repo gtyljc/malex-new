@@ -1,6 +1,6 @@
 
 ## Version
-v0.0.1ea
+v0.0.1eb
 
 ## Fixes
 - Fixed incorrect import paths at components

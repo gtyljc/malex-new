@@ -1,20 +1,21 @@
 "use client";
 
-// tools
+// others
 import clsx from "clsx";
 import Image from "next/image";
 import { useContext, useRef } from "react";
 import { createAppointment } from "./actions";
 import { 
-    MainFormOpenCtx, 
-    MainFormStepIndexCtx, 
-    // MainFormStepsCtx
+    FormOpenCtx, 
+    FormStepIndexCtx, 
+    // FormStepsCtx
 } from "./ctx";
 
 // components
 import FirstFormStep from "@web/first-form-step/component";
 import SecondFormStep from "@web/second-form-step/component";
 import ThirdFormStep from "@web/third-form-step/component";
+import FourthFormStep from "@web/fourth-form-step/component";
 
 // css
 import styles from "./styles.module.css";
@@ -22,16 +23,15 @@ import styles from "./styles.module.css";
 // images
 import close_svg from "./close.svg";
 
-
-export default function MainForm() {
+export default function Form() {
     // const steps = [
     //     useRef(null),
     //     useRef(null),
     //     useRef(null)
     // ];
-    const { isOpened, closeForm } = useContext(MainFormOpenCtx);
-    const { index } = useContext(MainFormStepIndexCtx);
-    // const { setSteps } = useContext(MainFormStepsCtx);
+    const { isOpened, closeForm } = useContext(FormOpenCtx);
+    const { index } = useContext(FormStepIndexCtx);
+    // const { setSteps } = useContext(FormStepsCtx);
 
     // setSteps(steps);
 
@@ -45,17 +45,14 @@ export default function MainForm() {
                 )
             }
         >
-            <div
-                className={
-                    clsx(
-                        "s_row_con",
-                        styles.steps_row_con
-                    )
-                }
-            >
+            <div className={clsx("s_row_con", styles.steps_row_con)}>
                 <div className={styles.top}>
                     <div className={styles.close_btn_con}>
-                        <button className={styles.close_btn} onClick={closeForm}>
+                        <button 
+                            className={styles.close_btn} 
+                            onClick={closeForm}
+                            type="button"
+                        >
                             <span>Close</span>
                             <Image 
                                 src={close_svg} 
@@ -65,27 +62,15 @@ export default function MainForm() {
                     </div>
                 </div>
                 <ul
-                    className={
-                        clsx(
-                            "s_row",
-                            styles.steps_row
-                        )
-                    }
+                    className={clsx("s_row", styles.steps_row)}
                     style={
-                        {
-                            transform: `translateX(${(-index * 100) + "%"})`
-                        }
+                        { transform: `translateX(${(-index * 100) + "%"})` }
                     }
                 >   
-                    <FirstFormStep
-                        
-                    />                    
-                    <SecondFormStep
-                
-                    />
-                    <ThirdFormStep
-                
-                    />
+                    <FirstFormStep/>                    
+                    <SecondFormStep/>
+                    <ThirdFormStep/>
+                    <FourthFormStep/>
                 </ul>
             </div>
         </form>

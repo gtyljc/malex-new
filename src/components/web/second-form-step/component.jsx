@@ -2,20 +2,21 @@
 
 // others
 import Image from "next/image";
+import { useQuery } from "@apollo/client/react";
+import { gql } from "@apollo/client";
 import { useState, useContext, createContext } from "react";
 import * as dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
 
 // components
-import MainFormStepWrapper from "@web/main-form-step-wrapper/component";
+import FormStepWrapper from "@web/form-step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
 
 // images
 import next_svg from "./next.svg";
-
 
 dayjs.extend(localizedFormat);
 
@@ -90,41 +91,13 @@ function Calendar(){
         <table className={styles.calendar}>
             <thead>
                 <tr>
-                    <th>
-                        <div className={styles.t_header}>
-                            Su
-                        </div>
-                    </th>
-                    <th>
-                        <div className={styles.t_header}>
-                            Mo
-                        </div>
-                    </th>
-                    <th>
-                        <div className={styles.t_header}>
-                            Tu
-                        </div>
-                    </th>
-                    <th>
-                        <div className={styles.t_header}>
-                            We
-                        </div>
-                    </th>
-                    <th>
-                        <div className={styles.t_header}>
-                            Th
-                        </div>
-                    </th>
-                    <th>
-                        <div className={styles.t_header}>
-                            Fr
-                        </div>
-                    </th>
-                    <th>
-                        <div className={styles.t_header}>
-                            Sa
-                        </div>
-                    </th>
+                    <th>Su</th>
+                    <th>Mo</th>
+                    <th>Tu</th>
+                    <th>We</th>
+                    <th>Th</th>
+                    <th>Fr</th>
+                    <th>Sa</th>
                 </tr>
             </thead>
             <tbody>
@@ -140,34 +113,16 @@ export default function SecondFormStep(){
     const [currentDay, setDay] = useState(null);
 
     return (
-        <MainFormStepWrapper 
-            nextCheck={
-                () => {
-                    return currentDay != null ? true: false;
-                }
-            }
+        <FormStepWrapper 
+            nextCheck={() => currentDay}
         >
-            <h1
-                className={
-                    clsx(
-                        styles.title,
-                        "s_title"
-                    )
-                }
-            >
-                Make an appointment
-            </h1>
+            { currentDay && <input type="hidden" name="date" value={currentDay.toISOString()} /> }
+            
             <h2 className={styles.undertitle}>Select a date</h2>
             <div className={styles.scl_calendar_panel}>
                 <button 
-                    onClick={
-                        () => {
-                            setMonth(currentMonth.subtract(1, "month"));
-                        }
-                    }
-                    className={
-                        styles.scl_calendar_btn
-                    }
+                    onClick={() => setMonth(currentMonth.subtract(1, "month"))}
+                    className={styles.scl_calendar_btn}
                 >
                     <Image 
                         src={next_svg} 
@@ -179,14 +134,8 @@ export default function SecondFormStep(){
                     {currentMonth.format("MMMM YYYY")}
                 </div>
                 <button 
-                    onClick={
-                        () => {
-                            setMonth(currentMonth.add(1, "month"));
-                        }
-                    }
-                    className={
-                        styles.scl_calendar_btn
-                    }
+                    onClick={() => setMonth(currentMonth.add(1, "month"))}
+                    className={styles.scl_calendar_btn}
                 >
                     <Image 
                         src={next_svg} 
@@ -197,6 +146,6 @@ export default function SecondFormStep(){
             <CalenderCtx.Provider value={{currentDay, setDay, currentMonth}}>
                 <Calendar/>
             </CalenderCtx.Provider>
-        </MainFormStepWrapper>
+        </FormStepWrapper>
     )
 }

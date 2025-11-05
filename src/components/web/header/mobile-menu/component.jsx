@@ -12,7 +12,6 @@ import { MobileMenuCtx } from "./ctx";
 // css
 import styles from "./styles.module.css";
 
-
 export default function MobileMenu(){
     const { isOpened } = useContext(MobileMenuCtx);
     

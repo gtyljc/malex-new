@@ -5,7 +5,7 @@ import clsx from "clsx";
 // css
 import styles from "./styles.module.css";
 
-export default function AboutUsTop(){
+export default function TopSection(){
     return (
         <section className={styles.section}>
             <h1 

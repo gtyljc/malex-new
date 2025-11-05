@@ -19,7 +19,7 @@ function Card({ label, img }){
     );
 }
 
-export default function AboutUsMiddle(){
+export default function MiddleSection(){
     return (
         <section className={styles.section}>
             <Card

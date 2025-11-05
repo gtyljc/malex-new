@@ -1,11 +1,11 @@
 
+// components
 import { 
     List, 
     DataTable, 
     SearchInput,
     EditButton
 } from "react-admin";
-
 
 export default function AppointmentList(){
     const listFilters = [

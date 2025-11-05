@@ -1,7 +1,7 @@
 "use client";
 
 // others
-import FormStepWrapper from "@web/form-step-wrapper/component";
+import StepWrapper from "../step-wrapper/component";
 import Image from "next/image";
 import { FormOpenCtx } from "@web/form/ctx";
 import { useContext } from "react";
@@ -16,7 +16,7 @@ export default function FourthFormStep(){
     const { closeForm } = useContext(FormOpenCtx);
     
     return (
-        <FormStepWrapper
+        <StepWrapper
             nextBtnType="white"
             nextBtnLabel="Back to Home"
             nextCheck={() => { closeForm() }}
@@ -27,6 +27,6 @@ export default function FourthFormStep(){
                 alt="Appointment is finished!"
             />
             <h2 className={styles.undertitle}>We will contact you as soon as possible!</h2>
-        </FormStepWrapper>
+        </StepWrapper>
     )
 }

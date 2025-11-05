@@ -1,4 +1,5 @@
 
+// components
 import { 
     List,
     DataTable,
@@ -7,7 +8,6 @@ import {
     EditButton,
     DeleteButton
 } from "react-admin"
-
 
 export default function WorkList(){
     return (

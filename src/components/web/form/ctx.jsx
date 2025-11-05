@@ -16,7 +16,7 @@ export function FormProvider({ children }){
     const closeForm = () => changeState(false);
 
     // steps
-    const [index, setIndex] = useState(3);
+    const [index, setIndex] = useState(0);
     const sclForward = () => setIndex(i=> i + 1);
     const sclBack = () => setIndex(i => i - 1);
 

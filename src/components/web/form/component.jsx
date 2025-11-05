@@ -12,10 +12,10 @@ import {
 } from "./ctx";
 
 // components
-import FirstFormStep from "@web/first-form-step/component";
-import SecondFormStep from "@web/second-form-step/component";
-import ThirdFormStep from "@web/third-form-step/component";
-import FourthFormStep from "@web/fourth-form-step/component";
+import FirstFormStep from "./first-step/component";
+import SecondFormStep from "./second-step/component";
+import ThirdFormStep from "./third-step/component";
+import FourthFormStep from "./fourth-step/component";
 
 // css
 import styles from "./styles.module.css";

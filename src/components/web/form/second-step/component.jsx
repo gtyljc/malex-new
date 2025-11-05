@@ -10,7 +10,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
 
 // components
-import FormStepWrapper from "@web/form-step-wrapper/component";
+import StepWrapper from "../step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
@@ -113,7 +113,7 @@ export default function SecondFormStep(){
     const [currentDay, setDay] = useState(null);
 
     return (
-        <FormStepWrapper 
+        <StepWrapper 
             nextCheck={() => currentDay}
         >
             { currentDay && <input type="hidden" name="date" value={currentDay.toISOString()} /> }
@@ -146,6 +146,6 @@ export default function SecondFormStep(){
             <CalenderCtx.Provider value={{currentDay, setDay, currentMonth}}>
                 <Calendar/>
             </CalenderCtx.Provider>
-        </FormStepWrapper>
+        </StepWrapper>
     )
 }

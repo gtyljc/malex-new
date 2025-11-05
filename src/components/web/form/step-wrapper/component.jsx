@@ -14,7 +14,7 @@ import RedirectButton from "@web/redirect-btn/component";
 // css
 import styles from "./styles.module.css";
 
-export default function FormStepWrapper(
+export default function StepWrapper(
     {
         children,
         nextBtnLabel = "Next",

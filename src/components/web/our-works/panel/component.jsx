@@ -9,7 +9,7 @@ import RedirectButton from "@web/redirect-btn/component";
 import styles from "./styles.module.css";
 
 
-export default function WorksPanel(){
+export default function PanelSection(){
 
     // config
     const plumbingHref = "#plumbing";

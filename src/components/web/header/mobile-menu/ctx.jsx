@@ -1,12 +1,11 @@
 
-// tools
+// others
 import { createContext, useState } from "react";
-
 
 // this context will contain state of menu opened (true) or not (false)
 export const MobileMenuCtx = createContext();
 
-export function MobileMenuProvider({children}){
+export function MobileMenuProvider({ children }){
     const [isOpened, changeState] = useState(false);
     const openMenu = () => changeState(true);
     const closeMenu = () => changeState(false);
@@ -14,9 +13,7 @@ export function MobileMenuProvider({children}){
 
     return (
         <MobileMenuCtx 
-            value={
-                {isOpened, openMenu, closeMenu, toggleMenu}
-            }
+            value={ {isOpened, openMenu, closeMenu, toggleMenu} }
         >
             {children}
         </MobileMenuCtx>

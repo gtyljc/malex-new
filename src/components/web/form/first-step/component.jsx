@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 // components
-import FormStepWrapper from "@web/form-step-wrapper/component";
+import StepWrapper from "../step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
@@ -54,7 +54,7 @@ export default function FirstFormStep() {
     );
 
     return (
-        <FormStepWrapper 
+        <StepWrapper 
             nextCheck={ 
                 e => {
                     trigger().then();
@@ -160,6 +160,6 @@ export default function FirstFormStep() {
                     </div>
                 </div>
             </div>
-        </FormStepWrapper>
+        </StepWrapper>
     )
 }

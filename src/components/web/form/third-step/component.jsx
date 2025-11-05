@@ -7,7 +7,7 @@ import objectSupport from "dayjs/plugin/objectSupport";
 import { useState, createContext, useContext } from "react";
 
 // components
-import FormStepWrapper from "@web/form-step-wrapper/component";
+import StepWrapper from "../step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
@@ -58,7 +58,7 @@ export default function ThirdFormStep() {
     const [currentTime, setTime] = useState(null);
 
     return (
-        <FormStepWrapper
+        <StepWrapper
             nextCheck={() => currentTime != null ? true: false}
             hasSubmitBtn={true}
         >
@@ -68,6 +68,6 @@ export default function ThirdFormStep() {
             <TimeSelectCtx.Provider value={{setTime, currentTime}}>
                 <TimeSelect/>
             </TimeSelectCtx.Provider>
-        </FormStepWrapper>
+        </StepWrapper>
     )    
 };

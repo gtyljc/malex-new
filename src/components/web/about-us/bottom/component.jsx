@@ -8,8 +8,7 @@ import styles from "./styles.module.css";
 // images
 import thumbnail_jpg from "./thumbnail.jpg";
 
-
-export default function AboutUsBottom(){
+export default function BottomSection(){
     return (
         <section className={styles.section}>
             <div className={styles.content}>

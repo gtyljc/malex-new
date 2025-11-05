@@ -6,20 +6,19 @@ import Link from "next/link";
 import clsx from "clsx";
 import { useContext } from "react";
 import { FormOpenCtx } from "@web/form/ctx";
-import { MobileMenuProvider, MobileMenuCtx } from "@web/mobile-menu/ctx";
+import { MobileMenuProvider, MobileMenuCtx } from "@web/header/mobile-menu/ctx";
 
 // components
 import RedirectButton from "@web/redirect-btn/component";
 import Logo from "@web/logo/component";
 import CallIcon from "@web/call-icon/component";
-import MobileMenu from "@web/mobile-menu/component";
+import MobileMenu from "@web/header/mobile-menu/component";
 
 // css
 import styles from "./styles.module.css";
 
 // images
 import mobile_svg from "./mobile.svg";
-
 
 function _Header() {
     const { openForm } = useContext(FormOpenCtx);

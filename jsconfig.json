@@ -5,7 +5,8 @@
       "@app/*": ["./src/app/*"], // access to rounting
       "@web/*": ["./src/components/web/*"], // access to web components
       "@admin/*": ["./src/components/admin/*"], // access to admin components
-      "@db/*": ["./prisma/*"] // access to DB
+      "@db/*": ["./prisma/*"], // access to DB
+      "@src/*": ["./src/*"]
     }
   }
 }

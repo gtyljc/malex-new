@@ -5,6 +5,7 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
 import { useState, createContext, useContext } from "react";
+import { FormCtx } from "../ctx";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -23,51 +24,61 @@ function Time({ date }){
         <div
             className={
                 clsx(
-                    (currentTime != null && date.format("LT") == currentTime.format("LT")) && styles.selected_time,
-                    styles.time
+                    styles.time,
+                    (currentTime != null && date.format("LT") == currentTime.format("LT")) && "bg-dodger-blue text-white"
                 )
             } 
-            onClick={() => setTime(date)}
+            onClick={ () => setTime(date) }
         >
-            <span>{date.format("LT")}</span>        
+            <span>{ date.format("LT") }</span>        
         </div>
     )
 }
 
 function TimeSelect(){
-    const start = dayjs({hour: 8});
-    const end = dayjs({hour: 16});
+    const start = dayjs({ hour: 8 });
+    const end = dayjs({ hour: 16 });
     const STEP = 0.5; // hours
     const arr = [];
-    let h_offset = 0;
+    let hOffset = 0;
 
     for(let i = 0; i < parseInt(end.diff(start, "hour") / STEP) + 1; i++){        
-        arr.push(<Time date={start.add({hour: h_offset})}/>);
+        arr.push(<Time date={ start.add({ hour: hOffset }) }/>);
 
-        h_offset += STEP;
+        hOffset += STEP;
     }
 
     return (
-        <div className={styles.time_select}>
-            {arr}
+        <div className="flex flex-row justify-center">
+            <div className="max-w-[405px] flex flex-row flex-wrap gap-2">
+                { arr }
+            </div>
         </div>
     );
 }
 
 export default function ThirdFormStep() {
-    const [currentTime, setTime] = useState(null);
+    const [ currentTime, setTime ] = useState(null);
+    const { sclForward } = useContext(FormCtx);
 
     return (
-        <StepWrapper
-            nextCheck={() => currentTime != null ? true: false}
-            hasSubmitBtn={true}
-        >
-            { currentTime && <input type="hidden" name="time" value={currentTime.toISOString()} /> }
+        <StepWrapper>
+            { currentTime && <input type="hidden" name="time" value={ currentTime.toISOString() } /> }
             
-            <h2 className={styles.undertitle}>Select a time</h2>
-            <TimeSelectCtx.Provider value={{setTime, currentTime}}>
+            <h1 className="mb-7 text-center text-2xl font-medium">
+                Make an appointment
+            </h1>
+            <h2 className="text-center font-light text-xl mb-5">Select a time</h2>
+            <TimeSelectCtx.Provider value={ { setTime, currentTime } }>
                 <TimeSelect/>
             </TimeSelectCtx.Provider>
+            <button 
+                className="redirect-btn redirect-btn--blue mt-8 min-[450px]:max-w-[250px]"
+                onClick={ () => currentTime && sclForward() }
+                type="button"
+            >
+                <span>Next</span>
+            </button>
         </StepWrapper>
     )    
 };

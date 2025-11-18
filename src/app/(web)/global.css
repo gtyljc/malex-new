@@ -1,138 +1,118 @@
 
-:root {
+@import 'tailwindcss';
+
+@theme {
 
 	/* main colors */
-	--white: #FFFFFF;
-	--dodger-blue: #2690EE;
-	--azur-blue: #1980DA;
-	--ice-blue: #F4F7FF;
-	--black: #000000;
-	--graphite: #282828;
-	--light-gray: #D8DCE7;
-	--scarlet-red: #FF1717;
-
-	/* animations */
-	--appearing-animation: cubic-bezier(0.86, 0, 0.07, 1);
-	--scrolling-animation: cubic-bezier(0, 0, 0.2, 1);
-
-	--default-content-padding: 20px;
-	--default-section-bottom-margin: 110px;
+	--color-white: #FFFFFF;
+	--color-dodger-blue: #2690EE;
+	--color-azur-blue: #1980DA;
+	--color-ice-blue: #F4F7FF;
+	--color-black: #000000;
+	--color-graphite: #282828;
+	--color-light-gray: #D8DCE7;
+	--color-scarlet-red: #FF1717;
 }
 
-* {
-	margin: 0px;
-}
+@layer components {
+	.row-con {
+		@apply w-full overflow-hidden;
+	}
 
-body {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	min-height: 100dvh;
-}
+	.row {
+		transition: transform 0.5s var(--scrolling-anim);
 
-button {
-	border: none;
-	padding: 0px;
-	background: none;
-	cursor: pointer;
-	font-family: var(--malex-font);
-}
+		@apply w-full flex flex-row;
+	}
 
-a {
-	color: var(--black);
-	text-decoration: none;
-}
+	.row-el {
+		@apply size-full shrink-0;
+	}
 
-ul {
-	list-style: none;
-	padding: 0px;
-}
+	.input {
+		@apply w-full h-[45px] p-3 font-medium border 
+		border-solid rounded-[5px] border-light-gray 
+		box-border;
+	}
 
-main {
-    max-width: 1230px;
-    width: 100%;
-    margin: 100px auto;
-	flex: 1;
-	padding: 0px var(--default-content-padding);
-	box-sizing: border-box;
-}
+	.svg-btn {
+		@apply size-12 flex flex-col justify-center items-center;
+	}
 
-input {
-	display: block;
-	font-family: var(--malex-font);
-	font-size: 14px;
-	
-	&:focus-visible {
-        outline: none;
-    }
-}
+	.redirect-btn {
+		transition: background-color 0.25s cubic-bezier(0.46,0.03,0.52,0.96);
 
-select {
-	display: block;
-	font-family: var(--malex-font);
-	font-size: 14px;
-	
-	&:focus-visible {
-        outline: none;
-    }
-}
+		@apply w-full min-h-[45px] flex flex-col justify-center 
+		items-center text-sm font-medium rounded-[5px] md:min-h-[50px] 
+		md:text-base;
+	}
 
-.s_title {
-    font-weight: 600;
-    font-size: 32px;
-    line-height: 45px;
-}
+	.redirect-btn--blue {
+		@apply bg-dodger-blue text-white! md:hover:bg-azur-blue!;
+	}
 
-.s_undertitle {
-	font-size: 16px;
-	font-weight: 400;
-}
-
-.s_row_con {
-	width: 100%;
-    overflow: hidden;
-}
-
-.s_row {
-	width: 100%;
-    display: flex;
-    flex-direction: row;
-	transition: transform 0.5s var(--scrolling-animation);
-}
-
-.s_row_e {
-	width: 100%;
-	flex-shrink: 0;
-}
-
-.s_thumbnail {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	overflow: hidden;
-    background-size: cover;
-    background-position: center;
-	border-radius: 5px;
-
-	& img {
-		width: 100%;
+	.redirect-btn--white {
+		@apply text-dodger-blue! border border-dodger-blue
+		md:hover:bg-dodger-blue md:hover:text-white!;
 	}
 }
 
-.s_half {
-	width: 50%;
-    height: 100%;
-	border-radius: 10px;
+:root {
+
+	/* animations */
+	--appearing-anim: cubic-bezier(0.86, 0, 0.07, 1);
+	--scrolling-anim: cubic-bezier(0, 0, 0.2, 1);
+
+	/* borders */
+	--dft-content-p: 10px;
+	--dft-section-mb: 110px;
+
+	/* sizes */
+    --header-h: 90px;
+	--header-mobile-menu-w: 280px;
+
+    /* 'md' => 48rem */
+    @media (max-width: 48rem) {
+        --header-h: 70px;
+    }
 }
 
-.s_link {
-    &:hover {
-        color: var(--dodger-blue);
-        text-decoration: underline;
-    }
-    
-    @media (max-width: 580px){
-        font-size: 18px;
-    }
+body {
+	@apply flex flex-col w-full h-dvh;
+}
+
+section {
+	@apply mb-[50px];
+}
+
+button {
+	font-family: var(--malex-font);
+	
+	@apply p-0 bg-none cursor-pointer;
+}
+
+a {
+	@apply text-black no-underline;
+}
+
+ul {
+	@apply p-0 list-none;
+}
+
+main {
+	padding: calc(var(--header-h) + 20px) var(--dft-content-p);
+
+	@apply w-full max-w-7xl flex-1 box-border;
+}
+
+input {
+	font-family: var(--malex-font);
+
+	@apply block text-base focus-visible:outline-none;
+}
+
+select {
+	font-family: var(--malex-font);
+	
+	@apply block text-sm focus-visible:outline-none;
 }

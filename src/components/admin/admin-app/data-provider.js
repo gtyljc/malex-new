@@ -5,7 +5,7 @@ import {
     GET_MANY_QUERY,
     CREATE_QUERY,
     START_UPLOAD_IMAGE_QUERY,
-    FINILAZE_UPLOAD_IMAGE_QUERY,
+    FINALIZE_UPLOAD_IMAGE_QUERY,
     UPDATE_QUERY,
     UPDATE_MANY_QUERY,
     DELETE_QUERY
@@ -26,6 +26,8 @@ class DataProvider {
     // new data in each case returns data
     async #imageInterception(data){
         if (data.img){
+            console.log("has img")
+
             const imgId = nanoid(15);
 
             // get upload link
@@ -49,7 +51,7 @@ class DataProvider {
             // get info about uploaded image
             const finilazeResponse = await this.gqlClient.mutate(
                 {
-                    mutation: FINILAZE_UPLOAD_IMAGE_QUERY(),
+                    mutation: FINALIZE_UPLOAD_IMAGE_QUERY(),
                     variables: { img_id: imgId }
                 }
             );
@@ -60,8 +62,6 @@ class DataProvider {
             data.img_id = imgId;
             data.img_urls = finilazeResponse.data["finalizeUploadImage"].data.urls;
         }
-
-        console.log(data)
 
         return data;
     }
@@ -165,10 +165,12 @@ class DataProvider {
         const { id } = params;
         let { data } = params;
 
-        console.log(data);
+        delete data.id;
 
         // check if img was inserted
-        data = this.#imageInterception(data);
+        data = await this.#imageInterception(data);
+
+        console.log(data);
 
         const r = await this.gqlClient.mutate(
             {
@@ -185,8 +187,10 @@ class DataProvider {
         const { ids } = params;
         let { data } = params;
 
+        delete data.id;
+
         // check if img was inserted
-        data = this.#imageInterception(data);
+        data = await this.#imageInterception(data);
 
         const r = await this.gqlClient.mutate(
             {

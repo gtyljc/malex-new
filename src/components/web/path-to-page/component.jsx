@@ -3,22 +3,18 @@
 import Link from "next/link";
 import Image from "next/image";
 
-// css
-import styles from "./styles.module.css";
-
 // images
-import arrow_svg from "./arrow.svg";
+import arrow from "./arrow.svg";
 
-
-export default function PathToPage({ page_name }) {
+export default function PathToPageSection({ page_name }) {
     return (
-        <section className={styles.path}>
-            <Link className={styles.start_page} href="/">Home</Link>
+        <section className="flex flex-row items-center gap-5 p-4.5 box-border bg-ice-blue rounded-[5px]">
+            <Link className="text-sm text-medium" href="/">Home</Link>
             <Image
-                src={arrow_svg}
+                src={ arrow }
                 alt="Path from main page"
             />
-            <h1 className={styles.page}>{page_name}</h1>
+            <h1 className="text-sm text-light-gray">{ page_name }</h1>
         </section>
     )
 }

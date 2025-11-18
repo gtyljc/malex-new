@@ -22,6 +22,7 @@ export default function AppointmentList(){
                 <DataTable.Col source="job_desc" />
                 <DataTable.Col source="bwt" />
                 <DataTable.Col source="number" />
+                <DataTable.Col source="duration" />
                 <DataTable.Col>
                     <EditButton/>
                 </DataTable.Col>

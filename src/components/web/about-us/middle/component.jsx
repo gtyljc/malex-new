@@ -1,9 +1,7 @@
 
 // others
 import Image from "next/image";
-
-// css
-import styles from "./styles.module.css";
+import clsx from "clsx";
 
 // images
 import experience_svg from "./experience.svg";
@@ -12,27 +10,33 @@ import certicate_svg from "./certificate.svg";
 
 function Card({ label, img }){
     return(
-        <div className={styles.card}>
-            {img}
-            <h1 className={styles.label}>{label}</h1>
+        <div className={ 
+                clsx(
+                    "w-full flex flex-col items-center bg-ice-blue box-border",
+                    "p-[15px] pr-0 pl-0 gap-6 rounded-[5px] lg:flex-row lg:justify-center"
+                )    
+            }
+        >
+            { img }
+            <h1 className="text-sm/[20px] font-medium text-center lg:text-left lg:text-base/[25px]">{ label }</h1>
         </div>
     );
 }
 
 export default function MiddleSection(){
     return (
-        <section className={styles.section}>
+        <section className="w-full flex flex-row justify-center gap-1 lg:gap-5 md:text-base">
             <Card
-                label={<span>Experience <br/>and Expertise</span>}
-                img={<Image src={experience_svg} alt="Malex is experienced company"/>}
+                label={ <>Experience <br/>and Expertise</> }
+                img={ <Image src={ experience_svg } alt="Malex is experienced company"/> }
             />
             <Card
-                label={<span>Personalized approach <br/>for every client</span>}
-                img={<Image src={client_svg} alt="Malex appreciates it's clients"/>}
+                label={ <>Personalized approach <br/>for every client</> }
+                img={ <Image src={ client_svg } alt="Malex appreciates it's clients"/> }
             />
             <Card
-                label={<span>Quality guarantee <br/>on all services</span>}
-                img={<Image src={certicate_svg} alt="Malex is experienced company"/>}
+                label={ <>Quality guarantee <br/>on all services</> }
+                img={ <Image src={ certicate_svg } alt="Malex is experienced company"/> }
             />
         </section>        
     )

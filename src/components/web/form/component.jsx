@@ -2,14 +2,9 @@
 
 // others
 import clsx from "clsx";
-import Image from "next/image";
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import { createAppointment } from "./actions";
-import { 
-    FormOpenCtx, 
-    FormStepIndexCtx, 
-    // FormStepsCtx
-} from "./ctx";
+import { FormCtx } from "./ctx";
 
 // components
 import FirstFormStep from "./first-step/component";
@@ -20,57 +15,31 @@ import FourthFormStep from "./fourth-step/component";
 // css
 import styles from "./styles.module.css";
 
-// images
-import close_svg from "./close.svg";
-
 export default function Form() {
-    // const steps = [
-    //     useRef(null),
-    //     useRef(null),
-    //     useRef(null)
-    // ];
-    const { isOpened, closeForm } = useContext(FormOpenCtx);
-    const { index } = useContext(FormStepIndexCtx);
-    // const { setSteps } = useContext(FormStepsCtx);
+    // all buttons inside form must be with attribute type = "button"
 
-    // setSteps(steps);
+    const { isOpened, index } = useContext(FormCtx);
 
     return (
         <form 
-            action={createAppointment} 
+            action={ createAppointment }
             className={
                 clsx(
                     styles.form,
-                    !isOpened && styles.form_closed
+                    "bg-graphite/45",
+                    !isOpened && "pointer-events-none opacity-0!"
                 )
             }
         >
-            <div className={clsx("s_row_con", styles.steps_row_con)}>
-                <div className={styles.top}>
-                    <div className={styles.close_btn_con}>
-                        <button 
-                            className={styles.close_btn} 
-                            onClick={closeForm}
-                            type="button"
-                        >
-                            <span>Close</span>
-                            <Image 
-                                src={close_svg} 
-                                alt="Close Malex appointment window" 
-                            />
-                        </button>
-                    </div>
-                </div>
+            <div className="row-con">
                 <ul
-                    className={clsx("s_row", styles.steps_row)}
-                    style={
-                        { transform: `translateX(${(-index * 100) + "%"})` }
-                    }
+                    className="row duration-250 md:duration-500"
+                    style={ { transform: `translateX(${(-index * 100) + "%"})` } }
                 >   
-                    <FirstFormStep/>                    
-                    <SecondFormStep/>
-                    <ThirdFormStep/>
-                    <FourthFormStep/>
+                    <FirstFormStep />                    
+                    <SecondFormStep />
+                    <ThirdFormStep />
+                    <FourthFormStep />
                 </ul>
             </div>
         </form>

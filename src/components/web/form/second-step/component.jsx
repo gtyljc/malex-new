@@ -2,12 +2,11 @@
 
 // others
 import Image from "next/image";
-import { useQuery } from "@apollo/client/react";
-import { gql } from "@apollo/client";
 import { useState, useContext, createContext } from "react";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
+import { FormCtx } from "../ctx";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -16,7 +15,7 @@ import StepWrapper from "../step-wrapper/component";
 import styles from "./styles.module.css";
 
 // images
-import next_svg from "./next.svg";
+import next from "./next.svg";
 
 dayjs.extend(localizedFormat);
 
@@ -25,36 +24,35 @@ const CalenderCtx = createContext();
 function Day({ date }){
     const { setDay, currentDay } = useContext(CalenderCtx);
 
-    function handleClick(){
-        setDay(date);
-    }
-
     return(
         <td
             className={
                 clsx(
-                    (currentDay != null && currentDay.format("L") == date.format("L")) && styles.selected_day,
-                    styles.day
+                    styles.day,
+                    ( currentDay != null && currentDay.format("L") == date.format("L") ) && (
+                        "bg-dodger-blue text-white"
+                    )
                 )
             }
-            key={date.date()}
-            onClick={handleClick}
+            key={ date.date() }
+            onClick={ () => setDay(date) }
         >
-            {date.date()}
+            { date.date() }
         </td>
     )
 }
 
 function Calendar(){
+    const weekDays = [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ]
     const { currentMonth } = useContext(CalenderCtx);
     const daysInMonth = currentMonth.daysInMonth();
     const offset = currentMonth.date(1).day();    
     const lastDay = currentMonth.date(daysInMonth).day(); // which day of week is last day
     const rest = lastDay != 0 ? 0: 6 - lastDay;
-    const tbody_content = [];
-    let row_i = 0;
+    const tbodyContent = [];
+    let rowI = 0;
     let row = [];
-    let day_date = currentMonth.date(1); // starts always from 1 day
+    let dayDate = currentMonth.date(1); // starts always from 1 day
 
     // add offset to first row
     for (let i = 0; i < offset; i++){
@@ -64,88 +62,86 @@ function Calendar(){
     // add cells with days
     for (let i = 0; i < daysInMonth; i++){
         if (row.length == 7){
-            tbody_content.push(
-                <tr key={row_i}>
-                    {row.map(e => e)}
-                </tr>
+            tbodyContent.push(
+                <tr key={ rowI }>{ row.map(e => e) }</tr>
             );
             row = [];
-            row_i ++;
+            rowI ++;
         }
 
-        row.push(<Day date={day_date.add(i, "day")}/>);
+        row.push(<Day date={ dayDate.add(i, "day") }/>);
     }
 
     // add rest to last row
     for (let i = 0; i < rest; i++){
-        row.push(<td key={i + daysInMonth}></td>);
+        row.push(<td key={ i + daysInMonth }></td>);
     }
 
-    tbody_content.push(
-        <tr key={row_i + 1}>
-            {row.map(e => e)}
-        </tr>
+    tbodyContent.push(
+        <tr key={ rowI + 1 }>{ row.map(e => e) }</tr>
     );
 
     return(
-        <table className={styles.calendar}>
+        <table className="mr-auto ml-auto mt-3">
             <thead>
-                <tr>
-                    <th>Su</th>
-                    <th>Mo</th>
-                    <th>Tu</th>
-                    <th>We</th>
-                    <th>Th</th>
-                    <th>Fr</th>
-                    <th>Sa</th>
-                </tr>
+                <tr>{ weekDays.map(e => <th className="w-13 h-13 font-light">{ e }</th>) }</tr>
             </thead>
-            <tbody>
-                {tbody_content}
-            </tbody>
+            <tbody>{ tbodyContent }</tbody>
         </table>
     );
 }
 
+function ScrollMonthBtn({ icon, func }){
+    return (
+        <button onClick={ func } className="svg-btn" type="button">
+            { icon }
+        </button>
+    )
+}
+
 // should be inserted in ul
 export default function SecondFormStep(){
-    const [currentMonth, setMonth] = useState(dayjs());
-    const [currentDay, setDay] = useState(null);
+    const [ currentMonth, setMonth ] = useState(dayjs());
+    const [ currentDay, setDay ] = useState(null);
+    const { sclForward } = useContext(FormCtx);
 
     return (
-        <StepWrapper 
-            nextCheck={() => currentDay}
-        >
-            { currentDay && <input type="hidden" name="date" value={currentDay.toISOString()} /> }
-            
-            <h2 className={styles.undertitle}>Select a date</h2>
-            <div className={styles.scl_calendar_panel}>
-                <button 
-                    onClick={() => setMonth(currentMonth.subtract(1, "month"))}
-                    className={styles.scl_calendar_btn}
-                >
-                    <Image 
-                        src={next_svg} 
-                        alt="Scroll to previous month" 
-                        style={{transform: "rotate(180deg)"}}
-                    />
-                </button>
-                <div className={styles.calendar_label}>
-                    {currentMonth.format("MMMM YYYY")}
+        <StepWrapper>
+            { currentDay && <input type="hidden" name="date" value={ currentDay.toISOString() } /> }
+
+            <h1 className="mb-7 text-center text-2xl font-medium">
+                Make an appointment
+            </h1>
+            <h2 className="text-center font-light text-xl mb-5">Select a date</h2>
+            <div className="w-full max-w-[340px] flex flex-row justify-between items-center">
+                <ScrollMonthBtn 
+                    icon={
+                        <Image 
+                            src={ next } 
+                            alt="Scroll to previous month" 
+                            style={ { transform: "rotate(180deg)" } }
+                        />
+                    }
+                    func={ () => setMonth(currentMonth.subtract(1, "month")) }
+                />
+                <div className="font-medium text-lg">
+                    { currentMonth.format("MMMM YYYY") }
                 </div>
-                <button 
-                    onClick={() => setMonth(currentMonth.add(1, "month"))}
-                    className={styles.scl_calendar_btn}
-                >
-                    <Image 
-                        src={next_svg} 
-                        alt="Scroll to next month" 
-                    />
-                </button>
+                <ScrollMonthBtn 
+                    icon={ <Image src={ next } alt="Scroll to next month" /> }
+                    func={ () => setMonth(currentMonth.add(1, "month")) }
+                />
             </div>
-            <CalenderCtx.Provider value={{currentDay, setDay, currentMonth}}>
-                <Calendar/>
+            <CalenderCtx.Provider value={ { currentDay, setDay, currentMonth } }>
+                <Calendar />
             </CalenderCtx.Provider>
+            <button 
+                className="redirect-btn redirect-btn--blue mt-8 min-[450px]:max-w-[250px]"
+                onClick={ () => currentDay && sclForward() }
+                type="button"
+            >
+                <span>Next</span>
+            </button>
         </StepWrapper>
     )
 }

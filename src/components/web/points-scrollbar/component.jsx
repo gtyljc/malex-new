@@ -2,14 +2,13 @@
 
 // others
 import { useContext, useMemo } from "react";
-import { PointsScrollbarCurrentIndexCtx } from "./ctx";
-
-// assets
-import styles from "./styles.module.css";
+import { PointsScrollbarCtx } from "./ctx";
 import clsx from "clsx";
 
+// css
+import styles from "./styles.module.css";
 
-function generatePoints(p_num){
+function Points({ p_num }){
     const arr = [];
     
     for(let i = 0; i < p_num; i++){
@@ -22,29 +21,29 @@ function generatePoints(p_num){
 }
 
 function Point({ i }){
-    const { index, setIndex } = useContext(PointsScrollbarCurrentIndexCtx);
+    const { index, setIndex } = useContext(PointsScrollbarCtx);
 
     return(
         <button
             className={
                 clsx(
-                    index == i && styles.point_active,
-                    styles.point
+                    styles.point,
+                    index == i && "after:transform-[scale(1)]!"
                 )
             }
-            onClick={() => setIndex(i)}
+            onClick={ () => setIndex(i) }
         >
         </button>
     )
 }
 
-// must be wrapped in PointsScrollbarProviders
-export default function PoinsScrollbar({ p_num }){
-    const points = useMemo(() => generatePoints(p_num));
+// must be wrapped in PointsScrollbarProvider
+export default function PointsScrollbar({ p_num }){
+    const points = useMemo(() => <Points p_num={ p_num }/>);
     
     return (
-        <div className={styles.bar}>
-            {points}
+        <div className="flex flex-row gap-5">
+            { points }
         </div>
     )
 }

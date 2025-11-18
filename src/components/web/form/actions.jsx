@@ -1,32 +1,19 @@
 "use server";
 
-import { gql } from "@apollo/client";
 import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
+import { CREATE_QUERY } from "@src/api-requests";
 
 dayjs.extend(objectSupport)
-
-const CREATE_APPOINTMENT_QUERY = gql`
-    mutation CreateAppointment($data: AppointmentCreateInput!) {
-        createAppointment(data: $data) {
-            code,
-            success,
-            message,
-            data {
-               id
-            }
-        }
-    }
-`;
 
 // main form receiver
 export async function createAppointment(formData){
     const dateField = dayjs(formData.get("time"));
     
     // send request to API
-    await global.gql_client.mutate(
+    const r = await global.gqlClient.mutate(
         {
-            mutation: CREATE_APPOINTMENT_QUERY,
+            mutation: CREATE_QUERY("appointment"),
             variables: {
                 data: {
                     name: formData.get("name"),
@@ -36,10 +23,16 @@ export async function createAppointment(formData){
                     bwt: formData.get("bwt").toUpperCase(),
                     number: formData.get("number"),
                     date: dayjs(
-                        formData.get("date")).add({h: dateField.hour(), m: dateField.minute()}
+                        formData.get("date")).add(
+                            {
+                                h: dateField.hour(), 
+                                m: dateField.minute() 
+                            }
                     ).toISOString()
                 }
             } 
         }
     );
+
+    console.log(r.errors)
 }

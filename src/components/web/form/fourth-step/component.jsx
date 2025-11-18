@@ -3,30 +3,35 @@
 // others
 import StepWrapper from "../step-wrapper/component";
 import Image from "next/image";
-import { FormOpenCtx } from "@web/form/ctx";
+import { FormCtx } from "@web/form/ctx";
 import { useContext } from "react";
 
-// css
-import styles from "./styles.module.css";
-
 // images
-import finished_svg from "./finished.svg"
+import finished from "./finished.svg"
 
 export default function FourthFormStep(){
-    const { closeForm } = useContext(FormOpenCtx);
+    const { closeForm } = useContext(FormCtx);
     
     return (
-        <StepWrapper
-            nextBtnType="white"
-            nextBtnLabel="Back to Home"
-            nextCheck={() => { closeForm() }}
-        >
-            <Image
-                className={styles.icon}
-                src={finished_svg}
-                alt="Appointment is finished!"
-            />
-            <h2 className={styles.undertitle}>We will contact you as soon as possible!</h2>
+        <StepWrapper>
+            <div className="flex flex-col items-center gap-4">
+                <Image
+                    src={ finished }
+                    alt="Appointment is finished!"
+                    className="size-22"
+                />
+                <h1 className="text-center text-2xl font-semibold">
+                    Thank you!
+                </h1>
+                <h2>We will contact you as soon as possible!</h2>
+                <button 
+                    className="redirect-btn redirect-btn--white mt-8 min-[450px]:max-w-[250px]"
+                    onClick={ () => closeForm() }
+                    type="submit"
+                >
+                    <span>Back to Home</span>
+                </button>
+            </div>
         </StepWrapper>
     )
 }

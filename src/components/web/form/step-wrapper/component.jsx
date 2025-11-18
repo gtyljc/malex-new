@@ -1,77 +1,43 @@
 "use client";
 
 // others
-import clsx from "clsx";
 import { useContext } from "react";
-import { 
-    FormStepIndexCtx, 
-    FormStepsCtx 
-} from "@web/form/ctx";
-
-// components
-import RedirectButton from "@web/redirect-btn/component";
+import { FormCtx } from "@web/form/ctx";
+import Image from "next/image";
+import clsx from "clsx";
 
 // css
 import styles from "./styles.module.css";
 
-export default function StepWrapper(
-    {
-        children,
-        nextBtnLabel = "Next",
-        nextBtnType = "blue",
-        nextCheck = () => {}, // nextCheck must return true (successfully validated) or false (not validated)
-        hasSubmitBtn = false
-    }
-){
-    const { sclForward } = useContext(FormStepIndexCtx);
-    // const { steps } = useContext(FormStepsCtx);
+// images
+import close from "./close.svg";
 
-    function handleNextBtnClick(){
-        const r = nextCheck();
-
-        // in case check is async function
-        if (r instanceof Promise){
-            r.then((value) => value && sclForward())
-        }
-
-        if (r){
-
-            // // hide others
-            // for(let i = 0; i < steps.length; i++) {        
-            //     if(i != useContext(FormStepIndexCtx).index){
-            //         steps[i].styles.display = "none";
-            //     }
-            // }
-
-            sclForward();
-        }
-    }
+export default function StepWrapper({ children }){
+    const { closeForm } = useContext(FormCtx);
 
     return (
-        <li className={clsx("s_row_e", styles.step_con)}>
-            <div className={styles.step}>
-                <h1 className={clsx("s_title", styles.title)}>
-                    Make an appointment
-                </h1>
-
-                {children}
-                
-                {
-                    hasSubmitBtn ? 
-                    <RedirectButton
-                        label={nextBtnLabel}
-                        type={nextBtnType}
-                        onClick={handleNextBtnClick}
-                        style={{marginTop: "25px"}}                 
-                        isSubmit={true}
-                    />:
-                    <RedirectButton
-                        label={nextBtnLabel}
-                        type={nextBtnType}
-                        onClick={handleNextBtnClick}
-                        style={{marginTop: "25px"}}                 
-                    />
+        <li className={clsx(styles.step, "row-el")}>
+            <div className="w-full max-w-[570px]">
+                <div className="w-full flex flex-row justify-end mb-4">
+                    <button
+                        className="flex flex-row justify-center items-center text-white text-base gap-2"
+                        onClick={ closeForm }
+                        type="button"
+                    >
+                        <span>Close</span>
+                        <Image src={ close } alt="Close Malex appointment window" />
+                    </button>
+                </div>
+            </div>
+            <div 
+                className={
+                    clsx(
+                        "w-full flex flex-col items-center bg-white pr-7 pl-7", 
+                        "pt-10 pb-7 rounded-[10px] max-w-[570px]"
+                    )
                 }
+            >
+                { children }
             </div>
         </li>
     )

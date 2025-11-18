@@ -2,9 +2,6 @@
 // others
 import Image from "next/image"
 
-// components
-import RedirectButton from "@web/redirect-btn/component"
-
 // css
 import styles from "./styles.module.css"
 
@@ -31,11 +28,9 @@ function ServiceRow({title, text, services_details, thumbnail, isThumbnailFirst 
                         )
                     }
                 </ul>
-                <RedirectButton 
-                    label="Request a Service"
-                    type="white"
-                    style={{marginTop: "20px"}}
-                />
+                <button className="redirect-btn mb-5">
+                    <span>Request a Service</span>
+                </button>
             </div>
         </div>
     )

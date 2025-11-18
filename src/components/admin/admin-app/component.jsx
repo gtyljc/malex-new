@@ -3,7 +3,8 @@
 // others
 import { Admin, Resource, Login } from "react-admin";
 import DataProvider from "./data-provider";
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from "@apollo/client";
+ import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
 
 // components
 import AppointmentsList from "@admin/appointment-list/component";
@@ -36,16 +37,20 @@ const FIELDS_SCHEMA = {
     appointment: APPOINTMENT_FIELDS
 }
 
-const gql_client = new ApolloClient(
+const removeTypenameLink = new RemoveTypenameFromVariablesLink();
+const httpLink = new HttpLink({ uri: "http://localhost:2000" });
+const link = ApolloLink.from([ removeTypenameLink, httpLink ]);
+
+const gqlClient = new ApolloClient(
     {
-        link: new HttpLink({uri: "http://localhost:2000"}),
+        link,
         cache: new InMemoryCache()
     }
 )
 
 export default function AdminApp(){
     return(
-        <Admin dataProvider={ new DataProvider(gql_client, FIELDS_SCHEMA) }>
+        <Admin dataProvider={ new DataProvider(gqlClient, FIELDS_SCHEMA) }>
             <Resource name="appointment" list={ AppointmentsList } edit={ AppointmentsEdit } />
             <Resource name="work" list={ WorksList } create={ WorksCreate } edit={ WorksEdit } />
         </Admin>

@@ -3,85 +3,75 @@
 // others
 import Image from "next/image";
 import Link from "next/link";
-import clsx from "clsx";
 import { useContext } from "react";
-import { FormOpenCtx } from "@web/form/ctx";
-import { MobileMenuProvider, MobileMenuCtx } from "@web/header/mobile-menu/ctx";
+import { FormCtx } from "@web/form/ctx";
+import { 
+    MobileMenuProvider, 
+    MobileMenuCtx 
+} from "@web/header/mobile-menu/ctx";
 
 // components
-import RedirectButton from "@web/redirect-btn/component";
-import Logo from "@web/logo/component";
-import CallIcon from "@web/call-icon/component";
 import MobileMenu from "@web/header/mobile-menu/component";
 
-// css
-import styles from "./styles.module.css";
-
 // images
-import mobile_svg from "./mobile.svg";
+import logo from "./logo.svg";
+import mobile from "./mobile.svg";
+import phone from "./phone.svg";
 
-function _Header() {
-    const { openForm } = useContext(FormOpenCtx);
+function NavigationLink({ url, label }){
+    return (
+        <Link href={ url } className="text-base font-medium hover:text-dodger-blue! hover:underline!">
+            { label }
+        </Link>
+    )
+}
+
+function HeaderContent() {
     const { toggleMenu } = useContext(MobileMenuCtx);
+    const { openForm } = useContext(FormCtx);
 
     return (
-        <header className={styles.header}>
-            <div className={styles.content}>
-                <Link href="/">
-                    <Logo/>
-                </Link>
-                <nav className={styles.navigation}>
-                    <Link href="/" className={
-                        clsx(
-                            styles.navi_link,
-                            "s_link"
-                        )
-                    }>
-                        Home
-                    </Link>
-                    <Link href="/about-us" className={
-                        clsx(
-                            styles.navi_link,
-                            "s_link"
-                        )
-                    }>
-                        About us
-                    </Link>
-                    <Link href="/our-works" className={
-                        clsx(
-                            styles.navi_link,
-                            "s_link"
-                        )
-                    }>
-                        Our works
-                    </Link>
-                    <Link href="/contact" className={
-                        clsx(
-                            styles.navi_link,
-                            "s_link"
-                        )
-                    }>
-                        Contact
-                    </Link>
-                </nav>
-                <div className={styles.left}>
-                    <div className={styles.contact_row}>
-                        <CallIcon/>
-                        <h1 className={styles.contact}>3474101444</h1>
-                    </div>        
-                    <div className={styles.interactive}>
-                        <RedirectButton 
-                            label={"Make an appointment"}
-                            onClick={openForm} 
+        <header className="w-full h-(--header-h) bg-white pr-(--dft-content-p) pl-(--dft-content-p) box-border fixed z-100">
+            <div className="h-full flex flex-row justify-between items-center">
+                <div className="flex flex-row items-center gap-20">
+                    <Link href="/">
+                        <Image
+                            className="w-[110px] md:w-[130px]"
+                            src={ logo } 
+                            alt="Malex logo" 
                         />
+                    </Link>
+                    <nav className="hidden lg:flex flex-row gap-13">
+                        <NavigationLink url="/" label="Home" />
+                        <NavigationLink url="/" label="About Us" />
+                        <NavigationLink url="/" label="Our works" />
+                        <NavigationLink url="/" label="Contact" />
+                    </nav>
+                </div> 
+                <div className="flex flex-row gap-8">
+                    <div className="hidden md:flex flex-row items-center gap-3">
+                        <Image
+                            width={ 30 }
+                            src={ phone }
+                            alt="Malex contact phone number"
+                        />
+                        <h1 className="font-semibold text-lg">3474101444</h1>
+                    </div>        
+                    <div className="flex flex-row justify-end items-center gap-5">
                         <button 
-                            className={styles.m_menu_btn}
-                            onClick={toggleMenu}
+                            className="redirect-btn redirect-btn--blue min-w-[180px] md:min-w-[220px]"
+                            onClick={ openForm }
                         >
-                            <Image 
+                            <span>Make an appointment</span>
+                        </button>
+                        <button
+                            className="svg-btn md:hidden"
+                            onClick={ toggleMenu }
+                        >
+                            <Image
                                 width={28}
                                 height={28}
-                                src={mobile_svg} 
+                                src={ mobile } 
                                 alt="Navigation menu" 
                             />
                         </button>
@@ -96,7 +86,7 @@ function _Header() {
 export default function Header(){
     return (
         <MobileMenuProvider>
-            <_Header/>
+            <HeaderContent />
         </MobileMenuProvider>
     )
 }

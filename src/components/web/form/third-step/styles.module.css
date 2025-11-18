@@ -1,20 +1,4 @@
 
-.undertitle {
-    font-weight: 400;
-    margin-bottom: 15px;
-}
-
-.time_select {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 0px 40px;
-    gap: 5px;
-    box-sizing: border-box;
-    margin: 10px 0px;
-}
-
 .time {
     width: 75px;
     height: 35px;
@@ -22,19 +6,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background-color 0.25s var(--appearing-animation);   
+    font-size: var(--text-base);
+    transition: background-color 0.25s var(--appearing-anim);   
     box-sizing: border-box;
     border-radius: 3px;
-
-    &:hover {
-        background-color: var(--dodger-blue);
-        color: var(--white);
-    }
-}
-
-.selected_time {
-    background-color: var(--dodger-blue);
-    color: var(--white);
+    cursor: pointer;
 }

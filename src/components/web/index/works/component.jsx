@@ -1,34 +1,39 @@
 
+"use client";
+
 // others
 import Image from "next/image";
 import clsx from "clsx";
+import { 
+    PointsScrollbarProvider, 
+    PointsScrollbarCtx 
+} from "@web/points-scrollbar/ctx";
+import { useContext } from "react";
 
 // components
-import RedirectButton from "@web/redirect-btn/component";
 import ScrollProgressBar from "@web/points-scrollbar/component";
 
 // css
 import styles from "./styles.module.css";
 
-// images
-import jpg_1 from "./1.jpg";
-import jpg_2 from "./2.jpg";
-import jpg_3 from "./3.jpg";
-import jpg_4 from "./4.jpg";
-import jpg_5 from "./5.jpg";
-import jpg_6 from "./6.jpg";
-import jpg_7 from "./7.jpg";
-import jpg_8 from "./8.jpg";
-import jpg_9 from "./9.jpg";
+function WorksSectionContent(){
+    const { index, setIndex } = useContext(PointsScrollbarCtx);
+    const rowGap = 20; // %
 
-
-export default function WorksSection(){
     return (
-        <section className={styles.section}>
-            <h1 className="s_title">Our Works</h1>
-            <div className="s_row_con">
-                <ul className="s_row">
-                    <li 
+        <section className="">
+            <h1 className="">Our Works</h1>
+            <div className="row-con">
+                <ul 
+                    className="row"
+                    style={
+                        {
+                            transform: `translateX(-${index * (100 + rowGap)}%)`,
+                            gap: `${ rowGap }%`
+                        }
+                    }
+                >
+                    {/* <li 
                         className={
                             clsx(
                                 styles.cards_con,
@@ -94,16 +99,21 @@ export default function WorksSection(){
                                 alt="9"
                             />
                         </div>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
-            <ScrollProgressBar/>
-            <RedirectButton
-                type="white"
-                label="See all works"
-                isLink={true}
-                href="/our-works"
-            />
+            <ScrollProgressBar p_num={ 3 }/>
+            <a className="redirect-btn redirect-btn--white" href="/our-works">
+                See all works
+            </a>    
         </section>
+    )
+}
+
+export default function WorksSection(){
+    return (
+        <PointsScrollbarProvider>
+            <WorksSectionContent />
+        </PointsScrollbarProvider>
     )
 }

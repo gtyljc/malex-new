@@ -2,12 +2,8 @@
 // others
 import clsx from "clsx";
 
-// component
-import RedirectButton from "@web/redirect-btn/component";
-
 // css
 import styles from "./styles.module.css";
-
 
 export default function PanelSection(){
 

@@ -22,7 +22,7 @@ export const START_UPLOAD_IMAGE_QUERY = () => {
 }
 
 // return a details about uploaded image
-export const FINILAZE_UPLOAD_IMAGE_QUERY = () => {
+export const FINALIZE_UPLOAD_IMAGE_QUERY = () => {
     return gql`
         mutation FinalizeUploadImage($img_id: ID!){
             finalizeUploadImage(img_id: $img_id) {
@@ -30,7 +30,7 @@ export const FINILAZE_UPLOAD_IMAGE_QUERY = () => {
                 success
                 message
                 data {
-                    id,
+                    id
                     urls
                 }
             }
@@ -39,14 +39,18 @@ export const FINILAZE_UPLOAD_IMAGE_QUERY = () => {
 }
 
 // get a list of records based on sort, filter, and pagination
-export const GET_LIST_QUERY = (resource, fields) => {
+export const GET_LIST_QUERY = (resource, fields = []) => {
     return gql`
         query GetList($filter: JSONObject!, $pagination: PaginationInput!, $sort: SortInput!) {
             ${resource}s (filter: $filter, pagination: $pagination, sort: $sort) {
-                ... on ${capitalize(resource)}ItemsPaginatedType {
-                    data {
-                        ${fields.join(", ")}
-                    }
+
+                code
+                success
+                message
+                data {
+                    ${fields.join(", ")}
+                }
+                pagination {
                     pageInfo {
                         hasNextPage
                         hasPreviousPage
@@ -59,7 +63,7 @@ export const GET_LIST_QUERY = (resource, fields) => {
 }
 
 // get a single record by id
-export const GET_ONE_QUERY = (resource, fields) => {
+export const GET_ONE_QUERY = (resource, fields = []) => {
     return gql`
         query GetOne($id: ID!) {
             ${resource} (id: $id){
@@ -70,7 +74,7 @@ export const GET_ONE_QUERY = (resource, fields) => {
 }
 
 // get a list of records based on an array of ids
-export const GET_MANY_QUERY = (resource, fields) => {
+export const GET_MANY_QUERY = (resource, fields = []) => {
     return gql`
         query GetMany($ids: [ID]!) {
             ${resource}s (ids: $ids) {
@@ -85,17 +89,19 @@ export const GET_MANY_QUERY = (resource, fields) => {
 }
 
 // create a record
-export const CREATE_QUERY = (resource, fields) => {
+export const CREATE_QUERY = (resource, fields = []) => {
     const capitalizedResorceName = capitalize(resource);
 
     return gql`
-        mutation Create($data: ${capitalizedResorceName}CreateInput){
+        mutation Create($data: ${capitalizedResorceName}CreateInput!){
             create${capitalizedResorceName}(data: $data) {
                 code
                 success
                 message
-                data {
-                    ${fields.join(", ")}
+                ${
+                    fields.length != 0 ? `data {
+                        ${ fields.join(", ") }
+                    }`: ""
                 }
             }
         }
@@ -103,7 +109,7 @@ export const CREATE_QUERY = (resource, fields) => {
 }
 
 // update a record based on a patch
-export const UPDATE_QUERY = (resource, fields) => {
+export const UPDATE_QUERY = (resource, fields = []) => {
     const capitalizedResorceName = capitalize(resource);
 
     return gql`
@@ -121,7 +127,7 @@ export const UPDATE_QUERY = (resource, fields) => {
 }
 
 // update a list of records based on an array of ids and a common patch
-export const UPDATE_MANY_QUERY = (resource, fields) => {
+export const UPDATE_MANY_QUERY = (resource, fields = []) => {
     const capitalizedResorceName = capitalize(resource);
 
     return gql`
@@ -139,7 +145,7 @@ export const UPDATE_MANY_QUERY = (resource, fields) => {
 }
 
 // delete a record by id
-export const DELETE_QUERY = (resource, fields) => {
+export const DELETE_QUERY = (resource, fields = []) => {
     return gql`
         mutation Delete($id: ID!){
             delete${capitalize(resource)}(id: $id) {
@@ -155,7 +161,7 @@ export const DELETE_QUERY = (resource, fields) => {
 }
 
 // delete a list of records based on an array of ids
-export const DELETE_MANY_QUERY = (resource, fields) => {
+export const DELETE_MANY_QUERY = (resource, fields = []) => {
     return gql`
         mutation Delete($id: ID!){
             deleteMany${capitalize(resource)}s(id: $id) {

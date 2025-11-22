@@ -43,8 +43,7 @@
 		transition: background-color 0.25s cubic-bezier(0.46,0.03,0.52,0.96);
 
 		@apply w-full min-h-[45px] flex flex-col justify-center 
-		items-center text-sm font-medium rounded-[5px] md:min-h-[50px] 
-		md:text-base;
+		items-center text-base font-medium rounded-[5px] md:min-h-[50px];
 	}
 
 	.redirect-btn--blue {
@@ -64,7 +63,7 @@
 	--scrolling-anim: cubic-bezier(0, 0, 0.2, 1);
 
 	/* borders */
-	--dft-content-p: 10px;
+	--dft-content-p: 15px;
 	--dft-section-mb: 110px;
 
 	/* sizes */

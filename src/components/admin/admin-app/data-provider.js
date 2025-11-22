@@ -4,8 +4,8 @@ import {
     GET_ONE_QUERY,
     GET_MANY_QUERY,
     CREATE_QUERY,
-    START_UPLOAD_IMAGE_QUERY,
-    FINALIZE_UPLOAD_IMAGE_QUERY,
+    START_IMAGE_UPLOAD_QUERY,
+    FINALIZE_IMAGE_UPLOAD_QUERY,
     UPDATE_QUERY,
     UPDATE_MANY_QUERY,
     DELETE_QUERY
@@ -14,7 +14,7 @@ import { nanoid } from "nanoid";
 import { capitalize } from "@src/tools";
 
 class DataProvider {
-    // read about structure at https://marmelab.com/react-admin/useDataProvider.html
+    // read about structure at https://marmelab.com/react-admin/DataProviderWriting.html
 
     constructor(gql_client, fields_schema) {
         this.gqlClient = gql_client;
@@ -25,15 +25,13 @@ class DataProvider {
     // saves image in Cloudflare Storage and returns 
     // new data in each case returns data
     async #imageInterception(data){
-        if (data.img){
-            console.log("has img")
-
+        if (data.img_url){
             const imgId = nanoid(15);
 
             // get upload link
             const startResponse = await this.gqlClient.mutate(
                 {
-                    mutation: START_UPLOAD_IMAGE_QUERY(),
+                    mutation: START_IMAGE_UPLOAD_QUERY(),
                     variables: { img_id: imgId }
                 }
             );
@@ -41,7 +39,7 @@ class DataProvider {
             // send on storage
             const body = new FormData();
 
-            body.append("file", data.img.rawFile);
+            body.append("file", data.img_url.rawFile);
 
             await fetch(
                 startResponse.data["startUploadImage"].data.url,
@@ -51,7 +49,7 @@ class DataProvider {
             // get info about uploaded image
             const finilazeResponse = await this.gqlClient.mutate(
                 {
-                    mutation: FINALIZE_UPLOAD_IMAGE_QUERY(),
+                    mutation: FINALIZE_IMAGE_UPLOAD_QUERY(),
                     variables: { img_id: imgId }
                 }
             );
@@ -60,7 +58,7 @@ class DataProvider {
             delete data.img;
 
             data.img_id = imgId;
-            data.img_urls = finilazeResponse.data["finalizeUploadImage"].data.urls;
+            data.img_url = finilazeResponse.data["finalizeUploadImage"].data.url;
         }
 
         return data;
@@ -73,44 +71,54 @@ class DataProvider {
             sort, 
             filter = {} 
         } = params;
-        const r = await this.gqlClient.query(
-            {
-                query: GET_LIST_QUERY(resource, this.fieldsSchema[resource]),
-                variables: {
-                    filter,
-                    sort,
-                    pagination
+        const responseData = (
+            await this.gqlClient.query(
+                {
+                    query: GET_LIST_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: {
+                        filter,
+                        sort,
+                        pagination
+                    }
                 }
-            }
-        );
+            )
+        ).data[`${resource}s`];
 
-        return r.data[`${resource}s`];
+        return {
+            data: responseData.data,
+            total: responseData.pagination.total,
+            pageInfo: responseData.pagination.pageInfo
+        };
     }
 
     // get a single record by id
     async getOne(resource, params) {
         const { id } = params;
-        const r = await this.gqlClient.query(
-            {
-                query: GET_ONE_QUERY(resource, this.fieldsSchema[resource]),
-                variables: { id }
-            }
-        );
+        const responseData = (
+            await this.gqlClient.query(
+                {
+                    query: GET_ONE_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: { id }
+                }
+            )
+        ).data[resource];
 
-        return { data: r.data[resource] };
+        return { data: responseData.data[0] };
     }
 
     // get a list of records based on an array of ids
     async getMany(resource, params) {
         const { ids } = params;
-        const r = await this.gqlClient.query(
-            {
-                query: GET_MANY_QUERY(resource, this.fieldsSchema[resource]),
-                variables: { ids }
-            }
-        );
+        const responseData = (
+            await this.gqlClient.query(
+                {
+                    query: GET_MANY_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: { ids }
+                }
+            )
+        ).data[`${resource}s`];
 
-        return { data: r.data[`${resource}s`].items }
+        return { data: responseData.data }
     }
 
     // get the records referenced to another record, e.g. comments for a post
@@ -122,25 +130,27 @@ class DataProvider {
             sort,
             filter = {}
         } = params;
-        const r = await this.gqlClient.query(
-            {
-                query: GET_LIST_QUERY(resource, this.fieldsSchema[resource]),
-                variables: { 
-                    filter: {
-                        
-                        // condition to find references
-                        where: { [target]: { is: { id } } },
+        const responseData = (
+            await this.gqlClient.query(
+                {
+                    query: GET_LIST_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: { 
+                        filter: {
+                            
+                            // condition to find references
+                            where: { [target]: { is: { id } } },
 
-                        // RA specified filter
-                        ...filter
-                    },
-                    sort,
-                    pagination
+                            // RA specified filter
+                            ...filter
+                        },
+                        sort,
+                        pagination
+                    }
                 }
-            }
-        )
+            )
+        ).data[`${resource}s`];
 
-        return { data: r.data[`${resource}s`].items }
+        return { data: responseData.data }
     }
 
     // create a record
@@ -150,14 +160,16 @@ class DataProvider {
         // check if img was inserted
         data = await this.#imageInterception(data);
 
-        const r = await this.gqlClient.mutate(
-            {
-                mutation: CREATE_QUERY(resource, this.fieldsSchema[resource]),
-                variables: { data }
-            }
-        )
+        const responseData = (
+            await this.gqlClient.mutate(
+                {
+                    mutation: CREATE_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: { data }
+                }
+            )
+        ).data[`create${capitalize(resource)}`]
 
-        return { data: r.data[`create${capitalize(resource)}`].data };
+        return { data: responseData.data };
     }
 
     // update a record based on a patch
@@ -170,16 +182,16 @@ class DataProvider {
         // check if img was inserted
         data = await this.#imageInterception(data);
 
-        console.log(data);
+        const responseData = (
+            await this.gqlClient.mutate(
+                {
+                    mutation: UPDATE_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: { id, data }
+                }
+            )
+        ).data[`update${capitalize(resource)}`]
 
-        const r = await this.gqlClient.mutate(
-            {
-                mutation: UPDATE_QUERY(resource, this.fieldsSchema[resource]),
-                variables: { id, data }
-            }
-        )
-
-        return { data: r.data[`update${capitalize(resource)}`].data };
+        return { data: responseData.data[0] };
     }
 
     // update a list of records based on an array of ids and a common patch
@@ -192,42 +204,46 @@ class DataProvider {
         // check if img was inserted
         data = await this.#imageInterception(data);
 
-        const r = await this.gqlClient.mutate(
-            {
-                mutation: UPDATE_MANY_QUERY(resource, this.fieldsSchema[resource]),
-                variables: { ids, data }
-            }
-        )
+        const responseData = (
+            await this.gqlClient.mutate(
+                {
+                    mutation: UPDATE_MANY_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: { ids, data }
+                }
+            )
+        ).data[`updateMany${capitalize(resource)}s`]
 
-        return {data: r.data[`updateMany${capitalize(resource)}s`].data};
+        return { data: responseData.data };
     }
 
     // delete a record by id
     async delete(resource, params) {
         const { id } = params;
+        const responseData = (
+            await this.gqlClient.mutate(
+                {
+                    mutation: DELETE_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: { id }
+                }
+            )
+        ).data[`delete${capitalize(resource)}`];
 
-        const r = await this.gqlClient.mutate(
-            {
-                mutation: DELETE_QUERY(resource, this.fieldsSchema[resource]),
-                variables: { id }
-            }
-        )
-
-        return { data: r.data[`delete${capitalize(resource)}`].data }
+        return { data: responseData.data[0] }
     }
 
     // delete a list of records based on an array of ids
     async deleteMany(resource, params) {
         const { ids } = params;
+        const responseData = (
+            await this.gqlClient.mutate(
+                {
+                    mutation: DELETE_QUERY(resource, this.fieldsSchema[resource]),
+                    variables: { ids }
+                }
+            )
+        ).data[`deleteMany${capitalize(resource)}s`];
 
-        const r = await this.gqlClient.mutate(
-            {
-                mutation: DELETE_QUERY(resource, this.fieldsSchema[resource]),
-                variables: { ids }
-            }
-        )
-
-        return { data: r.data[`deleteMany${capitalize(resource)}s`].data };
+        return { data: responseData.data };
     }
 }
 

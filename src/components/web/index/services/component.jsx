@@ -1,34 +1,45 @@
+"use client";
 
 // others
 import Image from "next/image"
-
-// css
-import styles from "./styles.module.css"
+import { useContext } from "react"
+import { FormCtx } from "@web/form/ctx"
 
 // images
-import plumbing_jpg from "./plumbing.jpg"
-import assembling_jpg from "./assembling.jpg"
-import mounting_jpg from "./mounting.jpg"
+import plumbing from "./plumbing.jpg"
+import assembling from "./assembling.jpg"
+import mounting from "./mounting.jpg"
+import clsx from "clsx"
 
-function ServiceRow({title, text, services_details, thumbnail, isThumbnailFirst = true}) {
+function ServiceRow({ title, text, services, thumbnail, is_thumbnail_first }) {
+    const { openForm } = useContext(FormCtx);
+    
     return (
-        <div className={styles.row}>
-            <div className="s_half s_thumbnail" style={!isThumbnailFirst ? {order: 2}: {}}>
-                {thumbnail}
+        <div className="flex flex-col gap-6">
+            <h1 className="text-2xl font-medium">{ title }</h1>
+            <div 
+                className={
+                    clsx(
+                        !is_thumbnail_first && "",
+                        "max-h-[280px] h-full overflow-hidden rounded-[10px]"
+                    )
+                }
+            >
+                { thumbnail }
             </div>
-            <div className={styles.info} style={!isThumbnailFirst ? {order: 1}: {}}>
-                <h1 className="s_title">{title}</h1>
-                <p className={styles.text}>{text}</p>
-                <ul className={styles.list} aria-hidden="true">
+            <div className="flex flex-col gap-6">
+                <p className="">{ text }</p>
+                <ul className="flex flex-col gap-3 list-disc! pl-[30px]!">
                     {
-                        services_details.map(
-                            (detail, i) => (
-                                <li key={i}>{detail}</li>
-                            )
+                        services.map(
+                            (detail, i) => <li key={i}>{ detail }</li>
                         )
                     }
                 </ul>
-                <button className="redirect-btn mb-5">
+                <button 
+                    onClick={ openForm }
+                    className="redirect-btn redirect-btn--white mb-5"
+                >
                     <span>Request a Service</span>
                 </button>
             </div>
@@ -38,21 +49,21 @@ function ServiceRow({title, text, services_details, thumbnail, isThumbnailFirst 
 
 export default function ServicesSection() {
     return (
-        <section className={styles.section}>
+        <section>
             <ServiceRow
                 title="Our Plumbing Services"
                 text="We offer a full range of plumbing services for your home and business. Our skilled professionals handle installation, repair, and maintenance of any system. We guarantee high-quality results on time."
-                services_details={
+                services={
                     [
                         "Pipe installation and replacement",
                         "Plumbing system repair and maintenance",
                         "Water heater and boiler installation"
                     ]
                 }
-                isThumbnailFirst={false}
+                is_thumbnail_first={ false }
                 thumbnail={
                     <Image
-                        src={plumbing_jpg}
+                        src={ plumbing }
                         alt="Malex plumbing service"
                     />
                 }
@@ -60,17 +71,17 @@ export default function ServicesSection() {
             <ServiceRow
                 title="Assembling"
                 text="We offer professional assembly services for various equipment and furniture. Our experts have the experience and skills to perform accurate and fast assembly of items, regardless of their complexity. We guarantee high-quality work to ensure long-lasting and reliable results."
-                services_details={
+                services={
                     [
                         "Precise and reliable assembly",
                         "Experience with complex items",
                         "Quality guarantee"
                     ]
                 }
-                isThumbnailFirst={true}
+                is_thumbnail_first={ true }
                 thumbnail={
                     <Image
-                        src={assembling_jpg}
+                        src={ assembling }
                         alt="Malex plumbing service"
                     />
                 }
@@ -78,17 +89,17 @@ export default function ServicesSection() {
             <ServiceRow
                 title="Mounting"
                 text="We offer professional assembly services for various equipment and furniture. Our experts have the experience and skills to perform accurate and fast assembly of items, regardless of their complexity. We guarantee high-quality work to ensure long-lasting and reliable results."
-                services_details={
+                services={
                     [
                         "Precise and reliable assembly",
                         "Experience with complex items",
                         "Quality guarantee"
                     ]
                 }
-                isThumbnailFirst={false}
+                is_thumbnail_first={ false }
                 thumbnail={
                     <Image
-                        src={mounting_jpg}
+                        src={ mounting }
                         alt="Malex plumbing service"
                     />
                 }

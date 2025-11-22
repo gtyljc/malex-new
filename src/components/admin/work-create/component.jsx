@@ -6,7 +6,7 @@ import WorksCreateForm from "@admin/work-create-form/component"
 export default function WorkCreate(){
     return (
         <Create>
-            <WorksCreateForm/>
+            <WorksCreateForm is_create_form={ true } />
         </Create>
     )
 }

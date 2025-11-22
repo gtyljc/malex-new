@@ -16,7 +16,7 @@ export default function WorkList(){
                 <DataTable.Col source="id"/>
                 <DataTable.Col source="category"/>
                 <DataTable.Col source="Photo">
-                    <ImageField source="img_urls[0]" />
+                    <ImageField source="img_url" />
                 </DataTable.Col>
                 <DataTable.Col>
                     <DateField source="timestamp"/>

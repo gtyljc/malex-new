@@ -13,9 +13,9 @@ const plus_jakarta_sans = Plus_Jakarta_Sans(
 
 export default function AdminLayout({ children }){
     return (
-        <html lang="en" className={plus_jakarta_sans.className}>
+        <html lang="en" className={ plus_jakarta_sans.className }>
             <body>
-                {children}
+                { children }
             </body>
         </html>
     )

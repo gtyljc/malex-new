@@ -5,9 +5,9 @@ import { gql } from "@apollo/client";
 import { capitalize } from "@src/tools";
 
 // get an image uploud link
-export const START_UPLOAD_IMAGE_QUERY = () => {
+export const START_IMAGE_UPLOAD_QUERY = () => {
     return gql`
-        mutation StartUploadImage($img_id: ID!){
+        mutation StartImageUpload($img_id: ID!){
             startUploadImage(img_id: $img_id) {
                 code
                 success
@@ -22,16 +22,16 @@ export const START_UPLOAD_IMAGE_QUERY = () => {
 }
 
 // return a details about uploaded image
-export const FINALIZE_UPLOAD_IMAGE_QUERY = () => {
+export const FINALIZE_IMAGE_UPLOAD_QUERY = () => {
     return gql`
-        mutation FinalizeUploadImage($img_id: ID!){
+        mutation FinalizeImageUpload($img_id: ID!){
             finalizeUploadImage(img_id: $img_id) {
                 code
                 success
                 message
                 data {
                     id
-                    urls
+                    url
                 }
             }
         }
@@ -39,16 +39,15 @@ export const FINALIZE_UPLOAD_IMAGE_QUERY = () => {
 }
 
 // get a list of records based on sort, filter, and pagination
-export const GET_LIST_QUERY = (resource, fields = []) => {
+export const GET_LIST_QUERY = (resource, fields) => {    
     return gql`
-        query GetList($filter: JSONObject!, $pagination: PaginationInput!, $sort: SortInput!) {
+        query GetList($filter: JSONObject!, $pagination: PaginationInput!, $sort: SortInput) {
             ${resource}s (filter: $filter, pagination: $pagination, sort: $sort) {
-
                 code
                 success
                 message
                 data {
-                    ${fields.join(", ")}
+                    ${ fields.join(", ") }
                 }
                 pagination {
                     pageInfo {
@@ -63,25 +62,31 @@ export const GET_LIST_QUERY = (resource, fields = []) => {
 }
 
 // get a single record by id
-export const GET_ONE_QUERY = (resource, fields = []) => {
+export const GET_ONE_QUERY = (resource, fields) => {
     return gql`
         query GetOne($id: ID!) {
             ${resource} (id: $id){
-                ${fields.join(", ")}
+                code
+                success
+                message
+                data {
+                    ${fields.join(", ")}
+                }
             }
         }
     `;
 }
 
 // get a list of records based on an array of ids
-export const GET_MANY_QUERY = (resource, fields = []) => {
+export const GET_MANY_QUERY = (resource, fields) => {
     return gql`
         query GetMany($ids: [ID]!) {
             ${resource}s (ids: $ids) {
-                ... on ${capitalize(resource)}ItemsType {
-                    items {
-                        ${fields.join(", ")}
-                    }
+                code
+                success
+                message
+                data {
+                    ${ fields.join(", ") }
                 }
             }
         }
@@ -118,8 +123,10 @@ export const UPDATE_QUERY = (resource, fields = []) => {
                 code
                 success
                 message
-                data {
-                    ${fields.join(", ")}
+                ${
+                    fields.length != 0 ? `data {
+                        ${ fields.join(", ") }
+                    }`: ""
                 }
             }
         }
@@ -136,8 +143,10 @@ export const UPDATE_MANY_QUERY = (resource, fields = []) => {
                 code
                 success
                 message
-                data {
-                    ${fields.join(", ")}
+                ${
+                    fields.length != 0 ? `data {
+                        ${ fields.join(", ") }
+                    }`: ""
                 }
             }
         }
@@ -152,8 +161,10 @@ export const DELETE_QUERY = (resource, fields = []) => {
                 code
                 success
                 message
-                data {
-                    ${fields.join(", ")}
+                ${
+                    fields.length != 0 ? `data {
+                        ${ fields.join(", ") }
+                    }`: ""
                 }
             }
         }
@@ -168,8 +179,28 @@ export const DELETE_MANY_QUERY = (resource, fields = []) => {
                 code
                 success
                 message
-                data {
-                    ${fields.join(", ")}
+                ${
+                    fields.length != 0 ? `data {
+                        ${ fields.join(", ") }
+                    }`: ""
+                }
+            }
+        }
+    `
+}
+
+// returns all appointments that are in the range of date
+export const GET_APPOINTMENTS_IN_RANGE_QUERY = (fields = []) => {
+    return gql`
+        mutation GetAppointmentsInRange($from: DateTimeISO!, $to: DateTimeISO!){
+            getAppointmentsInRange(from: $from, to: $to) {
+                code
+                success
+                message
+                ${
+                    fields.length != 0 ? `data {
+                        ${ fields.join(", ") }
+                    }`: ""
                 }
             }
         }

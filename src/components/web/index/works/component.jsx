@@ -3,104 +3,110 @@
 
 // others
 import Image from "next/image";
-import clsx from "clsx";
 import { 
     PointsScrollbarProvider, 
     PointsScrollbarCtx 
 } from "@web/points-scrollbar/ctx";
 import { useContext } from "react";
+import { useQuery } from "@apollo/client/react";
+import { GET_LIST_QUERY } from "@src/api-requests";
 
 // components
 import ScrollProgressBar from "@web/points-scrollbar/component";
 
-// css
-import styles from "./styles.module.css";
+function getImgLink(data){
+    const items = data.works.data;
 
-function WorksSectionContent(){
-    const { index, setIndex } = useContext(PointsScrollbarCtx);
-    const rowGap = 20; // %
+    return items.length != 0 ? items[0].img_url: null;
+}
+
+// is used by Work ( and no where else)
+function getImg(data){
+    const imgLink = getImgLink(data);
 
     return (
-        <section className="">
-            <h1 className="">Our Works</h1>
+        imgLink ? (
+            <Image 
+                width={ 200 }
+                height={ 200 }
+                src={ imgLink } 
+                alt="Our work"
+                className="w-full"
+            />
+        ): 
+        <div className="w-[200px] h-[200px] size-full bg-ice-blue"></div>
+    )
+}
+
+function Work({ page }){
+    const { data, error, loading } = useQuery(
+        GET_LIST_QUERY("work", ["img_url"]), 
+        { 
+            variables: { 
+                filter: {},
+                pagination: {
+                    perPage: 1,
+                    page
+                }
+            } 
+        }
+    );
+
+    return (
+        <div className="w-[250px] h-[250px] flex flex-row items-center justify-center nth-[3]:hidden overflow-hidden">
+            { loading && "Loading..." }
+            { error && "Failed to get..." }
+            { data && getImg(data) }
+        </div>
+    )
+}
+
+function WorksSector({ sector_i }){
+    const WORKS_PER_SECTOR = 3;
+    const works = [];
+
+    for(let i = 0; i < WORKS_PER_SECTOR; i++){
+        works.push(<Work page={ (sector_i  * WORKS_PER_SECTOR) + i + 1 }/>)
+    }
+
+    return (
+        <li className="row-el flex flex-row gap-3 justify-center">
+            { works }
+        </li>
+    )
+}
+
+function WorksRow(){
+    const SECTORS_NUM = 3;
+    const { index } = useContext(PointsScrollbarCtx);
+    const rowGap = 20; // %
+    const worksSectors = [];
+    
+    for (let i = 0; i < SECTORS_NUM; i++){
+        worksSectors.push(<WorksSector sector_i={ i } />);
+    }
+
+    return (
+        <ul 
+            className="row"
+            style={
+                {
+                    transform: `translateX(-${index * (100 + rowGap)}%)`,
+                    gap: `${ rowGap }%`
+                }
+            }
+        >
+            { worksSectors }
+        </ul>
+    )
+}
+
+function WorksSectionContent(){
+    return (
+        <section className="flex flex-col items-center gap-8">
+            <h1 className="text-2xl font-medium">Our Works</h1>
             <div className="row-con">
-                <ul 
-                    className="row"
-                    style={
-                        {
-                            transform: `translateX(-${index * (100 + rowGap)}%)`,
-                            gap: `${ rowGap }%`
-                        }
-                    }
-                >
-                    {/* <li 
-                        className={
-                            clsx(
-                                styles.cards_con,
-                                "s_row_e"
-                            )
-                        }
-                    >
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_1}
-                                alt="1"
-                            />
-                        </div>
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_2}
-                                alt="2"
-                            />
-                        </div>
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_3}
-                                alt="3"
-                            />
-                        </div>
-                    </li>
-                    <li className={styles.cards_con}>
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_4}
-                                alt="4"
-                            />
-                        </div>
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_5}
-                                alt="5"
-                            />
-                        </div>
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_6}
-                                alt="6"
-                            />
-                        </div>
-                    </li>
-                    <li className={styles.cards_con}>
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_7}
-                                alt="7"
-                            />
-                        </div>
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_8}
-                                alt="8"
-                            />
-                        </div>
-                        <div className={styles.card}>
-                            <Image
-                                src={jpg_9}
-                                alt="9"
-                            />
-                        </div>
-                    </li> */}
-                </ul>
+                <WorksRow />
             </div>
             <ScrollProgressBar p_num={ 3 }/>
             <a className="redirect-btn redirect-btn--white" href="/our-works">

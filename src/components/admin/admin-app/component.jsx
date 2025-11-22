@@ -27,9 +27,10 @@ const APPOINTMENT_FIELDS = [
 
 const WORK_FIELDS = [
     "id",
-    "img_urls",
+    "img_url",
     "img_id",
-    "category"
+    "category",
+    "timestamp"
 ]
 
 const FIELDS_SCHEMA = {

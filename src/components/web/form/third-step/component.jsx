@@ -75,7 +75,7 @@ export default function ThirdFormStep() {
             <button 
                 className="redirect-btn redirect-btn--blue mt-8 min-[450px]:max-w-[250px]"
                 onClick={ () => currentTime && sclForward() }
-                type="button"
+                type="submit"
             >
                 <span>Next</span>
             </button>

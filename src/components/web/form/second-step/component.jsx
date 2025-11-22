@@ -7,6 +7,8 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
 import { FormCtx } from "../ctx";
+import { useQuery } from "@apollo/client/react";
+import { GET_APPOINTMENTS_IN_RANGE_QUERY } from "@src/api-requests";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -22,6 +24,12 @@ dayjs.extend(localizedFormat);
 const CalenderCtx = createContext();
 
 function Day({ date }){
+    const {  } = useQuery(
+        GET_APPOINTMENTS_IN_RANGE_QUERY,
+        {
+            
+        }
+    );
     const { setDay, currentDay } = useContext(CalenderCtx);
 
     return(
@@ -43,6 +51,7 @@ function Day({ date }){
 }
 
 function Calendar(){
+
     const weekDays = [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ]
     const { currentMonth } = useContext(CalenderCtx);
     const daysInMonth = currentMonth.daysInMonth();

@@ -1,6 +1,7 @@
 "use client";
 
 // others
+import Link from "next/link";
 import StepWrapper from "../step-wrapper/component";
 import Image from "next/image";
 import { FormCtx } from "@web/form/ctx";
@@ -24,13 +25,13 @@ export default function FourthFormStep(){
                     Thank you!
                 </h1>
                 <h2>We will contact you as soon as possible!</h2>
-                <button 
+                <Link
+                    href="/"
                     className="redirect-btn redirect-btn--white mt-8 min-[450px]:max-w-[250px]"
                     onClick={ () => closeForm() }
-                    type="submit"
                 >
                     <span>Back to Home</span>
-                </button>
+                </Link>
             </div>
         </StepWrapper>
     )

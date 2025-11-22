@@ -10,8 +10,10 @@ export default function Index() {
     return (
         <main>
             <BannersSection/>
-            {/* <WcuSection/>
-            <ServicesSection/>
+            <WcuSection/>
+            <ServicesSection />
+            <WorksSection />
+            {/* <ServicesSection/>
             <WorksSection/>
             <FormPreviewSection/> */}
         </main>

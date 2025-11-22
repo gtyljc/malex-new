@@ -11,9 +11,9 @@ export async function createAppointment(formData){
     const dateField = dayjs(formData.get("time"));
     
     // send request to API
-    const r = await global.gqlClient.mutate(
+    return await global.gqlClient.mutate(
         {
-            mutation: CREATE_QUERY("appointment"),
+            mutation: CREATE_QUERY("appointment", ["id"]),
             variables: {
                 data: {
                     name: formData.get("name"),
@@ -33,6 +33,4 @@ export async function createAppointment(formData){
             } 
         }
     );
-
-    console.log(r.errors)
 }

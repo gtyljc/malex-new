@@ -34,7 +34,7 @@ function BannerTitle({ title, underlined }){
 
 function Banner({ title, underlined, undertitle, thumbnail }){
     return (
-        <li className="row-el">
+        <li className="row-el flex flex-row justify-center">
             <div className="w-full max-w-[560px] flex flex-col gap-5">
                 <div className="flex flex-col gap-6">
                     <BannerTitle title={ title } underlined={ underlined }/>

@@ -27,7 +27,7 @@ export default function FourthFormStep(){
                 <h2>We will contact you as soon as possible!</h2>
                 <Link
                     href="/"
-                    className="redirect-btn redirect-btn--white mt-8 min-[450px]:max-w-[250px]"
+                    className="redirect-btn redirect-btn-white  mt-8 min-[450px]:max-w-[250px]"
                     onClick={ () => closeForm() }
                 >
                     <span>Back to Home</span>

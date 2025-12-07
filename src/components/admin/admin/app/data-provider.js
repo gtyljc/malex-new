@@ -1,24 +1,14 @@
 
-import {
-    GET_LIST_QUERY,
-    GET_ONE_QUERY,
-    GET_MANY_QUERY,
-    CREATE_QUERY,
-    START_IMAGE_UPLOAD_QUERY,
-    FINALIZE_IMAGE_UPLOAD_QUERY,
-    UPDATE_QUERY,
-    UPDATE_MANY_QUERY,
-    DELETE_QUERY
-} from "@src/api-requests";
+import { ImageUploadQueiries } from "@src/client-requests";
 import { nanoid } from "nanoid";
 import { capitalize } from "@src/tools";
 
 class DataProvider {
     // read about structure at https://marmelab.com/react-admin/DataProviderWriting.html
 
-    constructor(gql_client, fields_schema) {
+    constructor(gql_client, resource_queries) {
         this.gqlClient = gql_client;
-        this.fieldsSchema = fields_schema;
+        this.resourceQueries = resource_queries;
     }
 
     // checks if in data has img field and then
@@ -31,7 +21,7 @@ class DataProvider {
             // get upload link
             const startResponse = await this.gqlClient.mutate(
                 {
-                    mutation: START_IMAGE_UPLOAD_QUERY(),
+                    mutation: ImageUploadQueiries.startImageUpload(),
                     variables: { img_id: imgId }
                 }
             );
@@ -42,14 +32,14 @@ class DataProvider {
             body.append("file", data.img_url.rawFile);
 
             await fetch(
-                startResponse.data["startUploadImage"].data.url,
+                startResponse.data.startImageUpload.data.url,
                 { method: "POST", body }
             );
 
             // get info about uploaded image
             const finilazeResponse = await this.gqlClient.mutate(
                 {
-                    mutation: FINALIZE_IMAGE_UPLOAD_QUERY(),
+                    mutation: ImageUploadQueiries.finalizeImageUpload(),
                     variables: { img_id: imgId }
                 }
             );
@@ -58,7 +48,7 @@ class DataProvider {
             delete data.img;
 
             data.img_id = imgId;
-            data.img_url = finilazeResponse.data["finalizeUploadImage"].data.url;
+            data.img_url = finilazeResponse.data.finalizeImageUpload.data.url;
         }
 
         return data;
@@ -74,7 +64,7 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.query(
                 {
-                    query: GET_LIST_QUERY(resource, this.fieldsSchema[resource]),
+                    query: this.resourceQueries[resource].getList(),
                     variables: {
                         filter,
                         sort,
@@ -97,7 +87,7 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.query(
                 {
-                    query: GET_ONE_QUERY(resource, this.fieldsSchema[resource]),
+                    query: this.resourceQueries[resource].getOne(),
                     variables: { id }
                 }
             )
@@ -112,7 +102,7 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.query(
                 {
-                    query: GET_MANY_QUERY(resource, this.fieldsSchema[resource]),
+                    query: this.resourceQueries[resource].getMany(),
                     variables: { ids }
                 }
             )
@@ -133,7 +123,7 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.query(
                 {
-                    query: GET_LIST_QUERY(resource, this.fieldsSchema[resource]),
+                    query: this.resourceQueries[resource].getList(),
                     variables: { 
                         filter: {
                             
@@ -163,13 +153,13 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.mutate(
                 {
-                    mutation: CREATE_QUERY(resource, this.fieldsSchema[resource]),
+                    mutation: this.resourceQueries[resource].create(),
                     variables: { data }
                 }
             )
         ).data[`create${capitalize(resource)}`]
 
-        return { data: responseData.data };
+        return { data: responseData.data[0] };
     }
 
     // update a record based on a patch
@@ -185,7 +175,7 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.mutate(
                 {
-                    mutation: UPDATE_QUERY(resource, this.fieldsSchema[resource]),
+                    mutation: this.resourceQueries[resource].update(),
                     variables: { id, data }
                 }
             )
@@ -207,7 +197,7 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.mutate(
                 {
-                    mutation: UPDATE_MANY_QUERY(resource, this.fieldsSchema[resource]),
+                    mutation: this.resourceQueries[resource].updateMany(),
                     variables: { ids, data }
                 }
             )
@@ -222,7 +212,7 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.mutate(
                 {
-                    mutation: DELETE_QUERY(resource, this.fieldsSchema[resource]),
+                    mutation: this.resourceQueries[resource].delete(),
                     variables: { id }
                 }
             )
@@ -237,7 +227,7 @@ class DataProvider {
         const responseData = (
             await this.gqlClient.mutate(
                 {
-                    mutation: DELETE_QUERY(resource, this.fieldsSchema[resource]),
+                    mutation: this.resourceQueries[resource].deleteMany(),
                     variables: { ids }
                 }
             )

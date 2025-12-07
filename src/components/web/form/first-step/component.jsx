@@ -72,12 +72,10 @@ function InputLabel({ children, label }){
     return (
         <label>
             <span
-                className={
-                    clsx(
-                        "w-full flex flex-row gap-1 text-sm mb-[7px]",
-                        "after:text-scarlet-red after:content-['*']"
-                    )
-                }
+                className="
+                    w-full flex flex-row gap-1 text-sm mb-[7px]
+                    after:text-scarlet-red after:content-['*']
+                "
             >
                 { label }
             </span>
@@ -145,7 +143,7 @@ export default function FirstFormStep() {
             <h1 className="mb-7 text-center text-2xl font-medium">
                 Make an appointment
             </h1>
-            <div className="w-full flex flex-col gap-2.5 max-w-[420px]">
+            <div className="w-full flex flex-col gap-2.5 max-w-[430px]">
                 <InputsRow>
                     <InputCon input_id="name" formObject={ formObject }>
                         <TextInputWithLabel 
@@ -205,7 +203,7 @@ export default function FirstFormStep() {
                 </InputsRow>
             </div>
             <button 
-                className="redirect-btn redirect-btn--blue mt-8 min-[450px]:max-w-[250px]"
+                className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
                 onClick={ async () => { await formObject.trigger() && sclForward() } }
                 type="button"
             >

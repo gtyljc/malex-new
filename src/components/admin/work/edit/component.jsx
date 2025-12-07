@@ -1,12 +1,12 @@
 
 // components
 import { Edit } from "react-admin";
-import WorksCreateForm from "@admin/work-create-form/component";
+import WorkForm from "../form/component";
 
 export default function WorkEdit(){
     return (
-        <Edit>
-            <WorksCreateForm/>
+        <Edit redirect="list">
+            <WorkForm />
         </Edit>
     )
 }

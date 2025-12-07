@@ -3,7 +3,6 @@
 // tools
 import { useState, createContext } from "react";
 
-// this context will contain state of form opened (true) or not (false)
 export const FormCtx = createContext();
 
 export function FormProvider({ children }){
@@ -14,7 +13,7 @@ export function FormProvider({ children }){
     const closeForm = () => changeState(false);
 
     // scroll
-    const [ index, setIndex ] = useState(1);
+    const [ index, setIndex ] = useState(0);
     const sclForward = () => setIndex(i=> i + 1);
     const sclBack = () => setIndex(i => i - 1);
 

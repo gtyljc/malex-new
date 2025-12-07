@@ -8,7 +8,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
 import { FormCtx } from "../ctx";
 import { useQuery } from "@apollo/client/react";
-import { GET_APPOINTMENTS_IN_RANGE_QUERY } from "@src/api-requests";
+import { AppointmentQueries } from "@src/client-requests";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -23,13 +23,7 @@ dayjs.extend(localizedFormat);
 
 const CalenderCtx = createContext();
 
-function Day({ date }){
-    const {  } = useQuery(
-        GET_APPOINTMENTS_IN_RANGE_QUERY,
-        {
-            
-        }
-    );
+function Day({ date, isBusy }){
     const { setDay, currentDay } = useContext(CalenderCtx);
 
     return(
@@ -37,13 +31,14 @@ function Day({ date }){
             className={
                 clsx(
                     styles.day,
+                    isBusy && "bg-light-gray text-graphite",
                     ( currentDay != null && currentDay.format("L") == date.format("L") ) && (
                         "bg-dodger-blue text-white"
                     )
                 )
             }
             key={ date.date() }
-            onClick={ () => setDay(date) }
+            onClick={ !isBusy ? () => setDay(date): () => {}  } // must be clickable only if day is free
         >
             { date.date() }
         </td>
@@ -51,9 +46,16 @@ function Day({ date }){
 }
 
 function Calendar(){
+    const { currentMonth } = useContext(CalenderCtx);
+    const { data, loading } = useQuery(
+        AppointmentQueries.busyDaysAtMonth(),
+        { variables: { date: currentMonth.toISOString() } }
+    );
+
+    // wait until loaded
+    if (loading) return <p className="mr-auto ml-auto mt-3">Loading...</p>
 
     const weekDays = [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ]
-    const { currentMonth } = useContext(CalenderCtx);
     const daysInMonth = currentMonth.daysInMonth();
     const offset = currentMonth.date(1).day();    
     const lastDay = currentMonth.date(daysInMonth).day(); // which day of week is last day
@@ -78,7 +80,12 @@ function Calendar(){
             rowI ++;
         }
 
-        row.push(<Day date={ dayDate.add(i, "day") }/>);
+        row.push(
+            <Day 
+                date={ dayDate.add(i, "day") } 
+                isBusy={ data.busyDaysAtMonth.data.filter((e) => dayjs(e.date).date() == i + 1)[0].busy }
+            />
+        );
     }
 
     // add rest to last row
@@ -145,7 +152,7 @@ export default function SecondFormStep(){
                 <Calendar />
             </CalenderCtx.Provider>
             <button 
-                className="redirect-btn redirect-btn--blue mt-8 min-[450px]:max-w-[250px]"
+                className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
                 onClick={ () => currentDay && sclForward() }
                 type="button"
             >

@@ -9,3 +9,6 @@ export function patch(array, ...args){
     return array.filter(e => !args.includes(e));
 }
 
+export function normalizeString(string){
+    return capitalize(string.toLowerCase())
+}

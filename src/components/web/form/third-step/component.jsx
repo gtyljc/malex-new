@@ -6,12 +6,14 @@ import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
+import { AdminConfigQueries } from "@src/client-requests";
 
 // components
 import StepWrapper from "../step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
+import { useQuery } from "@apollo/client/react";
 
 dayjs.extend(objectSupport);
 
@@ -36,16 +38,21 @@ function Time({ date }){
 }
 
 function TimeSelect(){
+    const { data, loading } = useQuery(AdminConfigQueries.contactData());
+
+    // wait until loading
+    if (loading) return;
+
+    const step = data.min_duration;
     const start = dayjs({ hour: 8 });
     const end = dayjs({ hour: 16 });
-    const STEP = 0.5; // hours
     const arr = [];
     let hOffset = 0;
 
-    for(let i = 0; i < parseInt(end.diff(start, "hour") / STEP) + 1; i++){        
+    for(let i = 0; i < parseInt(end.diff(start, "hour") / step) + 1; i++){        
         arr.push(<Time date={ start.add({ hour: hOffset }) }/>);
 
-        hOffset += STEP;
+        hOffset += step;
     }
 
     return (
@@ -73,7 +80,7 @@ export default function ThirdFormStep() {
                 <TimeSelect/>
             </TimeSelectCtx.Provider>
             <button 
-                className="redirect-btn redirect-btn--blue mt-8 min-[450px]:max-w-[250px]"
+                className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
                 onClick={ () => currentTime && sclForward() }
                 type="submit"
             >

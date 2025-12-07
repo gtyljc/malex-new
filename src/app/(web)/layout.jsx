@@ -1,16 +1,12 @@
-"use client";
 
 // others
-import { Plus_Jakarta_Sans} from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-import { ApolloProvider } from "@apollo/client/react";
+import { AuthQueries } from "@src/server-requests";
 import clsx from "clsx";
 
 // components
-import Header from "@web/header/component";
-import Footer from "@web/footer/component";
-import Form from "@web/form/component";
-import { FormProvider } from "@web/form/ctx";
+import PageWrapper from "@web/page-wrapper/component";
 
 // css
 import "./global.css";
@@ -23,30 +19,33 @@ const plus_jakarta_sans = Plus_Jakarta_Sans(
         variable: "--malex-font"
     }
 );
-const gqlClient =  new ApolloClient(
-    {
-        link: new HttpLink({uri: "http://localhost:2000"}),
-        cache: new InMemoryCache()
-    }
-)
 
-// add GraphQL client to global
-if (!global.gqlClient){
-    global.gqlClient = gqlClient;
+// add GraphQL client to global, that will be used at backend
+if (global.apolloClient === undefined){
+    global.apolloClient = new ApolloClient(
+        {
+            link: new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }),
+            cache: new InMemoryCache()
+        }
+    );
 }
 
-export default function RootLayout({ children }){
+export default async function RootLayout({ children }){
+    const jwt = (
+        await global.apolloClient.mutate(
+            {
+                mutation: AuthQueries.createJWT(),
+                variables: { role: "USER" } 
+            }
+        )
+    ).data["createJWT"].data[0].token;
+
     return (
         <html lang="en" className={ clsx(plus_jakarta_sans.className, "text-sm") }>
             <body>
-                <ApolloProvider client={ gqlClient }>
-                    <FormProvider>
-                        <Form/>                    
-                        <Header/>
-                        { children }
-                        <Footer/>
-                    </FormProvider>
-                </ApolloProvider>
+                <PageWrapper jwt={ jwt }>
+                    { children }
+                </PageWrapper>
             </body>
         </html>
     )

@@ -1,4 +1,7 @@
 
+// others
+import { FormProvider } from "@web/form/ctx";
+
 // components
 import PathToPageSection from "@web/path-to-page/component";
 import TopSection from "./top/component";
@@ -7,11 +10,13 @@ import BottomSection from "./bottom/component";
 
 export default function AboutUs() {    
     return (
-        <main className="leading-[33px]">
-            <PathToPageSection page_name="About Us" />
-            <TopSection/>
-            <MiddleSection/>
-            <BottomSection/>
-        </main>
+        <FormProvider>
+            <main className="leading-[33px]">
+                <PathToPageSection page_name="About Us" />
+                <TopSection/>
+                <MiddleSection/>
+                <BottomSection/>
+            </main>
+        </FormProvider>
     );
 }

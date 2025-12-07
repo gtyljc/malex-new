@@ -1,51 +1,20 @@
 
-// others
-import clsx from "clsx";
-
-// css
-import styles from "./styles.module.css";
+function PanelButton({ href, text }){
+    return (
+        <a href={ href } className="redirect-btn redirect-btn-white max-w-[230px]">
+            <span>{ text }</span>
+        </a>
+    )
+}
 
 export default function PanelSection(){
-
-    // config
-    const plumbingHref = "#plumbing";
-    const assemlingHref = "#assembling";
-    const mountingHref = "#mounting";
-    
     return (
         <section>
-            <h1
-                className={
-                    clsx(
-                        's_tilte',
-                        styles.title
-                    )
-                }
-            >
-                Our works
-            </h1>
-            <div className={styles.btns_con}>
-                <RedirectButton 
-                    type="white"
-                    label="Plumbing"
-                    isLink={true}
-                    href={plumbingHref}
-                    style={{minWidth: "180px"}}
-                />
-                <RedirectButton 
-                    type="white"
-                    label="Assembling"
-                    isLink={true}
-                    href={assemlingHref}
-                    style={{minWidth: "180px"}}
-                />
-                <RedirectButton 
-                    type="white"
-                    label="Mounting"
-                    isLink={true}
-                    href={mountingHref}
-                    style={{minWidth: "180px"}}
-                />
+            <h1 className="section-title mb-[15px]">Our works</h1>
+            <div className="flex flex-row gap-3">
+                <PanelButton href="#plumbing" text="Plumbing" />
+                <PanelButton href="#assembling" text="Assembling" />
+                <PanelButton href="#mounting" text="Mounting" />
             </div>
         </section>        
     );

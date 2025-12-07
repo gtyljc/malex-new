@@ -10,61 +10,59 @@ import transparency from "./transparency.svg"
 
 function WcuCard({ title, undertitle, icon }) {
     return (
-        <li className="w-[50%] aspect-square p-1 box-border">
-            <div className="h-full flex flex-col items-center justify-center gap-3 bg-ice-blue p-4 box-border">
-                { icon }
-                <h1 className="text-center font-semibold text-lg">{ title }</h1>
-                <h2 className="text-center">{ undertitle }</h2>
-            </div>
-        </li>
+        <div
+            className="
+                w-[50%] aspect-square flex flex-col items-center justify-center 
+                gap-3 bg-ice-blue p-6 box-border rounded-[5px] mb:p-8 lg:p-10
+            "
+        >
+            <Image
+                src={ icon }
+                alt="Why us?"
+            />
+            <h1 className="text-center font-semibold text-lg">{ title }</h1>
+            <h2 className="text-center">{ undertitle }</h2>
+        </div>
     )    
+}
+
+function WcuCardRow({ children }){
+    return (
+        <li className="w-full max-w-[650px] flex flex-row gap-3 lg:max-w-none lg:w-[50%]">
+            { children }
+        </li>
+    )
 }
 
 export default function WcuSection(){
     return (
         <section>
-            <h1 className="mb-5 text-center text-2xl font-medium">Why Choose us</h1>
-            <ul className="flex flex-row flex-wrap">
-                <WcuCard
-                    title="Experience"
-                    undertitle="over 10 years of industry experience."
-                    icon={
-                        <Image
-                            src={ expirience }
-                            alt="Malex experience"
-                        />
-                    }
-                />
-                <WcuCard
-                    title="Quality"
-                    undertitle="over 10 years of industry experience."
-                    icon={
-                        <Image
-                            src={ quality }
-                            alt="Malex quality"
-                        />
-                    }
-                />
-                <WcuCard
-                    title="Efficiency"
-                    undertitle="over 10 years of industry experience."
-                    icon={
-                        <Image
-                            src={ effiency }
-                            alt="Malex efficiency"
-                        />
-                    }
-                />
-                <WcuCard
-                    title="Transparency"
-                    undertitle="over 10 years of industry experience."
-                    icon={
-                        <Image
-                            src={ transparency }
-                            alt="Malex experience"
-                        />
-                    }
-                />
+            <h1 className="mb-7 text-center section-title">Why Choose us</h1>
+            <ul className="flex flex-col justify-center items-center gap-3 lg:flex-row">
+                <WcuCardRow>
+                    <WcuCard
+                        title="Experience"
+                        undertitle="over 10 years of industry experience."
+                        icon={ expirience }
+                    />
+                    <WcuCard
+                        title="Quality"
+                        undertitle="we use only certified materials and equipment."
+                        icon={ quality }
+                    />
+                </WcuCardRow>
+                <WcuCardRow>
+                    <WcuCard
+                        title="Efficiency"
+                        undertitle="we complete projects on time and according to a agreed plan."
+                        icon={ effiency }
+                    />
+                    <WcuCard
+                        title="Transparency"
+                        undertitle="clear and affordable pricing with no hidden fees."
+                        icon={ transparency }
+                    />
+                </WcuCardRow>
             </ul>
         </section>
     )

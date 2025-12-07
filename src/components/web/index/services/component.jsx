@@ -11,37 +11,39 @@ import assembling from "./assembling.jpg"
 import mounting from "./mounting.jpg"
 import clsx from "clsx"
 
-function ServiceRow({ title, text, services, thumbnail, is_thumbnail_first }) {
+function ServiceRow({ title, text, services, thumbnail, at_right }) {
     const { openForm } = useContext(FormCtx);
     
     return (
         <div className="flex flex-col gap-6">
-            <h1 className="text-2xl font-medium">{ title }</h1>
-            <div 
-                className={
-                    clsx(
-                        !is_thumbnail_first && "",
-                        "max-h-[280px] h-full overflow-hidden rounded-[10px]"
-                    )
-                }
-            >
-                { thumbnail }
-            </div>
-            <div className="flex flex-col gap-6">
-                <p className="">{ text }</p>
-                <ul className="flex flex-col gap-3 list-disc! pl-[30px]!">
-                    {
-                        services.map(
-                            (detail, i) => <li key={i}>{ detail }</li>
+            <h1 className="section-title lg:hidden">{ title }</h1>
+            <div className="flex flex-col lg:flex-row lg:gap-22">
+                <div
+                    className={
+                        clsx(
+                            at_right && "lg:order-1",
+                            "max-h-[280px] max-w-[525px] h-full flex flex-col justify-center items-center mb-6 overflow-hidden rounded-[10px] lg:[w-50%] lg:max-h-none lg:mb-0"
                         )
                     }
-                </ul>
-                <button 
-                    onClick={ openForm }
-                    className="redirect-btn redirect-btn--white mb-5"
                 >
-                    <span>Request a Service</span>
-                </button>
+                    <Image
+                        src={ thumbnail }
+                        alt="Malex service"
+                    />
+                </div>
+                <div className="flex flex-col gap-6 md:gap-8 md:text-lg lg:w-[50%]">
+                    <h1 className="section-title hidden lg:block">{ title }</h1>
+                    <p>{ text }</p>
+                    <ul className="flex flex-col gap-3 list-disc! pl-[30px]!">
+                        { services.map((detail, i) => <li key={i}>{ detail }</li>) }
+                    </ul>
+                    <button
+                        onClick={ openForm }
+                        className="redirect-btn redirect-btn-white mb-5 md:max-w-[360px] lg:mt-auto lg:mb-8"
+                    >
+                        <span>Request a Service</span>
+                    </button>
+                </div>
             </div>
         </div>
     )
@@ -49,8 +51,9 @@ function ServiceRow({ title, text, services, thumbnail, is_thumbnail_first }) {
 
 export default function ServicesSection() {
     return (
-        <section>
-            <ServiceRow
+        <section className="flex flex-col items-center">
+            <div className="max-w-[660px] flex flex-col gap-6 lg:max-w-none lg:gap-20">
+                <ServiceRow
                 title="Our Plumbing Services"
                 text="We offer a full range of plumbing services for your home and business. Our skilled professionals handle installation, repair, and maintenance of any system. We guarantee high-quality results on time."
                 services={
@@ -60,13 +63,7 @@ export default function ServicesSection() {
                         "Water heater and boiler installation"
                     ]
                 }
-                is_thumbnail_first={ false }
-                thumbnail={
-                    <Image
-                        src={ plumbing }
-                        alt="Malex plumbing service"
-                    />
-                }
+                thumbnail={ plumbing }
             />
             <ServiceRow
                 title="Assembling"
@@ -78,13 +75,8 @@ export default function ServicesSection() {
                         "Quality guarantee"
                     ]
                 }
-                is_thumbnail_first={ true }
-                thumbnail={
-                    <Image
-                        src={ assembling }
-                        alt="Malex plumbing service"
-                    />
-                }
+                at_right={ true }
+                thumbnail={ assembling }
             />
             <ServiceRow
                 title="Mounting"
@@ -96,14 +88,9 @@ export default function ServicesSection() {
                         "Quality guarantee"
                     ]
                 }
-                is_thumbnail_first={ false }
-                thumbnail={
-                    <Image
-                        src={ mounting }
-                        alt="Malex plumbing service"
-                    />
-                }
+                thumbnail={ mounting }
             />
+            </div>
         </section>
     )
 }

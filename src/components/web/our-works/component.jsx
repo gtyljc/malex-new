@@ -3,84 +3,108 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import {
-    GET_LIST_QUERY
-} from "@src/api-requests";
+import { WorkQueries } from "@src/client-requests";
 import dayjs from "dayjs";
 import Image from "next/image";
+import { ViewerProvider, ViewerCtx } from "./viewer/ctx";
+import { useContext, createContext, useState } from "react";
 
 // components
 import PathToPageSection from "@web/path-to-page/component";
 import PanelSection from "@web/our-works/panel/component";
+import Viewer from "./viewer/component";
 
-// css
-import styles from "./styles.module.css";
+export const WorksCtx = createContext();
 
-function Work({ date, img_url }){
+function Work({ date, img_url, index }){
+    const { openViewer, setIndex } = useContext(ViewerCtx);
+
     return (
-        <div className={ styles.work }>
+        <div 
+            onClick={ () => { setIndex(index); openViewer(); } }
+            className="
+                size-[180px] relative rounded-[5px] overflow-hidden md:size-[220px] 
+                lg:size-[250px] cursor-pointer
+            "
+        >
             <Image
-                className={ styles.work_preview }
+                className="h-full absolute z-[-1]"
                 src={ img_url }
                 width={ 300 }
                 height={ 300 }
+                alt="Our work"
             />
-            <span>{ dayjs(date).format("DD.MM.YYYY") }</span>
+            <span className="size-full flex flex-row items-end p-2.5 box-border text-white">
+                { dayjs(date).format("DD.MM.YYYY") }
+            </span>
         </div>
     )
 }
 
 function WorkSection({ title, category }){
-    const works = [];
-    let pageNum = 1;
-
-    const { data, error, loading } = useQuery(
-        GET_LIST_QUERY(
-            "work",
-            [
-                "id",
-                "img_urls",
-                "timestamp"
-            ]
-        ),
-        {
-            variables: {
-                filter: { where: { category } },
-                pagination: {
-                    page: pageNum,
-                    perPage: 10
-                },
-                sort: {
-                    field: "id",
-                    order: "DESC"
-                }
-            }
-        }
-    );
-
-    if (loading) return ;
-
-    if (error) return ;
-
-    for (let workData of data.works.data){
-        works.push(<Work date={ workData.timestamp } img_url={ workData.img_urls[0] }/>)
-    }
+    const { works } = useContext(WorksCtx);
 
     return (
-        <section className={ styles.works_section }>
-            <h1>{ title }</h1>
-            { works }
+        <section>
+            <h1 className="text-2xl mb-2.5">{ title }</h1>
+            <div className="flex flex-row flex-wrap gap-3">
+                {
+                    works.filter(e => e.category == category).map(
+                        e => <Work 
+                            date={ e.timestamp } 
+                            img_url={ e.img_url }
+                            index={ e.index }
+                        />
+                    )
+                }
+            </div>
         </section>
     )
 }
 
 export default function OurWorks(){
-    
+    const [ works, setWorks ] = useState([]);
+    const { data, loading } = useQuery(
+        WorkQueries.getWorks(),
+        {
+            variables: {
+                filter: {},
+                pagination: {
+                    page: 1,
+                    perPage: 100
+                }
+            }
+        }
+    );
+
+    // wait until data will be loaded
+    if (loading) return <section><p>Loading...</p></section>;
+
+    works.length == 0 && setWorks(
+        data.works.data.map(
+            (e, i) => (
+                {
+                    index: i,
+                    img_url: e.img_url, 
+                    timestamp: e.timestamp, 
+                    category: e.category
+                }
+            )
+        )
+    );
+
     return (
         <main>
-            <PathToPageSection page_name="Our Works"/>
-            <PanelSection />
-            <WorkSection title="Plumbing" category="PLUMBING"/>
+            <WorksCtx.Provider value={ { works, setWorks } }>
+                <ViewerProvider>
+                    <Viewer />
+                    <PathToPageSection page_name="Our Works"/>
+                    <PanelSection />
+                    <WorkSection title="Plumbing" category="PLUMBING" />
+                    <WorkSection title="Assembling" category="ASSEMBLING" />
+                    <WorkSection title="Mounting" category="MOUNTING" />
+                </ViewerProvider>
+            </WorksCtx.Provider>
         </main>
     )
 }

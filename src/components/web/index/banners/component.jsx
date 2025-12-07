@@ -3,12 +3,12 @@
 // others
 import Image from "next/image";
 import Link from "next/link";
-import clsx from "clsx";
 import { useContext, useEffect } from "react";
 import {
     PointsScrollbarProvider, 
     PointsScrollbarCtx 
 } from "@web/points-scrollbar/ctx";
+import { FormCtx } from "@web/form/ctx";
 
 // components
 import PointsScrollbar from "@web/points-scrollbar/component";
@@ -24,7 +24,7 @@ function BannerTitle({ title, underlined }){
     const after = title.slice(i + underlined.length);
 
     return (
-        <h1 className="text-2xl font-medium">
+        <h1 className="text-2xl font-medium lg:text-3xl">
             { before }
             <span className="font-semibold underline">{ underlined }</span>
             { after }
@@ -33,33 +33,36 @@ function BannerTitle({ title, underlined }){
 }
 
 function Banner({ title, underlined, undertitle, thumbnail }){
+    const { openForm } = useContext(FormCtx);
+
     return (
         <li className="row-el flex flex-row justify-center">
-            <div className="w-full max-w-[560px] flex flex-col gap-5">
-                <div className="flex flex-col gap-6">
+            <div className="w-full max-w-[560px] flex flex-col gap-5 lg:max-w-none lg:flex-row lg:gap-10">
+                <div className="flex flex-col gap-6 lg:w-[50%] lg:justify-center lg:gap-8">
                     <BannerTitle title={ title } underlined={ underlined }/>
-                    <h2 className="">{ undertitle }</h2>
+                    <h2 className="lg:text-lg">{ undertitle }</h2>
                     <div className="flex flex-row gap-3">
-                        <button className="redirect-btn redirect-btn--blue">
+                        <button className="redirect-btn redirect-btn-blue" onClick={ openForm }>
                             Request a Service
                         </button>
                         <Link 
                             href="/about-us" 
-                            className="w-full flex flex-col justify-center items-center text-nowrap text-base"
+                            className="redirect-btn hover:bg-graphite-100"
                         >
                             <span>Learn More About Us</span>
                         </Link>
                     </div>
                 </div>
-                <div
-                    className={
-                        clsx(
-                            "w-full flex flex-col items-center justify-center",
-                            "max-h-[240px] rounded-[10px] overflow-hidden"
-                        )
-                    }
+                <div 
+                    className="
+                        w-full flex flex-col items-center justify-center max-h-[240px] rounded-[10px] 
+                        overflow-hidden lg:w-[50%] lg:max-h-none lg:h-full
+                    "
                 >
-                    { thumbnail }
+                    <Image
+                        src={ thumbnail }
+                        alt="Malex plumbing"
+                    />
                 </div>
             </div>
         </li>
@@ -84,53 +87,47 @@ function BannersSectionContent() {
     );
 
     return (
-        <section className="w-full flex flex-col items-center gap-5 bg-ice-blue rounded-[10px] p-5 box-border">
-            <div className="row-con">
-                <ul 
-                    className="row"
-                    style={ 
-                        { 
-                            transform: `translateX(-${ index * (100 + rowGap) }%)`,
-                            gap: `${rowGap}%`
-                        } 
-                    }
-                >
-                    <Banner 
-                        title="Professional Plumbing Services for Your Home and Business"
-                        underlined="Plumbing Services"
-                        undertitle="Quick and reliable plumbing solutions for any need."
-                        thumbnail={
-                            <Image
-                                src={ banner_1 }
-                                alt="Malex plumbing"
-                            />
+        <section className="w-full flex flex-col justify-center items-center">
+            <div 
+                className="
+                    max-w-[645px] flex flex-col items-center gap-5 bg-ice-blue rounded-[10px] p-4
+                    box-border md:p-6 lg:p-8 lg:gap-3 lg:max-w-none
+                "
+            >
+                <div className="row-con">
+                    <ul 
+                        className="row lg:h-[380px] mt-3 md:mt-auto"
+                        style={ 
+                            { 
+                                transform: `translateX(-${ index * (100 + rowGap) }%)`,
+                                gap: `${rowGap}%`
+                            } 
                         }
-                    />
-                    <Banner 
-                        title="Professional Assembly — Fast and Reliable!"
-                        underlined="Assembly"
-                        undertitle="Our experts provide perfect assembly for your equipment, ensuring it operates reliably and efficiently."
-                        thumbnail={
-                            <Image
-                                src={ banner_2 }
-                                alt="Malex assembling"
-                            />
-                        }
-                    />
-                    <Banner 
-                        title="Professional Mounting — Secure and Safe!"
-                        underlined="Mounting"
-                        undertitle="We provide precise and safe mounting for your equipment, ensuring long-lasting and flawless operation."
-                        thumbnail={
-                            <Image
-                                src={ banner_3 }
-                                alt="Malex mounting"
-                            />
-                        }
-                    />
-                </ul>
+                    >
+                        <Banner 
+                            title="Professional Plumbing Services for Your Home and Business"
+                            underlined="Plumbing Services"
+                            undertitle="Quick and reliable plumbing solutions for any need."
+                            thumbnail={ banner_1 }
+                        />
+                        <Banner 
+                            title="Professional Assembly — Fast and Reliable!"
+                            underlined="Assembly"
+                            undertitle="Our experts provide perfect assembly for your equipment, ensuring it operates reliably and efficiently."
+                            thumbnail={ banner_2 }
+                        />
+                        <Banner 
+                            title="Professional Mounting — Secure and Safe!"
+                            underlined="Mounting"
+                            undertitle="We provide precise and safe mounting for your equipment, ensuring long-lasting and flawless operation."
+                            thumbnail={ banner_3 }
+                        />
+                    </ul>
+                </div>
+                <div className="w-full flex flex-row justify-center lg:justify-start">
+                    <PointsScrollbar p_num={ pointsNum }/>
+                </div>
             </div>
-            <PointsScrollbar p_num={ pointsNum }/>
         </section>
     )
 }

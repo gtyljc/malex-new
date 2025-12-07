@@ -44,8 +44,18 @@ function ContactData({ icon, alt, value }){
 
 export default function Footer(){
     return (
-        <footer className="w-full bg-graphite pr-(--dft-content-p) pl-(--dft-content-p) pt-[50px] box-border lg:pt-[70px]">
-            <div className="w-full flex flex-col justify-between items-center gap-10 box-border mb-10 lg:flex-row lg:mb-20">
+        <footer 
+            className="
+                w-full flex flex-col items-center bg-graphite pr-(--dft-content-p) 
+                pl-(--dft-content-p) pt-[50px] box-border lg:pt-[70px]
+            "
+        >
+            <div 
+                className="
+                    w-full max-w-[1200px] flex flex-col justify-between items-center 
+                    gap-10 box-border mb-10 lg:flex-row lg:mb-20
+                "
+            >
                 <div className="w-full box-border lg:w-[33%] lg:p-0">
                     <Link href="/" className="flex flex-col items-center gap-3">
                         <Image src={ logo } alt="Malex home page" className="w-[120px]" />
@@ -69,9 +79,8 @@ export default function Footer(){
                     </NavigationLinksCon>
                 </nav>
             </div>
-            <div className="h-px bg-white opacity-5"></div>
-            <div className="flex flex-row justify-center pt-[30px] pb-[30px] box-border">
-                <span className="text-white">© 2024 malex handyman</span>
+            <div className="w-full flex flex-row justify-center pt-5 pb-5 box-border border-t border-white/5 ">
+                <span className="text-white text-sm">© 2024 malex handyman</span>
             </div>
         </footer>
     )

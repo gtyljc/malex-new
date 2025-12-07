@@ -1,7 +1,7 @@
 
 export default function TopSection(){
     return (
-        <section className="md:text-base">
+        <section className="md:text-base mb-[70px]!">
             <h1 className="mb-[50px] text-4xl font-medium">About Us</h1>
             <h2 className="mb-5 text-2xl">
                 Welcome to <span className="">Malex Handyman!</span>

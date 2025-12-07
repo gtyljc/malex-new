@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 // wrapper for AdminApp
 const Admin = dynamic(
-    () => import("@admin/admin-app/component"), 
+    () => import("./app/component"), 
     { ssr: false }
 );
 

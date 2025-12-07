@@ -10,10 +10,7 @@ export default function BottomSection(){
         <section className="w-full flex flex-col items-center gap-8 md:text-base lg:flex-row lg:gap-[70px]">
             <div className="w-full flex flex-col justify-center items-center md:order-2">
                 <div  className="overflow-hidden rounded-[10px]">
-                    <Image
-                        src={ thumbnail }
-                        alt="Malex it's your "
-                    />
+                    <Image src={ thumbnail } alt="Malex it's your " />
                 </div>
             </div>
             <div className="w-full flex flex-col gap-[25px]">

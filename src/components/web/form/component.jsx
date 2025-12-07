@@ -17,7 +17,7 @@ import styles from "./styles.module.css";
 
 export default function Form() {
     // all buttons inside form must be with attribute type = "button"
-
+    
     const { isOpened, index } = useContext(FormCtx);
 
     return (
@@ -34,7 +34,7 @@ export default function Form() {
             <div className="row-con">
                 <ul
                     className="row duration-250 md:duration-500"
-                    style={ { transform: `translateX(${(-index * 100) + "%"})` } }
+                    style={ { transform: `translateX(${ (-index * 100) + "%"})` } }
                 >   
                     <FirstFormStep />                    
                     <SecondFormStep />

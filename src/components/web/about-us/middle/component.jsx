@@ -25,7 +25,7 @@ function Card({ label, img }){
 
 export default function MiddleSection(){
     return (
-        <section className="w-full flex flex-row justify-center gap-1 lg:gap-5 md:text-base">
+        <section className="w-full flex flex-row justify-center gap-1 mb-[70px]! lg:gap-5 md:text-base">
             <Card
                 label={ <>Experience <br/>and Expertise</> }
                 img={ <Image src={ experience_svg } alt="Malex is experienced company"/> }

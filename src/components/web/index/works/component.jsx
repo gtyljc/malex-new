@@ -9,7 +9,7 @@ import {
 } from "@web/points-scrollbar/ctx";
 import { useContext } from "react";
 import { useQuery } from "@apollo/client/react";
-import { GET_LIST_QUERY } from "@src/api-requests";
+import { WorkQueries } from "@src/client-requests";
 
 // components
 import ScrollProgressBar from "@web/points-scrollbar/component";
@@ -40,7 +40,7 @@ function getImg(data){
 
 function Work({ page }){
     const { data, error, loading } = useQuery(
-        GET_LIST_QUERY("work", ["img_url"]), 
+        WorkQueries.getList(),
         { 
             variables: { 
                 filter: {},
@@ -53,7 +53,7 @@ function Work({ page }){
     );
 
     return (
-        <div className="w-[250px] h-[250px] flex flex-row items-center justify-center nth-[3]:hidden overflow-hidden">
+        <div className="w-[200px] h-[200px] flex flex-row items-center justify-center nth-[3]:hidden overflow-hidden">
             { loading && "Loading..." }
             { error && "Failed to get..." }
             { data && getImg(data) }
@@ -103,13 +103,13 @@ function WorksRow(){
 
 function WorksSectionContent(){
     return (
-        <section className="flex flex-col items-center gap-8">
-            <h1 className="text-2xl font-medium">Our Works</h1>
+        <section className="flex flex-col items-center gap-7">
+            <h1 className="section-title">Our Works</h1>
             <div className="row-con">
                 <WorksRow />
             </div>
             <ScrollProgressBar p_num={ 3 }/>
-            <a className="redirect-btn redirect-btn--white" href="/our-works">
+            <a className="redirect-btn redirect-btn-white " href="/our-works">
                 See all works
             </a>    
         </section>

@@ -12,12 +12,12 @@ import {
     SimpleForm
 } from "react-admin";
 
-export default function WorkCreateEditForm({ is_create_form = false }) {
+export default function WorkForm() {
     return (
         <SimpleForm>
             <ImageInput 
                 source="img_url"
-                validate={ is_create_form && required() }
+                validate={ required() }
                 label="Image"
                 accept={
                     {  
@@ -34,7 +34,7 @@ export default function WorkCreateEditForm({ is_create_form = false }) {
             </ImageInput>
             <SelectInput 
                 source="category"
-                validate={ is_create_form && required() }
+                validate={ required() }
                 optionValue="value"
                 optionText="label"
                 choices={

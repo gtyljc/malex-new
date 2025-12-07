@@ -15,17 +15,11 @@ export default function WorkList(){
             <DataTable>
                 <DataTable.Col source="id"/>
                 <DataTable.Col source="category"/>
-                <DataTable.Col source="Photo">
+                <DataTable.Col label="Image">
                     <ImageField source="img_url" />
                 </DataTable.Col>
-                <DataTable.Col>
+                <DataTable.Col label="Added at">
                     <DateField source="timestamp"/>
-                </DataTable.Col>
-                <DataTable.Col>
-                    <EditButton/>
-                </DataTable.Col>
-                <DataTable.Col>
-                    <DeleteButton/>
                 </DataTable.Col>
             </DataTable>
         </List>

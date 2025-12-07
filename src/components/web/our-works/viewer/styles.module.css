@@ -1,0 +1,23 @@
+
+.viewer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--appearing-anim);
+    z-index: 101;
+}
+
+.scroll_btn {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    position: absolute;
+}

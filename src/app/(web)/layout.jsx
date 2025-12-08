@@ -2,6 +2,7 @@
 // others
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { SetContextLink } from "@apollo/client/link/context";
 import { AuthQueries } from "@src/server-requests";
 import clsx from "clsx";
 
@@ -10,6 +11,44 @@ import PageWrapper from "@web/page-wrapper/component";
 
 // css
 import "./global.css";
+
+async function initGlobalApolloClient(){
+    const helpClient = new ApolloClient(
+        { 
+            link: new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }),
+            cache: new InMemoryCache() 
+        }
+    );
+    
+    // get jwt with "ADMIN" role
+    const jwt = (
+        await helpClient.mutate(
+            {
+                mutation: AuthQueries.createJWT(),
+                variables: { role: "ADMIN" } 
+            }
+        )
+    ).data.createJWT.data[0].token;
+
+    console.log(jwt)
+
+    // reset Link with Authorization header
+    const authLink = new SetContextLink(
+        ({ headers }) => {
+            return {
+                headers: {
+                    ...headers,
+                    authorization: `Bearer ${jwt}`
+                }
+            }
+        }
+    ).concat(new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }));
+
+    // stop help client
+    helpClient.stop();
+
+    return new ApolloClient({ link: authLink });
+}
 
 // font settings
 const plus_jakarta_sans = Plus_Jakarta_Sans(
@@ -21,14 +60,7 @@ const plus_jakarta_sans = Plus_Jakarta_Sans(
 );
 
 // add GraphQL client to global, that will be used at backend
-if (global.apolloClient === undefined){
-    global.apolloClient = new ApolloClient(
-        {
-            link: new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }),
-            cache: new InMemoryCache()
-        }
-    );
-}
+if (global.apolloClient === undefined) global.apolloClient = await initGlobalApolloClient();
 
 export default async function RootLayout({ children }){
     const jwt = (
@@ -38,7 +70,7 @@ export default async function RootLayout({ children }){
                 variables: { role: "USER" } 
             }
         )
-    ).data["createJWT"].data[0].token;
+    ).data.createJWT.data[0].token;
 
     return (
         <html lang="en" className={ clsx(plus_jakarta_sans.className, "text-sm") }>

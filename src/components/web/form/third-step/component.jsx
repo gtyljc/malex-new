@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { AdminConfigQueries } from "@src/client-requests";
+import { AdminConfigQueries, AppointmentQueries } from "@src/client-requests";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -19,7 +19,7 @@ dayjs.extend(objectSupport);
 
 const TimeSelectCtx = createContext();
 
-function Time({ date }){
+function Time({ date, isBusy }){
     const { setTime, currentTime } = useContext(TimeSelectCtx);
 
     return (
@@ -27,30 +27,55 @@ function Time({ date }){
             className={
                 clsx(
                     styles.time,
-                    (currentTime != null && date.format("LT") == currentTime.format("LT")) && "bg-dodger-blue text-white"
+                    isBusy && "text-light-gray",
+                    !isBusy && 
+                    (currentTime && date.format("LT") == currentTime.format("LT")) && 
+                    "bg-dodger-blue text-white"
                 )
             } 
             onClick={ () => setTime(date) }
         >
-            <span>{ date.format("LT") }</span>        
+            <span>{ date.format("LT") }</span>   
         </div>
     )
 }
 
 function TimeSelect(){
-    const { data, loading } = useQuery(AdminConfigQueries.contactData());
+
+    function isTimeBusy(busyTimesAtDayData, date){
+        for(let obj of busyTimesAtDayData){
+            if (obj.date == date.toISOString()) return true
+        }
+        
+        return false;
+    }
+
+    const { choosenDate } = useContext(FormCtx);
+    const contactData = useQuery(AdminConfigQueries.contactData());
+    const busyTimesAtDay = useQuery(
+        AppointmentQueries.busyTimesAtDay(), 
+        { variables: { date: choosenDate.toISOString() } }
+    );
 
     // wait until loading
-    if (loading) return;
+    if (contactData.loading | busyTimesAtDay.loading ) return;
 
-    const step = data.min_duration;
-    const start = dayjs({ hour: 8 });
-    const end = dayjs({ hour: 16 });
+    const step = contactData.data.contactData.data[0].min_duration;
+    const start = dayjs(contactData.data.contactData.data[0].opening_at);
+    const end = dayjs(contactData.data.contactData.data[0].closing_at);
     const arr = [];
     let hOffset = 0;
+    let timeDate;
 
     for(let i = 0; i < parseInt(end.diff(start, "hour") / step) + 1; i++){        
-        arr.push(<Time date={ start.add({ hour: hOffset }) }/>);
+        timeDate = start.add({ hour: hOffset });
+
+        arr.push(
+            <Time 
+                date={ timeDate }
+                isBusy={ isTimeBusy(busyTimesAtDay.data.busyTimesAtDay.data, timeDate) }
+            />
+        );
 
         hOffset += step;
     }
@@ -66,7 +91,7 @@ function TimeSelect(){
 
 export default function ThirdFormStep() {
     const [ currentTime, setTime ] = useState(null);
-    const { sclForward } = useContext(FormCtx);
+    const { sclForward, choosenDate } = useContext(FormCtx);
 
     return (
         <StepWrapper>
@@ -77,7 +102,7 @@ export default function ThirdFormStep() {
             </h1>
             <h2 className="text-center font-light text-xl mb-5">Select a time</h2>
             <TimeSelectCtx.Provider value={ { setTime, currentTime } }>
-                <TimeSelect/>
+                { choosenDate && <TimeSelect/> }
             </TimeSelectCtx.Provider>
             <button 
                 className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"

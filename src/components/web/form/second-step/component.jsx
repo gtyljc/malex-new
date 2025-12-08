@@ -25,6 +25,7 @@ const CalenderCtx = createContext();
 
 function Day({ date, isBusy }){
     const { setDay, currentDay } = useContext(CalenderCtx);
+    const { setDate } = useContext(FormCtx);
 
     return(
         <td
@@ -32,13 +33,15 @@ function Day({ date, isBusy }){
                 clsx(
                     styles.day,
                     isBusy && "bg-light-gray text-graphite",
-                    ( currentDay != null && currentDay.format("L") == date.format("L") ) && (
-                        "bg-dodger-blue text-white"
-                    )
+
+                    // can be hovered only if it is free
+                    !isBusy &&
+                    ( currentDay != null && currentDay.format("L") == date.format("L") ) && 
+                    "bg-dodger-blue text-white"
                 )
             }
             key={ date.date() }
-            onClick={ !isBusy ? () => setDay(date): () => {}  } // must be clickable only if day is free
+            onClick={ !isBusy ? () => { setDay(date); setDate(date) }: () => {}  } // must be clickable only if day is free
         >
             { date.date() }
         </td>
@@ -83,7 +86,9 @@ function Calendar(){
         row.push(
             <Day 
                 date={ dayDate.add(i, "day") } 
-                isBusy={ data.busyDaysAtMonth.data.filter((e) => dayjs(e.date).date() == i + 1)[0].busy }
+                isBusy={ data.busyDaysAtMonth.data.filter(
+                    (e) => dayjs(e.date).date() == i + 1)[0].busy 
+                }
             />
         );
     }

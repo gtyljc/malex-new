@@ -6,10 +6,10 @@ import { gql } from "@apollo/client";
 export class AppointmentQueries {
 
     // returns all appointments that are in the range of date
-    static BusyTimesAtDay(){
+    static busyTimesAtDay(){
         return gql`
             query BusyTimesAtDay($date: DateTimeISO!){
-                appointmentsInRange(from: $date) {
+                busyTimesAtDay(date: $date) {
                     code
                     success
                     message

@@ -7,6 +7,9 @@ export const FormCtx = createContext();
 
 export function FormProvider({ children }){
     
+    // choosen date
+    const [ choosenDate, setDate ] = useState(null);
+
     // open / close
     const [ isOpened, changeState ] = useState(false);
     const openForm = () => changeState(true);
@@ -29,7 +32,11 @@ export function FormProvider({ children }){
                     // scroll
                     index, 
                     sclBack, 
-                    sclForward
+                    sclForward,
+
+                    // choosen date (second and third steps need it)
+                    choosenDate,
+                    setDate
                 } 
             }
         >

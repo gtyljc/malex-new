@@ -31,8 +31,7 @@ export default function PageWrapper({ children, jwt }){
                 new ApolloClient(
                     {
                         link: authLink.concat(httpLink),
-                        cache: new InMemoryCache()
-                        
+                        cache: new InMemoryCache()                       
                     }
                 ) 
             }

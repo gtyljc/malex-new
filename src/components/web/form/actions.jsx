@@ -9,9 +9,9 @@ dayjs.extend(objectSupport)
 // main form receiver
 export async function createAppointment(formData){
     const dateField = dayjs(formData.get("time"));
-    
-    // send request to API
-    return await global.apolloClient.mutate(
+
+    // create appointment
+    const r = await global.apolloClient.mutate(
         {
             mutation: AppointmentQueries.create(),
             variables: {
@@ -33,4 +33,6 @@ export async function createAppointment(formData){
             } 
         }
     );
+
+    console.log(r)
 }

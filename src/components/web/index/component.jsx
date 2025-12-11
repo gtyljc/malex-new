@@ -5,7 +5,7 @@
 import BannersSection from "./banners/component";
 import ServicesSection from "./services/component";
 import WcuSection from "./wcu/component";
-// import WorksSection from "./works/component";
+import WorksSection from "./works/component";
 import FormPreviewSection from "@web/form-preview/component";
 
 export default function Index() {
@@ -14,7 +14,7 @@ export default function Index() {
             <BannersSection/>
             <WcuSection/>
             <ServicesSection />
-            {/* <WorksSection /> */}
+            <WorksSection />
             <FormPreviewSection />
         </main>
     )

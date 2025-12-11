@@ -14,76 +14,63 @@ import { WorkQueries } from "@src/client-requests";
 // components
 import ScrollProgressBar from "@web/points-scrollbar/component";
 
-function getImgLink(data){
-    const items = data.works.data;
-
-    return items.length != 0 ? items[0].img_url: null;
+function Empty(){
+    return <div className="w-[200px] h-[200px] size-full bg-ice-blue"></div>
 }
 
-// is used by Work ( and no where else)
-function getImg(data){
-    const imgLink = getImgLink(data);
-
+function Work({ work }){
     return (
-        imgLink ? (
-            <Image 
-                width={ 200 }
-                height={ 200 }
-                src={ imgLink } 
-                alt="Our work"
-                className="w-full"
-            />
-        ): 
-        <div className="w-[200px] h-[200px] size-full bg-ice-blue"></div>
-    )
-}
-
-function Work({ page }){
-    const { data, error, loading } = useQuery(
-        WorkQueries.getList(),
-        { 
-            variables: { 
-                filter: {},
-                pagination: {
-                    perPage: 1,
-                    page
-                }
-            } 
-        }
-    );
-
-    return (
-        <div className="w-[200px] h-[200px] flex flex-row items-center justify-center nth-[3]:hidden overflow-hidden">
-            { loading && "Loading..." }
-            { error && "Failed to get..." }
-            { data && getImg(data) }
+        <div 
+            className="
+                w-[200px] h-[200px] flex flex-row items-center justify-center 
+                nth-[3]:hidden overflow-hidden
+            "
+        >
+            { 
+                work ? <Image 
+                    src={ work.img_url } 
+                    alt="Our work" 
+                    width={ 300 } 
+                    height={ 300 } 
+                />: <Empty />
+            }
         </div>
     )
 }
 
-function WorksSector({ sector_i }){
-    const WORKS_PER_SECTOR = 3;
-    const works = [];
+function WorksSector({ offset, works }){
+    const worksPerSector = 3;
+    const imgs = [];
 
-    for(let i = 0; i < WORKS_PER_SECTOR; i++){
-        works.push(<Work page={ (sector_i  * WORKS_PER_SECTOR) + i + 1 }/>)
+    for(let i = 0; i < worksPerSector; i++){
+        imgs.push(<Work work={ works[offset + i] } />)
     }
 
     return (
         <li className="row-el flex flex-row gap-3 justify-center">
-            { works }
+            { imgs }
         </li>
     )
 }
 
 function WorksRow(){
-    const SECTORS_NUM = 3;
+    const sectorsNum = 3;
+    const { data, loading } = useQuery(
+        WorkQueries.newWorks(),
+        { variables: { num: sectorsNum * 3 } }
+    )
     const { index } = useContext(PointsScrollbarCtx);
+
+    if (loading) return;
+
     const rowGap = 20; // %
     const worksSectors = [];
-    
-    for (let i = 0; i < SECTORS_NUM; i++){
-        worksSectors.push(<WorksSector sector_i={ i } />);
+    let offset = 0;
+
+    for (let i = 0; i < 3; i++){
+        worksSectors.push(<WorksSector offset={ offset } works={ data.newWorks.data } />);
+
+        offset += sectorsNum;
     }
 
     return (

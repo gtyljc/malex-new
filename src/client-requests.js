@@ -123,7 +123,25 @@ export class WorkQueries {
     static getWorks() {
         return gql`
             query GetWorks($filter: JSONObject, $pagination: PaginationInput){
-                works(filter: $filter, pagination: $pagination) {
+                getWorks(filter: $filter, pagination: $pagination) {
+                    code
+                    success
+                    message
+                    data {
+                        img_url
+                        category
+                        timestamp
+                    }
+                }
+            }
+        `
+    }
+
+    // returns new works with specified num
+    static newWorks() {
+        return gql`
+            query NewWorks($num: PositiveInt){
+                newWorks(num: $num) {
                     code
                     success
                     message

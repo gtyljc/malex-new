@@ -13,24 +13,23 @@ import PageWrapper from "@web/page-wrapper/component";
 import "./global.css";
 
 async function initGlobalApolloClient(){
-    const helpClient = new ApolloClient(
+    const httpLink = new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL });
+    const globalClient = new ApolloClient(
         { 
-            link: new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }),
-            cache: new InMemoryCache() 
+            link: httpLink,
+            cache: new InMemoryCache()
         }
     );
     
     // get jwt with "ADMIN" role
     const jwt = (
-        await helpClient.mutate(
+        await globalClient.mutate(
             {
                 mutation: AuthQueries.createJWT(),
                 variables: { role: "ADMIN" } 
             }
         )
     ).data.createJWT.data[0].token;
-
-    console.log(jwt)
 
     // reset Link with Authorization header
     const authLink = new SetContextLink(
@@ -42,12 +41,11 @@ async function initGlobalApolloClient(){
                 }
             }
         }
-    ).concat(new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }));
+    ).concat(httpLink);
 
-    // stop help client
-    helpClient.stop();
+    globalClient.setLink(authLink);
 
-    return new ApolloClient({ link: authLink });
+    return globalClient;
 }
 
 // font settings

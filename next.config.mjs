@@ -1,13 +1,18 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+    experimental: {
+        serverActions: {
+            bodySizeLimit: "5mb"
+        }
+    },
     images: {
-    remotePatterns: [
-        {
-            protocol: 'https',
-            hostname: 'imagedelivery.net'
-        },
-    ],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'imagedelivery.net'
+            },
+        ],
   },
 };
 

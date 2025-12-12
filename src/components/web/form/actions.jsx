@@ -2,7 +2,7 @@
 
 import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
-import { AppointmentQueries } from "@src/server-requests";
+import { AppointmentQueries } from "@src/apollo-clients/requests/back-requests";
 
 dayjs.extend(objectSupport)
 
@@ -11,7 +11,7 @@ export async function createAppointment(formData){
     const dateField = dayjs(formData.get("time"));
 
     // create appointment
-    const r = await global.apolloClient.mutate(
+    return await global.apolloClient.mutate(
         {
             mutation: AppointmentQueries.create(),
             variables: {
@@ -33,6 +33,4 @@ export async function createAppointment(formData){
             } 
         }
     );
-
-    console.log(r)
 }

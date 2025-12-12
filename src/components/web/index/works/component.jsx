@@ -9,7 +9,7 @@ import {
 } from "@web/points-scrollbar/ctx";
 import { useContext } from "react";
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/client-requests";
+import { WorkQueries } from "@src/apollo-clients/requests/front-requests";
 
 // components
 import ScrollProgressBar from "@web/points-scrollbar/component";

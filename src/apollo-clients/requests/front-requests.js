@@ -1,5 +1,5 @@
 
-// here is all possible GraphQL queries that can Client use
+// here is all possible GraphQL queries that can be only at backend executed
 
 import { gql } from "@apollo/client";
 
@@ -56,7 +56,7 @@ export class AppointmentQueries {
     }
 }
 
-export class AdminConfigQueries {
+export class SiteConfigQueries {
 
     // returns object with contact data, that includes for instance
     // support email, contact phone number, closing and opening at infos, etc.
@@ -73,43 +73,6 @@ export class AdminConfigQueries {
                         support_email
                         phone_number
                         min_duration
-                    }
-                }
-            }
-        `
-    }
-}
-
-export class ImageUploadQueiries {
-
-    // get an image uploud link
-    static startImageUpload() {
-        return gql`
-            mutation StartImageUpload($id: ID!){
-                startImageUpload(id: $img_id) {
-                    code
-                    success
-                    message
-                    data {
-                        id
-                        url
-                    }
-                }
-            }
-        `
-    }
-    
-    // return a details about uploaded image
-    static finalizeImageUpload() {
-        return gql`
-            mutation FinalizeImageUpload($id: ID!){
-                finalizeImageUpload(id: $img_id) {
-                    code
-                    success
-                    message
-                    data {
-                        id
-                        url
                     }
                 }
             }
@@ -136,4 +99,25 @@ export class WorkQueries {
             }
         `
     }
+}
+
+export class AuthQueries {    
+
+    // verify login data from admin login page
+    static adminLogin(){
+         return gql`
+            mutation AdminLogin($username: String, $password: String){
+                adminLogin(username: $username, password: $password) {
+                    code
+                    success
+                    message
+                    data {
+                        token
+                    }
+                }
+            }
+        `
+    }
+
+    // 
 }

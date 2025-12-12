@@ -8,21 +8,22 @@ import {
     EditButton,
     EmailField
 } from "react-admin";
+import { SiteConfigQueries } from "@src/apollo-clients/requests/back-requests";
 
 function Actions (){
     return (
         <TopToolbar>
-            <EditButton resource="adminConfig" />
+            <EditButton resource={ SiteConfigQueries.resource } />
         </TopToolbar>
     )
 }
 
-export default function AdminConfigShow(){
+export default function SiteConfigShow(){
     return (
         <Show 
             id={ 1 } 
-            resource="adminConfig" 
-            title="Admin Config"
+            resource={ SiteConfigQueries.resource }
+            title="Site Config"
             actions={ <Actions /> }
         > 
             <SimpleShowLayout>

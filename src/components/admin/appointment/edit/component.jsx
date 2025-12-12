@@ -3,12 +3,13 @@
 import dayjs from "dayjs";
 import { required } from "react-admin";
 import { useGetOne } from "react-admin";
+import { SiteConfigQueries } from "@src/apollo-clients/requests/back-requests";
 
 // components
 import { Edit, SimpleForm, SelectInput } from "react-admin";
 
 export default function AppointmentEdit() {
-    const { data, isPending } = useGetOne("adminConfig", { id: "1" });
+    const { data, isPending } = useGetOne(SiteConfigQueries.resource, { id: "1" });
 
     // wait until data will be loaded
     if (isPending) { return <p>Loading...</p> };

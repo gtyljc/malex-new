@@ -1,6 +1,6 @@
 
 
-// here is all possible GraphQL queries that can be used from Admin Panel
+// here is all possible GraphQL queries that can be executed at frontend and also at backend
 
 import { gql } from "@apollo/client";
 import { capitalize } from "@src/tools";
@@ -188,8 +188,8 @@ export class WorkQueries extends AdminQueries {
     ]
 }
 
-export class AdminConfigQueries extends AdminQueries {
-    static resource = "adminConfig";
+export class SiteConfigQueries extends AdminQueries {
+    static resource = "siteConfig";
     static fields = [
         "id",
         "opening_at",
@@ -210,6 +210,43 @@ export class AuthQueries {
                     message
                     data {
                         token
+                    }
+                }
+            }
+        `
+    }
+}
+
+export class ImageUploadQueries {
+
+    // get an image uploud link
+    static startImageUpload() {
+        return gql`
+            mutation StartImageUpload($id: ID!){
+                startImageUpload(id: $id) {
+                    code
+                    success
+                    message
+                    data {
+                        id
+                        url
+                    }
+                }
+            }
+        `
+    }
+    
+    // return a details about uploaded image
+    static finalizeImageUpload() {
+        return gql`
+            mutation FinalizeImageUpload($id: ID!){
+                finalizeImageUpload(id: $id) {
+                    code
+                    success
+                    message
+                    data {
+                        id
+                        url
                     }
                 }
             }

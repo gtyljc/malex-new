@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { AdminConfigQueries, AppointmentQueries } from "@src/client-requests";
+import { SiteConfigQueries, AppointmentQueries } from "@src/apollo-clients/requests/front-requests";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -51,7 +51,7 @@ function TimeSelect(){
     }
 
     const { choosenDate } = useContext(FormCtx);
-    const contactData = useQuery(AdminConfigQueries.contactData());
+    const contactData = useQuery(SiteConfigQueries.contactData());
     const busyTimesAtDay = useQuery(
         AppointmentQueries.busyTimesAtDay(), 
         { variables: { date: choosenDate.toISOString() } }

@@ -32,7 +32,7 @@
 	.input {
 		@apply w-full h-[45px] p-3 font-medium border 
 		border-solid rounded-[5px] border-light-gray 
-		box-border;
+		box-border text-lg!;
 	}
 
 	.svg-btn {

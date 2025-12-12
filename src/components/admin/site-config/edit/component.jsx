@@ -18,7 +18,7 @@ function CustomToolbar(){
     )
 }
 
-export default function AdminConfigEdit(){
+export default function SiteConfigEdit(){
     return (
         <Edit 
             title="Admin Config"

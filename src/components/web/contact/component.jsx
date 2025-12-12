@@ -4,7 +4,7 @@
 // others
 import Image from "next/image";
 import { useQuery } from "@apollo/client/react";
-import { AdminConfigQueries } from "@src/client-requests";
+import { SiteConfigQueries } from "@src/apollo-clients/requests/front-requests";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjs from "dayjs";
 
@@ -30,7 +30,7 @@ function ContactDataField({ children, icon }){
 }
 
 function PhoneNumberField(){
-    const { data, loading } = useQuery(AdminConfigQueries.contactData());
+    const { data, loading } = useQuery(SiteConfigQueries.contactData());
 
     // wait until data will be loaded
     if (loading) { return <li>Loading...</li> }
@@ -43,7 +43,7 @@ function PhoneNumberField(){
 }
 
 function SupportEmailField(){
-    const { data, loading } = useQuery(AdminConfigQueries.contactData());
+    const { data, loading } = useQuery(SiteConfigQueries.contactData());
 
     // wait until data will be loaded
     if (loading) { return <li>Loading...</li> } 
@@ -56,7 +56,7 @@ function SupportEmailField(){
 }
 
 function TimeField(){
-    const { data, loading } = useQuery(AdminConfigQueries.contactData());
+    const { data, loading } = useQuery(SiteConfigQueries.contactData());
 
     // wait until data will be loaded
     if (loading) { return <li>Loading...</li> }

@@ -3,7 +3,7 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/client-requests";
+import { WorkQueries } from "@src/apollo-clients/requests/front-requests";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { ViewerProvider, ViewerCtx } from "./viewer/ctx";
@@ -48,6 +48,7 @@ function WorkSection({ title, category }){
         <section>
             <h1 className="text-2xl mb-2.5">{ title }</h1>
             <div className="flex flex-row flex-wrap gap-3">
+                { works.length == 0 && <p>Here is nothing right now...</p> }
                 {
                     works.filter(e => e.category == category).map(
                         e => <Work 
@@ -63,7 +64,7 @@ function WorkSection({ title, category }){
 }
 
 export default function OurWorks(){
-    const [ works, setWorks ] = useState([]);
+    const [ works, setWorks ] = useState(null);
     const { data, loading } = useQuery(
         WorkQueries.getWorks(),
         {
@@ -80,8 +81,8 @@ export default function OurWorks(){
     // wait until data will be loaded
     if (loading) return <section><p>Loading...</p></section>;
 
-    works.length == 0 && setWorks(
-        data.getWorks.data.map(
+    !works && setWorks(
+        data.works.data.map(
             (e, i) => (
                 {
                     index: i,

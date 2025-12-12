@@ -1,5 +1,5 @@
 
-import { ImageUploadQueiries } from "@src/client-requests";
+import { ImageUploadQueries } from "@src/apollo-clients/requests/back-requests";
 import { nanoid } from "nanoid";
 import { capitalize } from "@src/tools";
 
@@ -21,8 +21,8 @@ class DataProvider {
             // get upload link
             const startResponse = await this.gqlClient.mutate(
                 {
-                    mutation: ImageUploadQueiries.startImageUpload(),
-                    variables: { img_id: imgId }
+                    mutation: ImageUploadQueries.startImageUpload(),
+                    variables: { id: imgId }
                 }
             );
             
@@ -32,15 +32,15 @@ class DataProvider {
             body.append("file", data.img_url.rawFile);
 
             await fetch(
-                startResponse.data.startImageUpload.data.url,
+                startResponse.data.startImageUpload.data[0].url,
                 { method: "POST", body }
             );
 
             // get info about uploaded image
-            const finilazeResponse = await this.gqlClient.mutate(
+            const finalizeResponse = await this.gqlClient.mutate(
                 {
-                    mutation: ImageUploadQueiries.finalizeImageUpload(),
-                    variables: { img_id: imgId }
+                    mutation: ImageUploadQueries.finalizeImageUpload(),
+                    variables: { id: imgId }
                 }
             );
 
@@ -48,7 +48,7 @@ class DataProvider {
             delete data.img;
 
             data.img_id = imgId;
-            data.img_url = finilazeResponse.data.finalizeImageUpload.data.url;
+            data.img_url = finalizeResponse.data.finalizeImageUpload.data[0].url;
         }
 
         return data;
@@ -149,7 +149,7 @@ class DataProvider {
 
         // check if img was inserted
         data = await this.#imageInterception(data);
-
+        
         const responseData = (
             await this.gqlClient.mutate(
                 {

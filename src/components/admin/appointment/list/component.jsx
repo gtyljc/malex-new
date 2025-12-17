@@ -4,7 +4,8 @@ import {
     List, 
     DataTable, 
     SearchInput,
-    DateField
+    DateField,
+    BooleanField
 } from "react-admin";
 
 export default function AppointmentList(){
@@ -26,6 +27,9 @@ export default function AppointmentList(){
                     <DateField source="date" showDate showTime />
                 </DataTable.Col>
                 <DataTable.Col source="duration" />
+                <DataTable.Col>
+                    <BooleanField source="completed" />
+                </DataTable.Col>
             </DataTable>
         </List>
     )

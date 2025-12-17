@@ -9,7 +9,7 @@ class AuthProvider {
     }
 
     static authError = class AuthenticationError extends Error {
-        message = "You are not authorized!";
+        message = "Not authorized!";
         redirectTo = "/login";
     }
 

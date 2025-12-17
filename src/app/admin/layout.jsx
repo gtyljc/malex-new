@@ -14,6 +14,9 @@ const plus_jakarta_sans = Plus_Jakarta_Sans(
 export default function AdminLayout({ children }){
     return (
         <html lang="en" className={ plus_jakarta_sans.className }>
+            <head>
+                <title>Malex Admin</title>
+            </head>
             <body>
                 { children }
             </body>

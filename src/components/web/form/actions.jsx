@@ -11,7 +11,7 @@ export async function createAppointment(formData){
     const dateField = dayjs(formData.get("time"));
 
     // create appointment
-    return await global.apolloClient.mutate(
+    const r = await global.apolloClient.mutate(
         {
             mutation: AppointmentQueries.create(),
             variables: {
@@ -33,4 +33,6 @@ export async function createAppointment(formData){
             } 
         }
     );
+
+    console.log(r.data);
 }

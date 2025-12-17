@@ -6,7 +6,7 @@ import { useGetOne } from "react-admin";
 import { SiteConfigQueries } from "@src/apollo-clients/requests/back-requests";
 
 // components
-import { Edit, SimpleForm, SelectInput } from "react-admin";
+import { Edit, SimpleForm, SelectInput, BooleanInput } from "react-admin";
 
 export default function AppointmentEdit() {
     const { data, isPending } = useGetOne(SiteConfigQueries.resource, { id: "1" });
@@ -40,6 +40,7 @@ export default function AppointmentEdit() {
                     source="duration" 
                     choices={ choices } 
                 />
+                <BooleanInput source="completed" validate={ required() } />
             </SimpleForm>
         </Edit>
     )

@@ -82,7 +82,7 @@ export default function OurWorks(){
     if (loading) return <section><p>Loading...</p></section>;
 
     !works && setWorks(
-        data.works.data.map(
+        data.getWorks.data.map(
             (e, i) => (
                 {
                     index: i,

@@ -172,7 +172,8 @@ export class AppointmentQueries extends AdminQueries {
         "bwt",
         "number",
         "date",
-        "duration"
+        "duration",
+        "completed"
     ]
 }
 

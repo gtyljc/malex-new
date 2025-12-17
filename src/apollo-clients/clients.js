@@ -2,10 +2,13 @@
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { AuthQueries } from "./requests/back-requests";
 import { SetContextLink } from "@apollo/client/link/context";
+import { decodeJwt } from "jose";
+import dayjs from "dayjs";
+
 
 // link that adds authorization header to each operation
 export const authLink = (jwt) => new SetContextLink(
-    ({ headers }) => {
+    async ({ headers }) => {
         return {
             headers: {
                 ...headers,

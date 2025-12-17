@@ -6,7 +6,6 @@ import clsx from "clsx";
 
 // components
 import PageWrapper from "@web/page-wrapper/component";
-import Head from "next/head";
 
 // css
 import "./global.css";
@@ -23,9 +22,9 @@ const plus_jakarta_sans = Plus_Jakarta_Sans(
 export default async function RootLayout({ children }){
     return (
         <html lang="en" className={ clsx(plus_jakarta_sans.className, "text-sm") }>
-            <Head>
+            <head>
                 <title>Malex Handyman</title>
-            </Head>
+            </head>
             <body>
                 <PageWrapper jwt={ await getJWT("USER", global.apolloClient) }>
                     { children }

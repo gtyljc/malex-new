@@ -4,10 +4,7 @@ import { Admin, Resource, CustomRoutes } from "react-admin";
 import AuthProvider from "./auth-provider";
 import { Route } from "react-router-dom";
 import DataProvider from "./data-provider";
-import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
 import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@src/apollo-clients/requests/back-requests";
-import { defaultClient } from "@src/apollo-clients/clients";
-import { SetContextLink } from "@apollo/client/link/context";
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";
@@ -15,30 +12,10 @@ import { WorkCreate, WorkEdit, WorkList } from "@admin/work/component";
 import { SiteConfigShow, SiteConfigEdit } from "@admin/site-config/component";
 import CustomLayout from "@admin/custom-layout/component";
 
-export default function AdminApp({ jwt }){
+export default function AdminApp({ authPair }){
 
-    // add "user" jwt
-    localStorage.setItem("token", jwt);
-
-    const [ apolloClient, link ] = defaultClient(jwt);
-    
-    // set up client
-    apolloClient.setLink(
-        new RemoveTypenameFromVariablesLink()
-        .concat(
-
-            // sets authorization token that specified now in storage
-            new SetContextLink(({ headers }) => {
-                return {
-                    headers: {
-                        ...headers,
-                        authorization: `Bearer ${localStorage.getItem("token")}`
-                    }
-                }
-            })
-        )
-        .concat(link)
-    )
+    // set auth pair ( RT & AT tokens )
+    createRefreshAT(authPair.rToken, authPair.token).then();
 
     return(
         <Admin 

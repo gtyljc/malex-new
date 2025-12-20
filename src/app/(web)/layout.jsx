@@ -1,7 +1,7 @@
 
 // others
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { getJWT } from "@src/apollo-clients/clients"
+import { getAuthPair } from "@src/apollo-clients/clients";
 import clsx from "clsx";
 
 // components
@@ -26,7 +26,7 @@ export default async function RootLayout({ children }){
                 <title>Malex Handyman</title>
             </head>
             <body>
-                <PageWrapper jwt={ await getJWT("USER", global.apolloClient) }>
+                <PageWrapper authPair={ await getAuthPair("USER") }>
                     { children }
                 </PageWrapper>
             </body>

@@ -13,7 +13,7 @@ class AuthProvider {
         redirectTo = "/login";
     }
 
-    async _getAndSetJWTToken(username, password){
+    async _auth(username, password){
         const r = await this.apolloClient.mutate(
             {
                 mutation: AuthQueries.adminLogin(),
@@ -24,6 +24,7 @@ class AuthProvider {
         // validation successful
         if(r.data.adminLogin.success){
             localStorage.setItem("token", r.data.adminLogin.data[0].token);
+            localStorage.setItem("r_token", r.data.adminLogin.data[0].r_token);
 
             return { redirectTo: "/" };
         }
@@ -39,14 +40,14 @@ class AuthProvider {
 
             // if token is too old and need to be refreshed
             try { 
-                await jwtVerify(token)  
+                await jwtVerify(token)
                 
                 return { redirectTo: "/" };
             }
-            catch { await this._getAndSetJWTToken(username, password) }
+            catch { await this._auth(username, password) }
         }
         else {
-            await this._getAndSetJWTToken(username, password);
+            await this._auth(username, password);
         }
     }
 
@@ -57,6 +58,7 @@ class AuthProvider {
     
     // when the user navigates, make sure that their credentials are still valid
     async checkAuth() {
+        const r_token = localStorage.getItem("r_token");
         const token = localStorage.getItem("token");
 
         if (!token) {

@@ -121,7 +121,7 @@ export class WorkQueries {
 
 export class AuthQueries {    
 
-    // verifies login data from admin login page
+    // verifies data from Admin Panel Login Page
     static adminLogin(){
          return gql`
             mutation AdminLogin($username: String, $password: String){
@@ -130,23 +130,42 @@ export class AuthQueries {
                     success
                     message
                     data {
-                        token
+                        token,
+                        r_token
                     }
                 }
             }
         `
     }
 
-    // refreshes jwt token
-    static refreshJWT(){
+    // creates new AT using RT
+    static createAT(){
         return gql`
-            mutation RefreshJWT($role: RoleEnum!){
-                refreshJWT() {
+            mutation createAT(){
+                createAT {
                     code
                     success
                     message
                     data {
-                        token
+                        token,
+                        r_token
+                    }
+                }
+            }
+        `
+    }
+
+    // creates new AT using RT
+    static adminLogout(){
+        return gql`
+            mutation adminLogout(){
+                adminLogout {
+                    code
+                    success
+                    message
+                    data {
+                        token,
+                        r_token
                     }
                 }
             }

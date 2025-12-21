@@ -146,8 +146,8 @@ export class AdminQueries {
     // delete a list of records based on an array of ids
     static deleteMany(){
         return gql`
-            mutation Delete($id: ID!){
-                deleteMany${capitalize(this.resource)}s(id: $id) {
+            mutation DeleteMany($ids: [ID]!){
+                deleteMany${capitalize(this.resource)}s(ids: $ids) {
                     code
                     success
                     message
@@ -209,8 +209,8 @@ export class AuthQueries {
 
     static createRT(){
         return gql`
-            mutation createRT($role: RoleEnum!){
-                createRT(role: $role) {
+            mutation createRT($user_id: ID!, $role: RoleEnum!){
+                createRT(user_id: $user_id, role: $role) {
                     code
                     success
                     message

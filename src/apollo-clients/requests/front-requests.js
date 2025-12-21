@@ -124,7 +124,7 @@ export class AuthQueries {
     // verifies data from Admin Panel Login Page
     static adminLogin(){
          return gql`
-            mutation AdminLogin($username: String, $password: String){
+            mutation AdminLogin($username: String!, $password: String!){
                 adminLogin(username: $username, password: $password) {
                     code
                     success
@@ -141,7 +141,7 @@ export class AuthQueries {
     // creates new AT using RT
     static createAT(){
         return gql`
-            mutation createAT(){
+            mutation createAT {
                 createAT {
                     code
                     success

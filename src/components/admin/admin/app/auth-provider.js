@@ -1,11 +1,11 @@
 
 import { jwtVerify, decodeJwt } from "jose";
 import { AuthQueries } from "@src/apollo-clients/requests/front-requests";
+import { setAuthPairLocal, getAuthPairLocal } from "@src/apollo-clients/clients";
 
 class AuthProvider {
-    constructor(apolloClient, initJWT){
+    constructor(apolloClient){
         this.apolloClient = apolloClient;
-        this.initJWT = initJWT;
     }
 
     static authError = class AuthenticationError extends Error {
@@ -23,8 +23,10 @@ class AuthProvider {
 
         // validation successful
         if(r.data.adminLogin.success){
-            localStorage.setItem("token", r.data.adminLogin.data[0].token);
-            localStorage.setItem("r_token", r.data.adminLogin.data[0].r_token);
+            setAuthPairLocal(
+                r.data.adminLogin.data[0].r_token,
+                r.data.adminLogin.data[0].token
+            )
 
             return { redirectTo: "/" };
         }
@@ -34,7 +36,7 @@ class AuthProvider {
 
     // send username and password to the auth server and get back credentials
     async login({ username, password }) {
-        const token = localStorage.getItem("token");
+        const { token } = getAuthPairLocal();
 
         if (token){
 
@@ -58,8 +60,7 @@ class AuthProvider {
     
     // when the user navigates, make sure that their credentials are still valid
     async checkAuth() {
-        const r_token = localStorage.getItem("r_token");
-        const token = localStorage.getItem("token");
+        const { token } = getAuthPairLocal();
 
         if (!token) {
             throw new AuthProvider.authError()
@@ -74,9 +75,9 @@ class AuthProvider {
     
     // remove local credentials and notify the auth server that the user logged out
     async logout() {
-
+        
         // return to "user" token
-        localStorage.setItem("token", this.initJWT);
+        
     }
 };
 

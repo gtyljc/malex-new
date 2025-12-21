@@ -5,11 +5,10 @@ import { AuthQueries as frAuthQueries } from "./requests/front-requests";
 import { SetContextLink } from "@apollo/client/link/context";
 import { decodeJwt } from "jose";
 import dayjs from "dayjs";
+import { nanoid } from "nanoid";
 
 // checks if jwt expired ( JWT must contain "exp" claim )
 function isJWTExpired(jwt){
-    // console.log(jwt);
-
     return decodeJwt(jwt)["exp"] < dayjs().unix();
 }
 
@@ -74,7 +73,7 @@ export function frontClient(){
     // register link
     client.setLink(newLink);
 
-    return { client, newLink };
+    return { client, link: newLink };
 }
 
 // returns ApolloClient with "Authorization" header, that cointains "ADMIN" role
@@ -89,6 +88,8 @@ export async function backClient(){
 
             // check if AT is expired
             if (isJWTExpired(client.token)) await createRefreshRT();
+
+            console.log(client.token);
 
             return {
                 headers: {
@@ -112,7 +113,7 @@ async function createRefreshRT(targetClient = global.ApolloClient) {
     const r = await client.mutate(
         { 
             mutation: AuthQueries.createRT(), 
-            variables: { role: "SUPERUSER" } 
+            variables: { user_id: nanoid(16), role: "SUPERUSER" } 
         }
     );
 
@@ -121,33 +122,50 @@ async function createRefreshRT(targetClient = global.ApolloClient) {
     targetClient.token = r.data.createRT.data[0].token;
 }
 
-// creates new pair with RT and AT and sets them in local storage,
-// must be used when AT is expired !!! FOR CLIENT ONLY !!!
-export async function createRefreshAT(rt, at) {
-    // if client has no correct AT
+// sets local auth pair into 
+export function setAuthPairLocal(rt, at) {
+    localStorage.setItem("r_token", rt);
+    localStorage.setItem("token", at);
+}
+
+// gets auth from local storage
+export function getAuthPairLocal(){
+    return {
+        token: localStorage.getItem("token"),
+        rToken: localStorage.getItem("r_token")
+    }
+}
+
+// creates new pair with RT and AT and sets them in local storage;
+// must be used when AT is expired; if client has already correct
+// AT, then you can specify it in params, in this case function will
+// not ask server about new pair of keys, it will just set them into
+// local storage !!! FOR CLIENT ONLY !!!
+export async function createRefreshAT(rt, { at }) { // force => force reset of auth pair in local storage even if they already set
     if (!at){
         const { client } = defaultClientWithAuth(rt);
         const { token, r_token } = (
-            await client.mutate(
-                { mutation: frAuthQueries.createAT() }
-            )
+            await client.mutate({ mutation: frAuthQueries.createAT() })
         ).data.createAT.data[0];
 
         rt = r_token;
         at = token;
     }
     
-    // set / reset credentials at browser
-    localStorage.setItem("token", at);
-    localStorage.setItem("r_token", rt);
+    const authPair = getAuthPairLocal();
+    
+    // only in case that user doesn't have auth pair
+    if (!authPair.token && !authPair.rToken){
+        setAuthPairLocal(rt, at);
+    }
 }
 
 // creates new pair with RT and AT and sets them in local storage,
 // must be used when AT is expired !!! FOR SERVER ONLY !!!
-export async function getAuthPair(role, client = global.apolloClient) {
+export async function getAuthPair(user_id, role, client = global.apolloClient) {
     const { token, r_token } = (
         await client.mutate(
-            { mutation: AuthQueries.createRT(), variables: { role } }
+            { mutation: AuthQueries.createRT(), variables: { role, user_id } }
         )
     ).data.createRT.data[0];
 

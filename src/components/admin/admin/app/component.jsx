@@ -1,10 +1,15 @@
 
 // others
 import { Admin, Resource, CustomRoutes } from "react-admin";
+import { useEffect } from "react";
 import AuthProvider from "./auth-provider";
 import { Route } from "react-router-dom";
 import DataProvider from "./data-provider";
 import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@src/apollo-clients/requests/back-requests";
+import { frontClient } from "@src/apollo-clients/clients";
+import { createRefreshAT } from "@src/apollo-clients/clients";
+import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
+
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";
@@ -13,25 +18,27 @@ import { SiteConfigShow, SiteConfigEdit } from "@admin/site-config/component";
 import CustomLayout from "@admin/custom-layout/component";
 
 export default function AdminApp({ authPair }){
+    const { client, link } = frontClient();
+
+    // add link to remove typenames
+    client.setLink(new RemoveTypenameFromVariablesLink().concat(link));
 
     // set auth pair ( RT & AT tokens )
-    createRefreshAT(authPair.rToken, authPair.token).then();
+    useEffect(() => { createRefreshAT(authPair.rToken, { at: authPair.at }).then() });
 
     return(
         <Admin 
-            dataProvider={ 
+            dataProvider={
                 new DataProvider(
-                    apolloClient,
+                    client,
                     {
-                        // add interface to work with GraphQL queries
-                     
                         [ AppointmentQueries.resource ]: AppointmentQueries,
                         [ WorkQueries.resource ]: WorkQueries,
                         [ SiteConfigQueries.resource ]: SiteConfigQueries
                     }
                 ) 
             }
-            authProvider={ new AuthProvider(apolloClient, jwt) }
+            authProvider={ new AuthProvider(client) }
             layout={ CustomLayout }
             requireAuth
         >

@@ -2,6 +2,7 @@
 // others
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { getAuthPair } from "@src/apollo-clients/clients";
+import { nanoid } from "nanoid"
 import clsx from "clsx";
 
 // components
@@ -26,7 +27,7 @@ export default async function RootLayout({ children }){
                 <title>Malex Handyman</title>
             </head>
             <body>
-                <PageWrapper authPair={ await getAuthPair("USER") }>
+                <PageWrapper authPair={ await getAuthPair(nanoid(16), "GUEST") }>
                     { children }
                 </PageWrapper>
             </body>

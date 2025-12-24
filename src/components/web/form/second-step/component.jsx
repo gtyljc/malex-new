@@ -12,6 +12,7 @@ import { AppointmentQueries } from "@src/apollo-clients/requests/front-requests"
 
 // components
 import StepWrapper from "../step-wrapper/component";
+import { NextButton, BackButton } from "../step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
@@ -28,22 +29,23 @@ function Day({ date, isBusy }){
     const { setDate } = useContext(FormCtx);
 
     return(
-        <td
-            className={
-                clsx(
-                    styles.day,
-                    isBusy && "bg-light-gray text-graphite",
+        <td className="p-[3px]">
+            <div
+                className={
+                    clsx(
+                        styles.day,
+                        isBusy && "bg-light-gray text-graphite",
 
-                    // can be hovered only if it is free
-                    !isBusy &&
-                    ( currentDay != null && currentDay.format("L") == date.format("L") ) && 
-                    "bg-dodger-blue text-white"
-                )
-            }
-            key={ date.date() }
-            onClick={ !isBusy ? () => { setDay(date); setDate(date) }: () => {}  } // must be clickable only if day is free
-        >
-            { date.date() }
+                        // can be hovered only if it is free
+                        !isBusy &&
+                        ( currentDay != null && currentDay.format("L") == date.format("L") ) && 
+                        "bg-dodger-blue text-white"
+                    )
+                }
+                onClick={ !isBusy ? () => { setDay(date); setDate(date) }: () => {}  } // must be clickable only if day is free
+            >
+                { date.date() }
+            </div>
         </td>
     )
 }
@@ -70,11 +72,11 @@ function Calendar(){
 
     // add offset to first row
     for (let i = 0; i < offset; i++){
-        row.push(<td key={i - offset} ></td>);
+        row.push(<td key={ i - offset } ></td>);
     }
 
     // add cells with days
-    for (let i = 0; i < daysInMonth; i++){
+    for (let i = 0; i < daysInMonth; i++){  
         if (row.length == 7){
             tbodyContent.push(
                 <tr key={ rowI }>{ row.map(e => e) }</tr>
@@ -84,7 +86,8 @@ function Calendar(){
         }
 
         row.push(
-            <Day 
+            <Day
+                key={ dayDate.add(i, "day").toISOString() }
                 date={ dayDate.add(i, "day") } 
                 isBusy={ data.busyDaysAtMonth.data.filter(
                     (e) => dayjs(e.date).date() == i + 1)[0].busy 
@@ -105,16 +108,16 @@ function Calendar(){
     return(
         <table className="mr-auto ml-auto mt-3">
             <thead>
-                <tr>{ weekDays.map(e => <th className="w-13 h-13 font-light">{ e }</th>) }</tr>
+                <tr>{ weekDays.map(e => <th key={ e } className="w-13 h-13 font-light">{ e }</th>) }</tr>
             </thead>
             <tbody>{ tbodyContent }</tbody>
         </table>
     );
 }
 
-function ScrollMonthBtn({ icon, func }){
+function ScrollMonthBtn({ icon, func, className }){
     return (
-        <button onClick={ func } className="svg-btn" type="button">
+        <button onClick={ func } className={ clsx("svg-btn", className) } type="button">
             { icon }
         </button>
     )
@@ -124,7 +127,7 @@ function ScrollMonthBtn({ icon, func }){
 export default function SecondFormStep(){
     const [ currentMonth, setMonth ] = useState(dayjs());
     const [ currentDay, setDay ] = useState(null);
-    const { sclForward } = useContext(FormCtx);
+    const { sclForward, sclBackward } = useContext(FormCtx);
 
     return (
         <StepWrapper>
@@ -136,14 +139,15 @@ export default function SecondFormStep(){
             <h2 className="text-center font-light text-xl mb-5">Select a date</h2>
             <div className="w-full max-w-[340px] flex flex-row justify-between items-center">
                 <ScrollMonthBtn 
+                    className={ currentMonth.format("L")  == dayjs().format("L")  && "pointer-events-none opacity-50" }
                     icon={
-                        <Image 
+                        <Image
                             src={ next } 
                             alt="Scroll to previous month" 
                             style={ { transform: "rotate(180deg)" } }
                         />
                     }
-                    func={ () => setMonth(currentMonth.subtract(1, "month")) }
+                    func={ () => { setMonth(currentMonth.subtract(1, "month")) } }
                 />
                 <div className="font-medium text-lg">
                     { currentMonth.format("MMMM YYYY") }
@@ -156,13 +160,10 @@ export default function SecondFormStep(){
             <CalenderCtx.Provider value={ { currentDay, setDay, currentMonth } }>
                 <Calendar />
             </CalenderCtx.Provider>
-            <button 
-                className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
-                onClick={ () => currentDay && sclForward() }
-                type="button"
-            >
-                <span>Next</span>
-            </button>
+            <div className="w-full flex flex-row gap-2">
+                <BackButton onClick={ () => sclBackward() } />
+                <NextButton onClick={ () => currentDay && sclForward() } />
+            </div>
         </StepWrapper>
     )
 }

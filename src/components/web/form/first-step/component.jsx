@@ -10,6 +10,7 @@ import { useContext } from "react";
 
 // components
 import StepWrapper from "../step-wrapper/component";
+import { NextButton } from "../step-wrapper/component";
 
 const enRegex = /^[A-Za-z]+$/;
 const phoneRegex = /^(?:\+[1-9][0-9]{7,14}|[0-9]{10})$/;
@@ -202,13 +203,7 @@ export default function FirstFormStep() {
                     </InputCon>
                 </InputsRow>
             </div>
-            <button 
-                className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
-                onClick={ async () => { await formObject.trigger() && sclForward() } }
-                type="button"
-            >
-                <span>Next</span>
-            </button>
+            <NextButton onClick={ async () => { await formObject.trigger() && sclForward() } } />
         </StepWrapper>
     )
 }

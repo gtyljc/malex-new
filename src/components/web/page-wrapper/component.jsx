@@ -5,7 +5,7 @@
 import { ApolloProvider } from "@apollo/client/react";
 import { FormProvider } from "@web/form/ctx"
 import { frontClient } from "@src/apollo-clients/clients";
-import { createRefreshAT } from "@src/apollo-clients/clients";
+import { setRTForFront } from "@src/apollo-clients/clients";
 
 // components
 import Header from "@web/header/component";
@@ -16,7 +16,7 @@ import { useEffect } from "react";
 export default function PageWrapper({ children, authPair }){
 
     // set auth pair ( RT & AT tokens )
-    useEffect(() => { createRefreshAT(authPair.rToken, { at: authPair.token }) });
+    useEffect(() => { setRTForFront(authPair.rToken, authPair.token) });
 
     return (
         <ApolloProvider client={ frontClient().client  }>

@@ -44,6 +44,7 @@ export default function SiteConfigShow(){
                     label="Minimum time on one appointment ( in hours )" 
                 />
                 <EmailField source="support_email" />
+                <TextField source="phone_number" />
             </SimpleShowLayout>
         </Show>
     )

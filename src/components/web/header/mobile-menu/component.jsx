@@ -22,7 +22,7 @@ function NavigationLink({ url, label }){
 }
 
 export default function MobileMenu(){
-    const { isOpened } = useContext(MobileMenuCtx);
+    const { isOpened, closeMenu } = useContext(MobileMenuCtx);
 
     return (
         <div
@@ -33,6 +33,7 @@ export default function MobileMenu(){
                 )
             }
         >
+            <div className="grow" onClick={ closeMenu }></div>
             <div 
                 className={
                     clsx(

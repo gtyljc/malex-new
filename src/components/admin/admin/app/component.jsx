@@ -7,9 +7,8 @@ import { Route } from "react-router-dom";
 import DataProvider from "./data-provider";
 import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@src/apollo-clients/requests/back-requests";
 import { frontClient } from "@src/apollo-clients/clients";
-import { createRefreshAT } from "@src/apollo-clients/clients";
+import { setRTForFront } from "@src/apollo-clients/clients";
 import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
-
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";
@@ -24,7 +23,7 @@ export default function AdminApp({ authPair }){
     client.setLink(new RemoveTypenameFromVariablesLink().concat(link));
 
     // set auth pair ( RT & AT tokens )
-    useEffect(() => { createRefreshAT(authPair.rToken, { at: authPair.at }).then() });
+    useEffect(() => { setRTForFront(authPair.rToken, authPair.token) });
 
     return(
         <Admin 
@@ -45,7 +44,6 @@ export default function AdminApp({ authPair }){
             <Resource name={ AppointmentQueries.resource } list={ AppointmentList } edit={ AppointmentEdit } />
             <Resource name={ WorkQueries.resource } list={ WorkList } create={ WorkCreate } edit={ WorkEdit } />
             <Resource name={ SiteConfigQueries.resource } edit={ SiteConfigEdit } show={ SiteConfigShow } />
-
             <CustomRoutes>
                 <Route path={ `/${SiteConfigQueries.resource}` } element={ <SiteConfigShow /> } />
             </CustomRoutes>

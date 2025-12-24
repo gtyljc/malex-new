@@ -123,6 +123,8 @@ export class AuthQueries {
 
     // verifies data from Admin Panel Login Page
     static adminLogin(){
+        console.log(";le;lfe;l1");
+
          return gql`
             mutation AdminLogin($username: String!, $password: String!){
                 adminLogin(username: $username, password: $password) {
@@ -158,7 +160,7 @@ export class AuthQueries {
     // creates new AT using RT
     static adminLogout(){
         return gql`
-            mutation adminLogout(){
+            mutation adminLogout{
                 adminLogout {
                     code
                     success

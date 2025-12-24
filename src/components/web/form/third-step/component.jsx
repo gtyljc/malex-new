@@ -10,6 +10,7 @@ import { SiteConfigQueries, AppointmentQueries } from "@src/apollo-clients/reque
 
 // components
 import StepWrapper from "../step-wrapper/component";
+import { NextButton, BackButton, ScrollBtnsCon } from "../step-wrapper/component";
 
 // css
 import styles from "./styles.module.css";
@@ -41,7 +42,7 @@ function Time({ date, isBusy }){
 }
 
 function TimeSelect(){
-
+    
     function isTimeBusy(busyTimesAtDayData, date){
         for(let obj of busyTimesAtDayData){
             if (obj.date == date.toISOString()) return true
@@ -71,7 +72,8 @@ function TimeSelect(){
         timeDate = start.add({ hour: hOffset });
 
         arr.push(
-            <Time 
+            <Time
+                key={ timeDate.toISOString() }
                 date={ timeDate }
                 isBusy={ isTimeBusy(busyTimesAtDay.data.busyTimesAtDay.data, timeDate) }
             />
@@ -91,7 +93,7 @@ function TimeSelect(){
 
 export default function ThirdFormStep() {
     const [ currentTime, setTime ] = useState(null);
-    const { sclForward, choosenDate } = useContext(FormCtx);
+    const { sclForward, sclBackward, choosenDate } = useContext(FormCtx);
 
     return (
         <StepWrapper>
@@ -104,13 +106,10 @@ export default function ThirdFormStep() {
             <TimeSelectCtx.Provider value={ { setTime, currentTime } }>
                 { choosenDate && <TimeSelect/> }
             </TimeSelectCtx.Provider>
-            <button 
-                className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
-                onClick={ () => currentTime && sclForward() }
-                type="submit"
-            >
-                <span>Next</span>
-            </button>
+            <ScrollBtnsCon>
+                <BackButton onClick={ () => sclBackward() } />
+                <NextButton onClick={ () => currentTime && sclForward() } isSubmit />
+            </ScrollBtnsCon>
         </StepWrapper>
     )    
 };

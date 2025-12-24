@@ -46,19 +46,17 @@ export function frontClient(){
     const { client, link } = defaultClient();
     const newLink = new SetContextLink(
         async ({ headers }) => {
-            const at = localStorage.getItem("token");
-
-            // console.log(at)
+            let at = localStorage.getItem("token");
 
             // checks is AT expired
             if (isJWTExpired(at)){
                 const rt = localStorage.getItem("r_token");
 
-                // if not, then checks is RT expired
+                // if RT is also expired
                 if(isJWTExpired(rt)) window.location.reload();
-
-                // if everytjhing is fine then get new auth pair
-                await createRefreshAT(rt);
+                else await setATForFront(rt);
+                
+                at = localStorage.getItem("token");
             }
 
             return {
@@ -81,15 +79,19 @@ export async function backClient(){
     const { client, link } = defaultClient();
     
     // init credentials
-    await createRefreshRT(client);
+    await setRTForBack(client);
 
     const authLink = new SetContextLink(
         async ({ headers }) => {
+   
+            //  if AT is expired
+            if (isJWTExpired(client.token)) {
+                console.log("kpwpdwp");
 
-            // check if AT is expired
-            if (isJWTExpired(client.token)) await createRefreshRT();
-
-            console.log(client.token);
+                // if RT is also expired
+                if (isJWTExpired(client.rToken)) await setRTForBack();
+                else await setATForBack();
+            };
 
             return {
                 headers: {
@@ -106,20 +108,31 @@ export async function backClient(){
     return { client, authLink };
 }
 
-// creates pair of two keys ( AT & RT ) and must be used only when global 
-// Apollo Client has no keys at all, or RT is expired
-async function createRefreshRT(targetClient = global.ApolloClient) {
-    const { client } = defaultClient(); // to avoid recursion in link
-    const r = await client.mutate(
-        { 
-            mutation: AuthQueries.createRT(), 
-            variables: { user_id: nanoid(16), role: "SUPERUSER" } 
-        }
-    );
+async function setATForBack(targetClient = global.apolloClient) {
+    const { client } = defaultClientWithAuth(targetClient.rToken);
+    const { token, r_token } = (
+        await client.mutate({ mutation: frAuthQueries.createAT() })
+    ).data.createAT.data[0];
 
     // modify target client
-    targetClient.rToken = r.data.createRT.data[0].r_token;
-    targetClient.token = r.data.createRT.data[0].token;
+    targetClient.rToken = r_token;
+    targetClient.token = token;
+}
+
+async function setRTForBack(targetClient = global.apolloClient) {
+    const { client } = defaultClient();
+    const { token, r_token } = (
+        await client.mutate(
+            { 
+                mutation: AuthQueries.createRT(), 
+                variables: { user_id: nanoid(16), role: "SUPERUSER" }  
+            }
+        )
+    ).data.createRT.data[0];
+
+    // modify target client
+    targetClient.rToken = r_token;
+    targetClient.token = token;
 }
 
 // sets local auth pair into 
@@ -136,27 +149,32 @@ export function getAuthPairLocal(){
     }
 }
 
-// creates new pair with RT and AT and sets them in local storage;
-// must be used when AT is expired; if client has already correct
-// AT, then you can specify it in params, in this case function will
-// not ask server about new pair of keys, it will just set them into
-// local storage !!! FOR CLIENT ONLY !!!
-export async function createRefreshAT(rt, { at }) { // force => force reset of auth pair in local storage even if they already set
-    if (!at){
-        const { client } = defaultClientWithAuth(rt);
-        const { token, r_token } = (
-            await client.mutate({ mutation: frAuthQueries.createAT() })
-        ).data.createAT.data[0];
-
-        rt = r_token;
-        at = token;
-    }
-    
+export async function setATForFront() {
     const authPair = getAuthPairLocal();
-    
-    // only in case that user doesn't have auth pair
+    const { client } = defaultClientWithAuth(authPair.rToken);
+    const { token, r_token } = (
+        await client.mutate({ mutation: frAuthQueries.createAT() })
+    ).data.createAT.data[0];
+
+    console.log(token, "TOKEN");
+
+    console.log(r_token, "REFRESH TOKEN")
+
+    // save tokens
+    setAuthPairLocal(r_token, token);
+}
+
+export function setRTForFront(rt, at) {
+    const authPair = getAuthPairLocal();
+
+    // in case that user doesn't have auth pair
     if (!authPair.token && !authPair.rToken){
         setAuthPairLocal(rt, at);
+    }
+    else {
+        if (isJWTExpired(authPair.rToken)){
+            setAuthPairLocal(rt, at);
+        }
     }
 }
 
@@ -165,7 +183,10 @@ export async function createRefreshAT(rt, { at }) { // force => force reset of a
 export async function getAuthPair(user_id, role, client = global.apolloClient) {
     const { token, r_token } = (
         await client.mutate(
-            { mutation: AuthQueries.createRT(), variables: { role, user_id } }
+            { 
+                mutation: AuthQueries.createRT(), 
+                variables: { role, user_id } 
+            }
         )
     ).data.createRT.data[0];
 

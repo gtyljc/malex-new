@@ -1,5 +1,9 @@
 
 .day {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 45px;
     height: 45px;
     font-size: var(--text-lg);

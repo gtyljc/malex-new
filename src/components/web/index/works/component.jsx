@@ -63,7 +63,7 @@ function WorksSector({ offset, works, perSector }){
     const imgs = [];
 
     for(let i = 0; i < perSector; i++){
-        imgs.push(<Work work={ works[offset + i] } />)
+        imgs.push(<Work work={ works[offset + i] } key={ i } />)
     }
 
     return (
@@ -89,13 +89,19 @@ function WorksRow(){
     let offset = 0;
 
     for (let i = 0; i < sectorsNum; i++){
-        sectors.push(<WorksSector offset={ offset } works={ data.newWorks.data } perSector={ perSector } />);
+        sectors.push(
+            <WorksSector 
+                offset={ offset } 
+                works={ data.newWorks.data } 
+                perSector={ perSector } 
+                key={ i }
+            />);
     
         offset += perSector - 1;
     }
 
     return (
-        <ul 
+        <ul
             className="row"
             style={
                 {

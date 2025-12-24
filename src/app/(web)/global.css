@@ -54,6 +54,10 @@
 		@apply text-dodger-blue! border border-dodger-blue
 		md:hover:bg-dodger-blue md:hover:text-white!;
 	}
+
+	.redirect-btn-circled {
+		@apply border border-light-gray md:hover:bg-light-gray text-graphite
+	}
 	
 	.section-title {
 		@apply text-2xl font-medium md:text-2xl lg:text-3xl;

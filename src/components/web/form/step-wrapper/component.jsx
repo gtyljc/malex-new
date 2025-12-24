@@ -12,6 +12,38 @@ import styles from "./styles.module.css";
 // images
 import close from "./close.svg";
 
+export function NextButton({ onClick, isSubmit = false }){
+    return (
+        <button 
+            className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
+            onClick={ onClick }
+            { ...(isSubmit ? { type: "submit" }: { type: "button" }) }
+        >
+            <span>Next</span>
+        </button>
+    )
+}
+
+export function BackButton({ onClick }){
+    return (
+        <button 
+            className="redirect-btn redirect-btn-circled mt-8 min-[450px]:max-w-[250px]"
+            onClick={ onClick }
+            type="button"
+        >
+            <span>Back</span>
+        </button>
+    )
+}
+
+export function ScrollBtnsCon({ children }){
+    return (
+        <div className="w-full flex flex-row gap-2">
+            { children }
+        </div>
+    )
+}
+
 export default function StepWrapper({ children }){
     const { closeForm } = useContext(FormCtx);
 

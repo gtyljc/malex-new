@@ -9,7 +9,7 @@ dayjs.extend(objectSupport)
 // main form receiver
 export async function createAppointment(formData){
     const dateField = dayjs(formData.get("time"));
-
+    
     // create appointment
     const r = await global.apolloClient.mutate(
         {
@@ -22,6 +22,8 @@ export async function createAppointment(formData){
                     job_desc: formData.get("job_desc"),
                     bwt: formData.get("bwt").toUpperCase(),
                     number: formData.get("number"),
+                    
+                    // concat time and date together ( because in form they are in separate steps )
                     date: dayjs(
                         formData.get("date")).add(
                             {
@@ -34,5 +36,5 @@ export async function createAppointment(formData){
         }
     );
 
-    console.log(r.data);
+    console.log(r);
 }

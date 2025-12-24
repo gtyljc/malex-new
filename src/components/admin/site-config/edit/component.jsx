@@ -52,6 +52,7 @@ export default function SiteConfigEdit(){
                     validate={ required() }
                 />
                 <TextInput source="support_email" />
+                <TextInput source="phone_number" />
             </SimpleForm>
         </Edit>
     )

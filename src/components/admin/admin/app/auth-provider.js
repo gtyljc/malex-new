@@ -38,6 +38,8 @@ class AuthProvider {
     async login({ username, password }) {
         const { token } = getAuthPairLocal();
 
+        // console.log("kwodkdwkl")
+
         if (token){
 
             // if token is too old and need to be refreshed
@@ -75,9 +77,20 @@ class AuthProvider {
     
     // remove local credentials and notify the auth server that the user logged out
     async logout() {
+        const authPair = getAuthPairLocal();
         
-        // return to "user" token
-        
+        if(authPair.token && authPair.rToken){
+            const claims = decodeJwt(authPair.rToken);
+
+            if(claims.aud == "ADMIN"){
+                const r = await this.apolloClient.mutate({ mutation: AuthQueries.adminLogout() });
+
+                setAuthPairLocal(
+                    r.data.adminLogout.data[0].r_token,
+                    r.data.adminLogout.data[0].token
+                )
+            }
+        }
     }
 };
 

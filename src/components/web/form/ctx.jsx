@@ -18,7 +18,7 @@ export function FormProvider({ children }){
     // scroll
     const [ index, setIndex ] = useState(0);
     const sclForward = () => setIndex(i=> i + 1);
-    const sclBack = () => setIndex(i => i - 1);
+    const sclBackward = () => setIndex(i => i - 1);
 
     return (
         <FormCtx
@@ -31,7 +31,7 @@ export function FormProvider({ children }){
 
                     // scroll
                     index, 
-                    sclBack, 
+                    sclBackward, 
                     sclForward,
 
                     // choosen date (second and third steps need it)

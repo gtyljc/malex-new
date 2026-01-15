@@ -7,10 +7,10 @@ import { createAppointment } from "./actions";
 import { FormCtx } from "./ctx";
 
 // components
-import FirstFormStep from "./first-step/component";
-import SecondFormStep from "./second-step/component";
-import ThirdFormStep from "./third-step/component";
-import FourthFormStep from "./fourth-step/component";
+import ClientDataStep from "./client-data-step/component";
+import DateStep from "./date-step/component";
+import TimeStep from "./time-step/component";
+import FinishStep from "./finish-step/component";
 
 // css
 import styles from "./styles.module.css";
@@ -36,10 +36,10 @@ export default function Form() {
                     className="row duration-250 md:duration-500"
                     style={ { transform: `translateX(${ (-index * 100) + "%"})` } }
                 >   
-                    <FirstFormStep />                    
-                    <SecondFormStep />
-                    <ThirdFormStep />
-                    <FourthFormStep />
+                    <ClientDataStep />                    
+                    <DateStep />
+                    <TimeStep />
+                    <FinishStep />
                 </ul>
             </div>
         </form>

@@ -6,6 +6,7 @@ import { SetContextLink } from "@apollo/client/link/context";
 import { decodeJwt } from "jose";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
+import { RetryLink } from "@apollo/client/link/retry";
 
 // checks if jwt expired ( JWT must contain "exp" claim )
 function isJWTExpired(jwt){
@@ -14,11 +15,16 @@ function isJWTExpired(jwt){
 
 // returns instanse of absolutly pure ApolloClient, that is connected to API
 function defaultClient() {
-    const httpLink = new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL });
+    const link = new RetryLink(
+        { 
+            attempts: () => true, 
+            delay: () => 5000 
+        }
+    ).concat(new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }));
 
     return {
-        client: new ApolloClient({ link: httpLink, cache: new InMemoryCache()}),
-        link: httpLink
+        client: new ApolloClient({ link, cache: new InMemoryCache()}),
+        link
     }
 }
 
@@ -56,6 +62,7 @@ export function frontClient(){
                 if(isJWTExpired(rt)) window.location.reload();
                 else await setATForFront(rt);
                 
+                // reset with new value
                 at = localStorage.getItem("token");
             }
 
@@ -77,8 +84,8 @@ export function frontClient(){
 // returns ApolloClient with "Authorization" header, that cointains "ADMIN" role
 export async function backClient(){
     const { client, link } = defaultClient();
-    
-    // init credentials
+
+    // init credentials; in case API is not reachable, try until will be connected 
     await setRTForBack(client);
 
     const authLink = new SetContextLink(
@@ -86,7 +93,6 @@ export async function backClient(){
    
             //  if AT is expired
             if (isJWTExpired(client.token)) {
-                console.log("kpwpdwp");
 
                 // if RT is also expired
                 if (isJWTExpired(client.rToken)) await setRTForBack();
@@ -155,10 +161,6 @@ export async function setATForFront() {
     const { token, r_token } = (
         await client.mutate({ mutation: frAuthQueries.createAT() })
     ).data.createAT.data[0];
-
-    console.log(token, "TOKEN");
-
-    console.log(r_token, "REFRESH TOKEN")
 
     // save tokens
     setAuthPairLocal(r_token, token);

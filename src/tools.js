@@ -9,6 +9,12 @@ export function patch(array, ...args){
     return array.filter(e => !args.includes(e));
 }
 
+// all to lower case and capitalize first letter
 export function normalizeString(string){
     return capitalize(string.toLowerCase())
+}
+
+// stops function on delay, which was in ms specified
+export function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

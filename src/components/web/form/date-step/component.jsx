@@ -124,7 +124,7 @@ function ScrollMonthBtn({ icon, func, className }){
 }
 
 // should be inserted in ul
-export default function SecondFormStep(){
+export default function DateStep(){
     const [ currentMonth, setMonth ] = useState(dayjs());
     const [ currentDay, setDay ] = useState(null);
     const { sclForward, sclBackward } = useContext(FormCtx);

@@ -10,7 +10,7 @@ import { useContext } from "react";
 // images
 import finished from "./finished.svg"
 
-export default function FourthFormStep(){
+export default function FinishStep(){
     const { closeForm } = useContext(FormCtx);
     
     return (

@@ -91,7 +91,7 @@ function TimeSelect(){
     );
 }
 
-export default function ThirdFormStep() {
+export default function TimeStep() {
     const [ currentTime, setTime ] = useState(null);
     const { sclForward, sclBackward, choosenDate } = useContext(FormCtx);
 

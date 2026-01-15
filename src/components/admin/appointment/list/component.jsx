@@ -27,8 +27,8 @@ export default function AppointmentList(){
                     <DateField source="date" showDate showTime />
                 </DataTable.Col>
                 <DataTable.Col source="duration" />
-                <DataTable.Col>
-                    <BooleanField source="completed" />
+                <DataTable.Col label="Completed" sortByOrder="ASC" >
+                    <BooleanField source="completed" sortByOrder="ASC" />
                 </DataTable.Col>
             </DataTable>
         </List>

@@ -13,6 +13,9 @@ import styles from "./styles.module.css";
 // images
 import phone from "../phone.svg";
 
+// components
+import PhoneNumber from "../phone-number/component";
+
 function NavigationLink({ url, label }){
     return (
         <Link href={ url } className="text-xl">
@@ -54,7 +57,7 @@ export default function MobileMenu(){
                         src={ phone }
                         alt="Malex contact phone number"
                     />
-                    <h1 className="font-semibold text-lg">3474101444</h1>
+                    <PhoneNumber />
                 </div>
             </div>
         </div>

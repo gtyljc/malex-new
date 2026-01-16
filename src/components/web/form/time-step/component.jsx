@@ -42,7 +42,6 @@ function Time({ date, isBusy }){
 }
 
 function TimeSelect(){
-    
     function isTimeBusy(busyTimesAtDayData, date){
         for(let obj of busyTimesAtDayData){
             if (obj.date == date.toISOString()) return true
@@ -59,16 +58,17 @@ function TimeSelect(){
     );
 
     // wait until loading
-    if (contactData.loading | busyTimesAtDay.loading ) return;
+    if (contactData.loading | busyTimesAtDay.loading ) return <p>Loading...</p>;
 
     const step = contactData.data.contactData.data[0].min_duration;
     const start = dayjs(contactData.data.contactData.data[0].opening_at);
     const end = dayjs(contactData.data.contactData.data[0].closing_at);
+    const workHours = end.hour() - start.hour();
     const arr = [];
     let hOffset = 0;
     let timeDate;
 
-    for(let i = 0; i < parseInt(end.diff(start, "hour") / step) + 1; i++){        
+    for(let i = 0; i < (workHours / step) + 1; i++){        
         timeDate = start.add({ hour: hOffset });
 
         arr.push(

@@ -12,6 +12,7 @@ import {
 
 // components
 import MobileMenu from "@web/header/mobile-menu/component";
+import PhoneNumber from "./phone-number/component";
 
 // images
 import logo from "./logo.svg";
@@ -55,7 +56,7 @@ function HeaderContent() {
                             src={ phone }
                             alt="Malex contact phone number"
                         />
-                        <h1 className="font-semibold text-lg">3474101444</h1>
+                        <PhoneNumber />
                     </div>        
                     <div className="flex flex-row justify-end items-center gap-5">
                         <button 

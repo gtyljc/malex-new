@@ -10,5 +10,6 @@
     text-align: center;
     border-radius: 50%;
     transition: background-color 0.25s var(--appearing-anim);
+    user-select: none;
     cursor: pointer;
 }

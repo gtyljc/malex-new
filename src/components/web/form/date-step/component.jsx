@@ -26,7 +26,7 @@ const CalenderCtx = createContext();
 
 function Day({ date, isBusy }){
     const { setDay, currentDay } = useContext(CalenderCtx);
-    const { setDate } = useContext(FormCtx);
+    const isDisabled = isBusy || date.unix() <= dayjs().unix();
 
     return(
         <td className="p-[3px]">
@@ -34,15 +34,15 @@ function Day({ date, isBusy }){
                 className={
                     clsx(
                         styles.day,
-                        isBusy && "bg-light-gray text-graphite",
+                        isDisabled && "bg-light-gray text-graphite",
 
-                        // can be hovered only if it is free
-                        !isBusy &&
+                        // can be hovered only if it is enabled
+                        !isDisabled && 
                         ( currentDay != null && currentDay.format("L") == date.format("L") ) && 
                         "bg-dodger-blue text-white"
                     )
                 }
-                onClick={ !isBusy ? () => { setDay(date); setDate(date) }: () => {}  } // must be clickable only if day is free
+                onClick={ !isDisabled ? () => { setDay(date) }: () => {}  } // must be clickable only if day is free
             >
                 { date.date() }
             </div>
@@ -127,7 +127,7 @@ function ScrollMonthBtn({ icon, func, className }){
 export default function DateStep(){
     const [ currentMonth, setMonth ] = useState(dayjs());
     const [ currentDay, setDay ] = useState(null);
-    const { sclForward, sclBackward } = useContext(FormCtx);
+    const { sclForward, sclBackward, setDate } = useContext(FormCtx);
 
     return (
         <StepWrapper>
@@ -162,7 +162,7 @@ export default function DateStep(){
             </CalenderCtx.Provider>
             <div className="w-full flex flex-row gap-2">
                 <BackButton onClick={ () => sclBackward() } />
-                <NextButton onClick={ () => currentDay && sclForward() } />
+                <NextButton onClick={ () => { if( currentDay ) { setDate(currentDay); sclForward(); } } } />
             </div>
         </StepWrapper>
     )

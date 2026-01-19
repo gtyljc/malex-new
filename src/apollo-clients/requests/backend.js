@@ -4,7 +4,7 @@
 
 import { gql } from "@apollo/client";
 import { capitalize } from "@src/tools";
-import * as frontR from "./front-requests";
+export * as frontendQueries from "./frontend"; // access to frontend requests
 
 export class AdminQueries {
     // all children must contain to fields: resource -> name of resource to manipulate
@@ -163,7 +163,6 @@ export class AdminQueries {
 }
 
 export class AppointmentQueries extends AdminQueries {
-    static frontR = frontR.AppointmentQueries;
     static resource = "appointment";
     static fields = [
         "id",
@@ -180,7 +179,6 @@ export class AppointmentQueries extends AdminQueries {
 }
 
 export class WorkQueries extends AdminQueries {
-    static frontR = frontR.WorkQueries;
     static resource = "work";
     static fields = [
         "id",
@@ -192,7 +190,6 @@ export class WorkQueries extends AdminQueries {
 }
 
 export class SiteConfigQueries extends AdminQueries {
-    static frontR = frontR.SiteConfigQueries;
     static resource = "siteConfig";
     static fields = [
         "id",
@@ -205,8 +202,6 @@ export class SiteConfigQueries extends AdminQueries {
 }
 
 export class AuthQueries {
-    static frontR = frontR.AuthQueries;
-
     static createRT(){
         return gql`
             mutation createRT($user_id: ID!, $role: RoleEnum!){
@@ -215,8 +210,8 @@ export class AuthQueries {
                     success
                     message
                     data {
-                        token
-                        r_token
+                        rt
+                        at
                     }
                 }
             }

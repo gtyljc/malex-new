@@ -1,5 +1,5 @@
 
-import { ImageUploadQueries } from "@src/apollo-clients/requests/back-requests";
+import { ImageUploadQueries } from "@src/apollo-clients/requests/backend";
 import { nanoid } from "nanoid";
 import { capitalize } from "@src/tools";
 

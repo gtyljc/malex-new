@@ -4,8 +4,7 @@
 // others
 import { ApolloProvider } from "@apollo/client/react";
 import { FormProvider } from "@web/form/ctx"
-import { frontClient } from "@src/apollo-clients/clients";
-import { setRTForFront } from "@src/apollo-clients/clients";
+import FrontendApolloClient from "@src/apollo-clients/frontend";
 
 // components
 import Header from "@web/header/component";
@@ -13,13 +12,11 @@ import Footer from "@web/footer/component";
 import Form from "@web/form/component";
 import { useEffect } from "react";
 
-export default function PageWrapper({ children, authPair }){
-
-    // set auth pair ( RT & AT tokens )
-    useEffect(() => { setRTForFront(authPair.rToken, authPair.token) });
+export default function PageWrapper({ children, authTokens }){
+    useEffect(() => { FrontendApolloClient.initTokens(authTokens.at, authTokens.rt) })
 
     return (
-        <ApolloProvider client={ frontClient().client  }>
+        <ApolloProvider client={ new FrontendApolloClient().init().client }>
             <FormProvider>
                 <Form />
                 <Header/>

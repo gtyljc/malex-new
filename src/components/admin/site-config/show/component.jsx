@@ -8,7 +8,7 @@ import {
     EditButton,
     EmailField
 } from "react-admin";
-import { SiteConfigQueries } from "@src/apollo-clients/requests/back-requests";
+import { SiteConfigQueries } from "@src/apollo-clients/requests/backend";
 
 function Actions (){
     return (

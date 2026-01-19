@@ -1,6 +1,6 @@
 
 import { useQuery } from "@apollo/client/react";
-import { SiteConfigQueries } from "@src/apollo-clients/requests/front-requests";
+import { SiteConfigQueries } from "@src/apollo-clients/requests/frontend";
 
 export default function PhoneNumber(){
     const { data, loading } = useQuery(SiteConfigQueries.contactData());

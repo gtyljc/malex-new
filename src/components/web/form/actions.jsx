@@ -2,7 +2,7 @@
 
 import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
-import { AppointmentQueries } from "@src/apollo-clients/requests/back-requests";
+import { AppointmentQueries } from "@src/apollo-clients/requests/backend";
 
 dayjs.extend(objectSupport)
 

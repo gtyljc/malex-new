@@ -164,8 +164,8 @@ export class AuthQueries {
                     success
                     message
                     data {
-                        token,
-                        r_token
+                        at,
+                        rt
                     }
                 }
             }

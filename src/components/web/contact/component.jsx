@@ -4,7 +4,7 @@
 // others
 import Image from "next/image";
 import { useQuery } from "@apollo/client/react";
-import { SiteConfigQueries } from "@src/apollo-clients/requests/front-requests";
+import { SiteConfigQueries } from "@src/apollo-clients/requests/frontend";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjs from "dayjs";
 

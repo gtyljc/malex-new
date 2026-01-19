@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { SiteConfigQueries, AppointmentQueries } from "@src/apollo-clients/requests/front-requests";
+import { SiteConfigQueries, AppointmentQueries } from "@src/apollo-clients/requests/frontend";
 
 // components
 import StepWrapper from "../step-wrapper/component";

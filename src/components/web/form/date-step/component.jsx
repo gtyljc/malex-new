@@ -8,7 +8,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
 import { FormCtx } from "../ctx";
 import { useQuery } from "@apollo/client/react";
-import { AppointmentQueries } from "@src/apollo-clients/requests/front-requests";
+import { AppointmentQueries } from "@src/apollo-clients/requests/frontend";
 
 // components
 import StepWrapper from "../step-wrapper/component";

@@ -1,6 +1,6 @@
 
 import { jwtVerify, decodeJwt } from "jose";
-import { AuthQueries } from "@src/apollo-clients/requests/front-requests";
+import { AuthQueries } from "@src/apollo-clients/requests/frontend";
 import { setAuthPairLocal, getAuthPairLocal } from "@src/apollo-clients/clients";
 
 class AuthProvider {

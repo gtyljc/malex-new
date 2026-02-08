@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import { required } from "react-admin";
 import { useGetOne } from "react-admin";
-import { SiteConfigQueries } from "@src/apollo-clients/requests/backend";
+import { SiteConfigQueries } from "@src/apollo-clients/queries/backend";
 
 // components
 import { Edit, SimpleForm, SelectInput, BooleanInput } from "react-admin";

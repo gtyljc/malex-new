@@ -1,7 +1,7 @@
 
 // others
 import clsx from "clsx";
-import { Children, useContext } from "react";
+import { useContext } from "react";
 import { ViewerCtx } from "./ctx";
 import Image from "next/image";
 import { WorksCtx } from "../component";
@@ -82,7 +82,7 @@ export default function Viewer(){
                             { works.length != 0 && dayjs(works[index].timestamp).format("DD.MM.YYYY") }
                         </span>
                     </div>
-                    <div className="w-full rounded-[10px] overflow-hidden relative">
+                    <div className="w-full flex flex-row justify-center rounded-[10px] overflow-hidden relative">
                         <ScrollBackBtn />
                         <ScrollForwardBtn />
                         {
@@ -91,7 +91,7 @@ export default function Viewer(){
                                 alt="Opened work"
                                 width={ 300 }
                                 height={ 300 }
-                                className="w-full"
+                                className="max-h-[720px]"
                             />
                         }
                     </div>

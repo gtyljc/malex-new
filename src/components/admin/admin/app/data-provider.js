@@ -1,5 +1,5 @@
 
-import { ImageUploadQueries } from "@src/apollo-clients/requests/backend";
+import { ImageUploadQueries } from "@src/apollo-clients/queries/backend";
 import { nanoid } from "nanoid";
 import { capitalize } from "@src/tools";
 
@@ -56,7 +56,7 @@ class DataProvider {
 
     // get a list of records based on sort, filter, and pagination
     async getList(resource, params) {
-        const { 
+        const {
             pagination, 
             sort, 
             filter = {} 

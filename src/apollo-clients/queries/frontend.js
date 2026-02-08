@@ -5,44 +5,14 @@ import { gql } from "@apollo/client";
 
 export class AppointmentQueries {
 
-    // returns all appointments that are in the range of date
-    static busyTimesAtDay(){
+    // returns all "busy" objects that are in time range ( 
+    // available two units "DAY" => is day busy; "APPOINTMENT" => 
+    // returns "busy" objects, that corresponds made appointments in
+    // time range )
+    static busyInRange(){
         return gql`
-            query BusyTimesAtDay($date: DateTimeISO!){
-                busyTimesAtDay(date: $date) {
-                    code
-                    success
-                    message
-                    data {
-                        date
-                        busy
-                    }
-                }
-            }
-        `
-    }
-
-    // returns boolean, which means is there free place for new appointments
-    static isDayBusy(){
-        return gql`
-            query IsDayBusy($date: DateTimeISO){
-                isDayBusy(date: $date) {
-                    code
-                    success
-                    message
-                    data {
-                        date
-                        busy
-                    }
-                }
-            }
-        `
-    }
-
-    static busyDaysAtMonth(){
-        return gql`
-            query BusyDaysAtMonth($date: DateTimeISO){
-                busyDaysAtMonth(date: $date) {
+            query busyInRange($start: DateTimeISO!, $end: DateTimeISO!, $unit: TimeUnitEnum!){
+                busyInRange(start: $start, end: $end, unit: $unit) {
                     code
                     success
                     message
@@ -85,8 +55,8 @@ export class WorkQueries {
     // returns all works (must be used with pagination)
     static getWorks() {
         return gql`
-            query GetWorks($filter: JSONObject, $pagination: PaginationInput){
-                getWorks(filter: $filter, pagination: $pagination) {
+            query GetWorks($filter: JSONObject!, $pagination: PaginationInput!, $sort: SortInput){
+                getWorks(filter: $filter, pagination: $pagination, sort: $sort) {
                     code
                     success
                     message
@@ -130,8 +100,8 @@ export class AuthQueries {
                     success
                     message
                     data {
-                        token,
-                        r_token
+                        at,
+                        rt
                     }
                 }
             }
@@ -147,8 +117,8 @@ export class AuthQueries {
                     success
                     message
                     data {
-                        token,
-                        r_token
+                        at,
+                        rt
                     }
                 }
             }

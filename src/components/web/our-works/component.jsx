@@ -3,7 +3,7 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/apollo-clients/requests/frontend";
+import { WorkQueries } from "@src/apollo-clients/queries/frontend";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { ViewerProvider, ViewerCtx } from "./viewer/ctx";
@@ -13,6 +13,7 @@ import { useContext, createContext, useState } from "react";
 import PathToPageSection from "@web/path-to-page/component";
 import PanelSection from "@web/our-works/panel/component";
 import Viewer from "./viewer/component";
+import LoadingSection from "@web/loading-section/component";
 
 export const WorksCtx = createContext();
 
@@ -24,11 +25,11 @@ function Work({ date, img_url, index }){
             onClick={ () => { setIndex(index); openViewer(); } }
             className="
                 size-[180px] relative rounded-[5px] overflow-hidden md:size-[220px] 
-                lg:size-[250px] cursor-pointer
+                lg:size-[250px] cursor-pointer flex flex-row justify-center items-center
             "
         >
             <Image
-                className="h-full absolute z-[-1]"
+                className="absolute z-[-1]"
                 src={ img_url }
                 width={ 300 }
                 height={ 300 }
@@ -43,21 +44,21 @@ function Work({ date, img_url, index }){
 
 function WorkSection({ title, category }){
     const { works } = useContext(WorksCtx);
+    const filteredWorks = works.filter(
+        e => e.category == category
+    ).map(
+        e => <Work 
+            date={ e.timestamp } 
+            img_url={ e.img_url }
+            index={ e.index }
+        />
+    );
 
     return (
         <section>
             <h1 className="text-2xl mb-2.5">{ title }</h1>
             <div className="flex flex-row flex-wrap gap-3">
-                { works.length == 0 && <p>Here is nothing right now...</p> }
-                {
-                    works.filter(e => e.category == category).map(
-                        e => <Work 
-                            date={ e.timestamp } 
-                            img_url={ e.img_url }
-                            index={ e.index }
-                        />
-                    )
-                }
+                { filteredWorks.length == 0 ? <p className="mt-5">Here is nothing right now...</p>: filteredWorks }
             </div>
         </section>
     )
@@ -79,7 +80,7 @@ export default function OurWorks(){
     );
 
     // wait until data will be loaded
-    if (loading) return <section><p>Loading...</p></section>;
+    if (loading) return <LoadingSection />;
 
     !works && setWorks(
         data.getWorks.data.map(

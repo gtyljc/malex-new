@@ -1,7 +1,7 @@
 
 import { jwtVerify, decodeJwt } from "jose";
-import { AuthQueries } from "@src/apollo-clients/requests/frontend";
-import { setAuthPairLocal, getAuthPairLocal } from "@src/apollo-clients/clients";
+import { AuthQueries } from "@src/apollo-clients/queries/frontend";
+import FrontendApolloClient from "@src/apollo-clients/frontend";
 
 class AuthProvider {
     constructor(apolloClient){
@@ -23,9 +23,9 @@ class AuthProvider {
 
         // validation successful
         if(r.data.adminLogin.success){
-            setAuthPairLocal(
-                r.data.adminLogin.data[0].r_token,
-                r.data.adminLogin.data[0].token
+            FrontendApolloClient.setAuthTokens(
+                r.data.adminLogin.data[0].rt,
+                r.data.adminLogin.data[0].at
             )
 
             return { redirectTo: "/" };
@@ -36,15 +36,13 @@ class AuthProvider {
 
     // send username and password to the auth server and get back credentials
     async login({ username, password }) {
-        const { token } = getAuthPairLocal();
+        const { at } = FrontendApolloClient.getAuthTokens();
 
-        // console.log("kwodkdwkl")
-
-        if (token){
+        if (at){
 
             // if token is too old and need to be refreshed
             try { 
-                await jwtVerify(token)
+                await jwtVerify(at)
                 
                 return { redirectTo: "/" };
             }
@@ -62,13 +60,13 @@ class AuthProvider {
     
     // when the user navigates, make sure that their credentials are still valid
     async checkAuth() {
-        const { token } = getAuthPairLocal();
+        const { at } = FrontendApolloClient.getAuthTokens();
 
-        if (!token) {
+        if (!at) {
             throw new AuthProvider.authError()
         }
         else {
-            const claims = decodeJwt(token);
+            const claims = decodeJwt(at);
 
             // if it's "user" token
             if (claims.aud != "ADMIN") throw new AuthProvider.authError();
@@ -77,17 +75,17 @@ class AuthProvider {
     
     // remove local credentials and notify the auth server that the user logged out
     async logout() {
-        const authPair = getAuthPairLocal();
+        const authPair = FrontendApolloClient.getAuthTokens();
         
-        if(authPair.token && authPair.rToken){
-            const claims = decodeJwt(authPair.rToken);
+        if(authPair.a_token && authPair.r_token){
+            const claims = decodeJwt(authPair.a_token);
 
             if(claims.aud == "ADMIN"){
                 const r = await this.apolloClient.mutate({ mutation: AuthQueries.adminLogout() });
 
-                setAuthPairLocal(
-                    r.data.adminLogout.data[0].r_token,
-                    r.data.adminLogout.data[0].token
+                FrontendApolloClient.setAuthTokens(
+                    r.data.adminLogout.data[0].at,
+                    r.data.adminLogout.data[0].rt
                 )
             }
         }

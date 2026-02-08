@@ -96,7 +96,7 @@ function BannersSectionContent() {
             >
                 <div className="row-con">
                     <ul 
-                        className="row lg:h-[380px] mt-3 md:mt-auto"
+                        className="row row-animation lg:h-[380px] mt-3 md:mt-auto"
                         style={ 
                             { 
                                 transform: `translateX(-${ index * (100 + rowGap) }%)`,

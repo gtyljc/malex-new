@@ -10,25 +10,25 @@ import {
 
 export default function AppointmentList(){
     const listFilters = [
-        <SearchInput source="name" alwaysOn/>
+        <SearchInput source="name" alwaysOn />
     ]
     
     return (
-        <List filters={ listFilters }>
+        <List filters={ listFilters } sort={ { field: "completed", order: "ASC" } }>
             <DataTable>
-                <DataTable.NumberCol source="id" />
-                <DataTable.Col source="name" />
-                <DataTable.Col source="surname" />
-                <DataTable.Col source="address" />
-                <DataTable.Col source="job_desc" />
-                <DataTable.Col source="bwt" label="Best way to touch" />
-                <DataTable.Col source="number" />
-                <DataTable.Col label="Date of meeting">
+                <DataTable.NumberCol source="id" disableSort />
+                <DataTable.Col source="name" disableSort />
+                <DataTable.Col source="surname" disableSort />
+                <DataTable.Col source="address" disableSort />
+                <DataTable.Col source="job_desc" disableSort />
+                <DataTable.Col source="bwt" label="Best way to touch" disableSort />
+                <DataTable.Col source="phone_number" disableSort />
+                <DataTable.Col label="Date of meeting" disableSort>
                     <DateField source="date" showDate showTime />
                 </DataTable.Col>
-                <DataTable.Col source="duration" />
-                <DataTable.Col label="Completed" sortByOrder="ASC" >
-                    <BooleanField source="completed" sortByOrder="ASC" />
+                <DataTable.Col source="duration" disableSort/>
+                <DataTable.Col label="Completed" disableSort>
+                    <BooleanField source="completed" />
                 </DataTable.Col>
             </DataTable>
         </List>

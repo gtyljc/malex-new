@@ -5,20 +5,23 @@ import Link from "next/link";
 import clsx from "clsx";
 import { useContext } from "react";
 import { MobileMenuCtx } from "./ctx";
-import Image from "next/image";
+import { HeaderCtx } from "../ctx";
 
 // css
 import styles from "./styles.module.css";
-
-// images
-import phone from "../phone.svg";
 
 // components
 import PhoneNumber from "../phone-number/component";
 
 function NavigationLink({ url, label }){
+    const { setCurrentPage, currentPage } = useContext(HeaderCtx);
+
     return (
-        <Link href={ url } className="text-xl">
+        <Link 
+            href={ url } 
+            className={ clsx("text-xl", currentPage == label && "text-dodger-blue!") }
+            onClick={ () => setCurrentPage(label) }
+        >
             { label }
         </Link>
     )
@@ -31,7 +34,7 @@ export default function MobileMenu(){
         <div
             className={
                 clsx(
-                    "inset-0 flex flex-row justify-end mt-(--header-h) fixed pointer-events-none",
+                    "inset-0 flex flex-row justify-end mt-(--header-h) fixed pointer-events-none lg:hidden",
                     isOpened && "pointer-events-auto! bg-graphite/45",
                 )
             }
@@ -51,12 +54,7 @@ export default function MobileMenu(){
                     <NavigationLink url="/our-works" label="Our Works" />
                     <NavigationLink url="/contact" label="Contact" />
                 </nav>
-                <div className="flex flex-row items-center gap-3 mt-[50px]">
-                    <Image
-                        width={ 30 }
-                        src={ phone }
-                        alt="Malex contact phone number"
-                    />
+                <div className="mt-[60px]">
                     <PhoneNumber />
                 </div>
             </div>

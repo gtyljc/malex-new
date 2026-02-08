@@ -6,11 +6,13 @@ import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { SiteConfigQueries, AppointmentQueries } from "@src/apollo-clients/requests/frontend";
+import { SiteConfigQueries, AppointmentQueries } from "@src/apollo-clients/queries/frontend";
+import * as tools from "@src/tools";
 
 // components
 import StepWrapper from "../step-wrapper/component";
 import { NextButton, BackButton, ScrollBtnsCon } from "../step-wrapper/component";
+import LoadingSection from "@web/loading-section/component";
 
 // css
 import styles from "./styles.module.css";
@@ -28,13 +30,24 @@ function Time({ date, isBusy }){
             className={
                 clsx(
                     styles.time,
-                    isBusy && "text-light-gray",
-                    !isBusy && 
+                    isBusy && "text-ice-blue border-0! cursor-auto!",
+                    !isBusy &&
                     (currentTime && date.format("LT") == currentTime.format("LT")) && 
-                    "bg-dodger-blue text-white"
+                    "bg-dodger-blue text-white border-0!"
                 )
             } 
-            onClick={ () => setTime(date) }
+            onClick={ 
+                () => { 
+                    if(currentTime){
+
+                        // if user double-clicked on day
+                        if (currentTime.unix() == date.unix()){ setTime(null); return }
+                        else setTime(date);
+                    }
+                    
+                    setTime(date);
+                } 
+            }
         >
             <span>{ date.format("LT") }</span>   
         </div>
@@ -42,40 +55,45 @@ function Time({ date, isBusy }){
 }
 
 function TimeSelect(){
-    function isTimeBusy(busyTimesAtDayData, date){
-        for(let obj of busyTimesAtDayData){
-            if (obj.date == date.toISOString()) return true
-        }
-        
-        return false;
-    }
-
-    const { choosenDate } = useContext(FormCtx);
+    const { inputData: { date } } = useContext(FormCtx);
     const contactData = useQuery(SiteConfigQueries.contactData());
+    const timeRange = tools.inRangeOfOneDay(date);
     const busyTimesAtDay = useQuery(
-        AppointmentQueries.busyTimesAtDay(), 
-        { variables: { date: choosenDate.toISOString() } }
+        AppointmentQueries.busyInRange(),
+        { 
+            variables: { 
+                start: timeRange[0].toISOString(), 
+                end: timeRange[1].toISOString(), 
+                unit: "APPOINTMENT" 
+            } 
+        }
     );
 
     // wait until loading
-    if (contactData.loading | busyTimesAtDay.loading ) return <p>Loading...</p>;
+    if (contactData.loading | busyTimesAtDay.loading ) return <LoadingSection />;
 
     const step = contactData.data.contactData.data[0].min_duration;
     const start = dayjs(contactData.data.contactData.data[0].opening_at);
     const end = dayjs(contactData.data.contactData.data[0].closing_at);
-    const workHours = end.hour() - start.hour();
-    const arr = [];
+    const times = [];
+    const workTime = end.unix() - start.unix();
     let hOffset = 0;
-    let timeDate;
+    let appTime = dayjs(start);
 
-    for(let i = 0; i < (workHours / step) + 1; i++){        
-        timeDate = start.add({ hour: hOffset });
+    // console.log(start.unix(), end.unix(), workTime, step );
 
-        arr.push(
+    while (appTime.unix() < workTime){        
+        appTime = appTime.add({ hour: hOffset });
+
+        times.push(
             <Time
-                key={ timeDate.toISOString() }
-                date={ timeDate }
-                isBusy={ isTimeBusy(busyTimesAtDay.data.busyTimesAtDay.data, timeDate) }
+                key={ appTime.toISOString() }
+                date={ appTime }
+                isBusy={ 
+                    busyTimesAtDay.data.busyInRange.data.filter(
+                        e => appTime.toISOString() == e.date
+                    ).length != 0 
+                }
             />
         );
 
@@ -83,32 +101,44 @@ function TimeSelect(){
     }
 
     return (
-        <div className="flex flex-row justify-center">
+        <div className="min-h-[180px] flex flex-row justify-center items-center">
             <div className="max-w-[405px] flex flex-row flex-wrap gap-2">
-                { arr }
+                { times }
             </div>
         </div>
     );
 }
 
+const STEP_I = 2;
+
 export default function TimeStep() {
     const [ currentTime, setTime ] = useState(null);
-    const { sclForward, sclBackward, choosenDate } = useContext(FormCtx);
+    const { inputData } = useContext(FormCtx);
 
     return (
-        <StepWrapper>
-            { currentTime && <input type="hidden" name="time" value={ currentTime.toISOString() } /> }
-            
+        <StepWrapper sIndex={ STEP_I } >
             <h1 className="mb-7 text-center text-2xl font-medium">
                 Make an appointment
             </h1>
             <h2 className="text-center font-light text-xl mb-5">Select a time</h2>
             <TimeSelectCtx.Provider value={ { setTime, currentTime } }>
-                { choosenDate && <TimeSelect/> }
+                <TimeSelect />
             </TimeSelectCtx.Provider>
             <ScrollBtnsCon>
-                <BackButton onClick={ () => sclBackward() } />
-                <NextButton onClick={ () => currentTime && sclForward() } isSubmit />
+                <BackButton />
+                <NextButton 
+                    onClick={ 
+                        () => { 
+                            if (currentTime){ 
+                                inputData.date = inputData.date
+                                    .add(currentTime.hour(), "hour")
+                                    .add(currentTime.minute(), "minute")
+                                    .toISOString()
+                                }
+                            }
+                        } 
+                    isSubmit 
+                />
             </ScrollBtnsCon>
         </StepWrapper>
     )    

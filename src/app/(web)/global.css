@@ -20,9 +20,13 @@
 	}
 
 	.row {
-		transition: transform 0.5s var(--scrolling-anim);
+		/* transition: transform 0.5s var(--scrolling-anim); */
 
-		@apply w-full flex flex-row;
+		@apply w-full flex flex-row items-center;
+	}
+
+	.row-animation {
+		transition: transform 0.5s var(--scrolling-anim);
 	}
 
 	.row-el {
@@ -85,11 +89,12 @@
 }
 
 html {
+	height: 100dvh;
 	scroll-behavior: smooth;
 }
 
 body {
-	@apply flex flex-col w-full h-dvh;
+	@apply flex flex-col size-full;
 }
 
 section {

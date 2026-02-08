@@ -5,26 +5,13 @@ import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormCtx } from "../ctx";
-import * as z from "zod";
 import { useContext } from "react";
+import { clientDataStepSchema } from "../validation-schemas";
 
 // components
 import StepWrapper from "../step-wrapper/component";
 import { NextButton } from "../step-wrapper/component";
 
-const enRegex = /^[A-Za-z]+$/;
-const phoneRegex = /^(?:\+[1-9][0-9]{7,14}|[0-9]{10})$/;
-const onlyDecimalRegex = /[^\d+]/g;
-const schema = z.object(
-    {
-        name: z.string().min(1).max(50).regex(enRegex),
-        surname: z.string().min(1).max(50).regex(enRegex),
-        address: z.string().min(1).max(255),
-        job_desc: z.string().min(1).max(500),
-        bwt: z.enum(["whatsapp", "text", "phone"]),
-        number: z.string().transform(v => v.replace(onlyDecimalRegex, "")).refine(v => phoneRegex.test(v))
-    }
-);
 
 function InputsRow ({ children }) {
     return (
@@ -118,8 +105,10 @@ function SelectInputWithLabel({ id, options, label, formObject }){ // options =>
     )
 }
 
+const STEP_I = 0;
+
 // should be insert in ul
-export default function CLientDataStep() {
+export default function ClientDataStep() {
     const formObject = useForm(
         {
             defaultValues: {
@@ -127,30 +116,28 @@ export default function CLientDataStep() {
                 "surname": "",
                 "address": "",
                 "job_desc": "",
-                "bwt": "whatsapp",
-                "number": ""
+                "bwt": "WHATSAPP",
+                "phone_number": ""
             },
-            resetOptions: {
-                keepDefaultValues: true
-            },
-            resolver: zodResolver(schema),
+            resetOptions: { keepDefaultValues: true },
+            resolver: zodResolver(clientDataStepSchema),
             mode: "onChange"
         }
     );
-    const { sclForward } = useContext(FormCtx);
+    const { inputData } = useContext(FormCtx);
 
     return (
-        <StepWrapper>
+        <StepWrapper sIndex={ STEP_I }>
             <h1 className="mb-7 text-center text-2xl font-medium">
                 Make an appointment
             </h1>
-            <div className="w-full flex flex-col gap-2.5 max-w-[430px]">
+            <div className="w-full flex flex-col gap-4 max-w-[430px]">
                 <InputsRow>
                     <InputCon input_id="name" formObject={ formObject }>
                         <TextInputWithLabel 
                             id="name" 
                             label="Name" 
-                            props={ { maxLength: 50 } } 
+                            props={ { maxLength: 50, placeholder: "Your name" } } 
                             formObject={ formObject }
                         />
                     </InputCon>
@@ -158,7 +145,7 @@ export default function CLientDataStep() {
                         <TextInputWithLabel 
                             id="surname" 
                             label="Surname" 
-                            props={ { maxLength: 50 } } 
+                            props={ { maxLength: 50, placeholder: "Your surname" } } 
                             formObject={ formObject }
                         />
                     </InputCon>
@@ -167,7 +154,7 @@ export default function CLientDataStep() {
                     <TextInputWithLabel 
                         id="address" 
                         label="Address" 
-                        props={ { maxLength: 255 } } 
+                        props={ { maxLength: 255, placeholder: "Your address" } } 
                         formObject={ formObject }
                     />
                 </InputCon>                
@@ -175,7 +162,7 @@ export default function CLientDataStep() {
                     <TextInputWithLabel 
                         id="job_desc" 
                         label="Job description" 
-                        props={ { maxLength: 500 } } 
+                        props={ { maxLength: 500, placeholder: "Tell us what to do" } } 
                         formObject={ formObject }
                     />
                 </InputCon>
@@ -186,24 +173,51 @@ export default function CLientDataStep() {
                             label="The best way to get in touch"
                             options={
                                 [
-                                    { name: "Whatsapp", value: "whatsapp" },
-                                    { name: "Phone", value: "phone" },
-                                    { name: "Text", value: "text" }
+                                    { name: "Whatsapp", value: "WHATSAPP" },
+                                    { name: "Phone", value: "PHONE" },
+                                    { name: "Text", value: "TEXT" }
                                 ]
                             }
                             formObject={ formObject }
                         />
                     </InputCon>
-                    <InputCon input_id="number" formObject={ formObject }>
+                    <InputCon input_id="phone_number" formObject={ formObject }>
                         <TextInput 
-                            id="number" 
+                            id="phone_number" 
                             props={ { maxLength: 20, placeholder: "Number" } }
                             formObject={ formObject }
                         />
                     </InputCon>
                 </InputsRow>
             </div>
-            <NextButton onClick={ async () => { await formObject.trigger() && sclForward() } } />
+            <NextButton onClick={ 
+                async () => {
+
+                        // validate all fields
+                        if (await formObject.trigger()){
+                            const {
+                                name,
+                                surname,
+                                address,
+                                job_desc,
+                                bwt,
+                                phone_number
+                            } = formObject.getValues();
+                            
+                            inputData.name = name;
+                            inputData.surname = surname;
+                            inputData.address = address;
+                            inputData.job_desc = job_desc;
+                            inputData.bwt = bwt;
+                            inputData.phone_number = phone_number;
+
+                            return true;
+                        }
+
+                        return false
+                    } 
+                } 
+            />
         </StepWrapper>
     )
 }

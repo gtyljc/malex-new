@@ -8,11 +8,13 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
 import { FormCtx } from "../ctx";
 import { useQuery } from "@apollo/client/react";
-import { AppointmentQueries } from "@src/apollo-clients/requests/frontend";
+import { AppointmentQueries } from "@src/apollo-clients/queries/frontend";
+import * as tools from "@src/tools";
 
 // components
 import StepWrapper from "../step-wrapper/component";
 import { NextButton, BackButton } from "../step-wrapper/component";
+import LoadingSection from "@web/loading-section/component";
 
 // css
 import styles from "./styles.module.css";
@@ -29,20 +31,31 @@ function Day({ date, isBusy }){
     const isDisabled = isBusy || date.unix() <= dayjs().unix();
 
     return(
-        <td className="p-[3px]">
+        <td className="p-[4px]">
             <div
                 className={
                     clsx(
                         styles.day,
-                        isDisabled && "bg-light-gray text-graphite",
+                        isDisabled && "bg-ice-blue text-graphite cursor-auto! border-0!",
 
                         // can be hovered only if it is enabled
                         !isDisabled && 
                         ( currentDay != null && currentDay.format("L") == date.format("L") ) && 
-                        "bg-dodger-blue text-white"
+                        "bg-dodger-blue text-white border-0!"
                     )
                 }
-                onClick={ !isDisabled ? () => { setDay(date) }: () => {}  } // must be clickable only if day is free
+                onClick={ 
+                    !isDisabled ? () => {
+                        if(currentDay){
+
+                            // if user double-clicked on day
+                            if (currentDay.unix() == date.unix()){ setDay(null); return }
+                            else setDay(date);
+                        }
+                        
+                        setDay(date);
+                    }: () => {}  
+                }
             >
                 { date.date() }
             </div>
@@ -52,13 +65,20 @@ function Day({ date, isBusy }){
 
 function Calendar(){
     const { currentMonth } = useContext(CalenderCtx);
+    const timeRange = tools.inRangeOfOneDay(currentMonth);
     const { data, loading } = useQuery(
-        AppointmentQueries.busyDaysAtMonth(),
-        { variables: { date: currentMonth.toISOString() } }
+        AppointmentQueries.busyInRange(),
+        { 
+            variables: { 
+                start: timeRange[0].toISOString(), 
+                end: timeRange[1].toISOString(), 
+                unit: "DAY" 
+            } 
+        }
     );
 
     // wait until loaded
-    if (loading) return <p className="mr-auto ml-auto mt-3">Loading...</p>
+    if (loading) return <LoadingSection loadingIconStyles="size-[60px]!" />;
 
     const weekDays = [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ]
     const daysInMonth = currentMonth.daysInMonth();
@@ -68,7 +88,7 @@ function Calendar(){
     const tbodyContent = [];
     let rowI = 0;
     let row = [];
-    let dayDate = currentMonth.date(1); // starts always from 1 day
+    let dayDate = tools.resetAfterDay(currentMonth.date(1)); // starts always from 1 day
 
     // add offset to first row
     for (let i = 0; i < offset; i++){
@@ -89,9 +109,7 @@ function Calendar(){
             <Day
                 key={ dayDate.add(i, "day").toISOString() }
                 date={ dayDate.add(i, "day") } 
-                isBusy={ data.busyDaysAtMonth.data.filter(
-                    (e) => dayjs(e.date).date() == i + 1)[0].busy 
-                }
+                isBusy={ data.busyInRange.data.filter((e) => dayjs(e.date).date() == i + 1) != 0 }
             />
         );
     }
@@ -108,7 +126,7 @@ function Calendar(){
     return(
         <table className="mr-auto ml-auto mt-3">
             <thead>
-                <tr>{ weekDays.map(e => <th key={ e } className="w-13 h-13 font-light">{ e }</th>) }</tr>
+                <tr>{ weekDays.map(e => <th key={ e } className="h-20 font-light select-none">{ e }</th>) }</tr>
             </thead>
             <tbody>{ tbodyContent }</tbody>
         </table>
@@ -117,22 +135,22 @@ function Calendar(){
 
 function ScrollMonthBtn({ icon, func, className }){
     return (
-        <button onClick={ func } className={ clsx("svg-btn", className) } type="button">
+        <button onClick={ func } className={ clsx("svg-btn select-none", className) } type="button">
             { icon }
         </button>
     )
 }
 
+const STEP_I = 1;
+
 // should be inserted in ul
 export default function DateStep(){
     const [ currentMonth, setMonth ] = useState(dayjs());
     const [ currentDay, setDay ] = useState(null);
-    const { sclForward, sclBackward, setDate } = useContext(FormCtx);
+    const { inputData } = useContext(FormCtx);
 
     return (
-        <StepWrapper>
-            { currentDay && <input type="hidden" name="date" value={ currentDay.toISOString() } /> }
-
+        <StepWrapper sIndex={ STEP_I }>
             <h1 className="mb-7 text-center text-2xl font-medium">
                 Make an appointment
             </h1>
@@ -142,7 +160,7 @@ export default function DateStep(){
                     className={ currentMonth.format("L")  == dayjs().format("L")  && "pointer-events-none opacity-50" }
                     icon={
                         <Image
-                            src={ next } 
+                            src={ next }
                             alt="Scroll to previous month" 
                             style={ { transform: "rotate(180deg)" } }
                         />
@@ -161,8 +179,19 @@ export default function DateStep(){
                 <Calendar />
             </CalenderCtx.Provider>
             <div className="w-full flex flex-row gap-2">
-                <BackButton onClick={ () => sclBackward() } />
-                <NextButton onClick={ () => { if( currentDay ) { setDate(currentDay); sclForward(); } } } />
+                <BackButton />
+                <NextButton 
+                    onClick={
+                        () => { 
+                            if(currentDay) { 
+                                inputData.date = currentDay;
+
+                                return true; 
+                            } 
+                            return false; 
+                        } 
+                    } 
+                />
             </div>
         </StepWrapper>
     )

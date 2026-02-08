@@ -4,13 +4,14 @@
 // others
 import Image from "next/image";
 import { useQuery } from "@apollo/client/react";
-import { SiteConfigQueries } from "@src/apollo-clients/requests/frontend";
+import { SiteConfigQueries } from "@src/apollo-clients/queries/frontend";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjs from "dayjs";
 
 // components
 import PathToPageSection from "@web/path-to-page/component";
 import FormPreviewSection from "@web/form-preview/component";
+import LoadingSection from "@web/loading-section/component";
 
 // images
 import thumbnail from "./thumbnail.jpg";
@@ -29,64 +30,58 @@ function ContactDataField({ children, icon }){
     )
 }
 
-function PhoneNumberField(){
-    const { data, loading } = useQuery(SiteConfigQueries.contactData());
 
-    // wait until data will be loaded
-    if (loading) { return <li>Loading...</li> }
-
+function PhoneNumberField({ phoneValue }){
     return (
         <ContactDataField icon={ phone }>
-            <span className="font-semibold lg:text-lg">{ data.contactData.data[0].phone_number }</span>
+            <span className="font-semibold lg:text-lg">{ phoneValue }</span>
         </ContactDataField>
     )
 }
 
-function SupportEmailField(){
-    const { data, loading } = useQuery(SiteConfigQueries.contactData());
-
-    // wait until data will be loaded
-    if (loading) { return <li>Loading...</li> } 
-
+function SupportEmailField({ emailValue }){
     return (
         <ContactDataField icon={ email }>
-            <span className="font-semibold lg:text-lg">{ data.contactData.data[0].support_email }</span>
+            <span className="font-semibold lg:text-lg">{ emailValue }</span>
         </ContactDataField>
     )
 }
 
-function TimeField(){
-    const { data, loading } = useQuery(SiteConfigQueries.contactData());
-
-    // wait until data will be loaded
-    if (loading) { return <li>Loading...</li> }
-
-    const formatedStartingAt = dayjs(data.contactData.data[0].starting_at).format("LT");
-    const formatedClosingAt = dayjs(data.contactData.data[0].closing_at).format("LT");
-
+function TimeField({ openingAtValue, closingAtValue }){
     return (
         <ContactDataField icon={ time }>
             <span className="font-semibold lg:text-lg">
-                { `Mon-Fri: ${ formatedStartingAt } - ${ formatedClosingAt }, Sat-Sun: Closed` }
+                { `Mon-Fri: ${ openingAtValue } - ${ closingAtValue }, Sat-Sun: Closed` }
             </span>
         </ContactDataField>
     )
 }
 
 export default function Contact(){
+    const { data, loading } = useQuery(SiteConfigQueries.contactData());
+
     return (
         <main>
             <PathToPageSection page_name="Contact" />
             <section className="w-full flex flex-col items-center">
                 <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:w-full">
-                    <div className="w-full max-w-[470px]">
-                        <h1 className="mb-5 section-title">Contact</h1>
-                        <div className="w-full flex flex-col gap-5 md:order-2">
+                    <div className="w-full max-w-[470px] flex flex-col gap-5">
+                        <h1 className="section-title">Contact</h1>
+                        <div className="w-full flex flex-col md:order-2 gap-10">
                             <p>We’re always ready to answer your questions and offer the assistance you need</p>
                             <ul className="flex flex-col gap-6 mb-5 md:mb-0">
-                                <PhoneNumberField />
-                                <SupportEmailField />
-                                <TimeField />
+                                {
+                                    loading ? <LoadingSection />: (
+                                        <>
+                                            <PhoneNumberField phoneValue={ data.contactData.data[0].phone_number } />
+                                            <SupportEmailField emailValue={ data.contactData.data[0].support_email } />
+                                            <TimeField 
+                                                openingAtValue={ dayjs(data.contactData.data[0].starting_at).format("LT") } 
+                                                closingAtValue={ dayjs(data.contactData.data[0].closing_at).format("LT") } 
+                                            />
+                                        </>
+                                    )
+                                }
                             </ul>
                         </div>
                     </div>

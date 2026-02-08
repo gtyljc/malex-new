@@ -10,11 +10,13 @@ import { useContext } from "react";
 // images
 import finished from "./finished.svg"
 
+const STEP_I = 3;
+
 export default function FinishStep(){
     const { closeForm } = useContext(FormCtx);
     
     return (
-        <StepWrapper>
+        <StepWrapper sIndex={ STEP_I }>
             <div className="flex flex-col items-center gap-4">
                 <Image
                     src={ finished }

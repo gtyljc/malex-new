@@ -8,7 +8,7 @@ import {
     EditButton,
     EmailField
 } from "react-admin";
-import { SiteConfigQueries } from "@src/apollo-clients/requests/backend";
+import { SiteConfigQueries } from "@src/apollo-clients/queries/backend";
 
 function Actions (){
     return (
@@ -21,7 +21,7 @@ function Actions (){
 export default function SiteConfigShow(){
     return (
         <Show 
-            id={ 1 } 
+            id={ 1 }
             resource={ SiteConfigQueries.resource }
             title="Site Config"
             actions={ <Actions /> }

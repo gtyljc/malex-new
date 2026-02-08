@@ -6,7 +6,7 @@ import { gql } from "@apollo/client";
 import { capitalize } from "@src/tools";
 export * as frontendQueries from "./frontend"; // access to frontend requests
 
-export class AdminQueries {
+export class ResourceQueries {
     // all children must contain to fields: resource -> name of resource to manipulate
     // and fields -> all available fields at resource
 
@@ -162,7 +162,7 @@ export class AdminQueries {
     }
 }
 
-export class AppointmentQueries extends AdminQueries {
+export class AppointmentQueries extends ResourceQueries {
     static resource = "appointment";
     static fields = [
         "id",
@@ -171,14 +171,14 @@ export class AppointmentQueries extends AdminQueries {
         "address",
         "job_desc",
         "bwt",
-        "number",
+        "phone_number",
         "date",
         "duration",
         "completed"
     ]
 }
 
-export class WorkQueries extends AdminQueries {
+export class WorkQueries extends ResourceQueries {
     static resource = "work";
     static fields = [
         "id",
@@ -189,7 +189,7 @@ export class WorkQueries extends AdminQueries {
     ]
 }
 
-export class SiteConfigQueries extends AdminQueries {
+export class SiteConfigQueries extends ResourceQueries {
     static resource = "siteConfig";
     static fields = [
         "id",
@@ -201,7 +201,34 @@ export class SiteConfigQueries extends AdminQueries {
     ]
 }
 
+export class AdminQueries extends ResourceQueries {
+    static resource = "admin";
+    static fields = [
+        "id",
+        "opening_at",
+        "closing_at",
+        "min_duration",
+        "support_email",
+        "phone_number"
+    ]
+
+    static 
+}
+
 export class AuthQueries {
+    static adminPanelKey(){
+        return gql`
+            query adminPanelKey {
+                adminPanelKey {
+                    code
+                    success
+                    message
+                    data
+                }
+            }
+        `
+    }
+
     static createRT(){
         return gql`
             mutation createRT($user_id: ID!, $role: RoleEnum!){
@@ -221,7 +248,7 @@ export class AuthQueries {
 
 export class ImageUploadQueries {
 
-    // get an image uploud link
+    // get an image upload link
     static startImageUpload() {
         return gql`
             mutation StartImageUpload($id: ID!){

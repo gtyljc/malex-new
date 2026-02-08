@@ -9,13 +9,14 @@ import {
 } from "@web/points-scrollbar/ctx";
 import { useContext } from "react";
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/apollo-clients/requests/frontend";
+import { WorkQueries } from "@src/apollo-clients/queries/frontend";
 import dayjs from "dayjs";
 
 // components
 import ScrollProgressBar from "@web/points-scrollbar/component";
+import LoadingSection from "@web/loading-section/component";
 
-function Empty(){
+function EmptyWork(){
     return <div className="size-full bg-ice-blue"></div>
 }
 
@@ -53,7 +54,7 @@ function Work({ work }){
                     alt="Our work" 
                     width={ 300 } 
                     height={ 300 } 
-                />: <Empty />
+                />: <EmptyWork />
             }
         </div>
     )
@@ -82,7 +83,7 @@ function WorksRow(){
     )
     const { index } = useContext(PointsScrollbarCtx);
 
-    if (loading) return;
+    if (loading) return <LoadingSection />;
 
     const rowGap = 20; // %
     const sectors = [];
@@ -117,7 +118,7 @@ function WorksRow(){
 
 function WorksSectionContent(){
     return (
-        <section className="flex flex-col items-center gap-7">
+        <section className="flex flex-col items-center gap-10">
             <h1 className="section-title">Our Works</h1>
             <div className="row-con">
                 <WorksRow />

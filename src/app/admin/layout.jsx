@@ -1,19 +1,7 @@
 
-// others
-import { Plus_Jakarta_Sans} from "next/font/google";
-
-// font settings
-const plus_jakarta_sans = Plus_Jakarta_Sans(
-    {
-        weight: ['400', '600', '700'],
-        subsets: ["latin"],
-        variable: "--malex-font"
-    }
-);
-
-export default function AdminLayout({ children }){
+export default function RootLayout({ children }){
     return (
-        <html lang="en" className={ plus_jakarta_sans.className }>
+        <html lang="en">
             <head>
                 <title>Malex Admin</title>
             </head>

@@ -1,22 +1,30 @@
 "use client";
 
 // others
-import { useContext } from "react";
-import { FormCtx } from "@web/form/ctx";
-import Image from "next/image";
 import clsx from "clsx";
+import { useContext } from "react";
+import { FormCtx } from "../ctx";
 
 // css
 import styles from "./styles.module.css";
 
-// images
-import close from "./close.svg";
+export function NextButton({ onClick, isSubmit = false, args = {} }){ // onClick must be a check and return boolean value
+    const { setSDirection, setScrollFlag, sclForward } = useContext(FormCtx);
 
-export function NextButton({ onClick, isSubmit = false }){
     return (
-        <button 
+        <button
             className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
-            onClick={ onClick }
+            onClick={ 
+                async () => {
+                    const r = onClick(args);
+
+                    if (r instanceof Promise ? await r: r){
+                        sclForward();
+                        setSDirection("right"); 
+                        setScrollFlag(true); 
+                    }
+                }
+            }
             { ...(isSubmit ? { type: "submit" }: { type: "button" }) }
         >
             <span>Next</span>
@@ -24,11 +32,13 @@ export function NextButton({ onClick, isSubmit = false }){
     )
 }
 
-export function BackButton({ onClick }){
+export function BackButton(){
+    const { setSDirection, setScrollFlag, sclBackward } = useContext(FormCtx);
+
     return (
         <button 
             className="redirect-btn redirect-btn-circled mt-8 min-[450px]:max-w-[250px]"
-            onClick={ onClick }
+            onClick={ async () => { sclBackward(); setSDirection("left"); setScrollFlag(true); } }
             type="button"
         >
             <span>Back</span>
@@ -44,23 +54,10 @@ export function ScrollBtnsCon({ children }){
     )
 }
 
-export default function StepWrapper({ children }){
-    const { closeForm } = useContext(FormCtx);
-
-    return (
+export default function StepWrapper({ children, sIndex }){
+    const { index, isScrolling, sDirection } = useContext(FormCtx);
+    const step = (
         <li className={clsx(styles.step, "row-el")}>
-            <div className="w-full max-w-[570px]">
-                <div className="w-full flex flex-row justify-end mb-4">
-                    <button
-                        className="flex flex-row justify-center items-center text-white text-base gap-2"
-                        onClick={ closeForm }
-                        type="button"
-                    >
-                        <span>Close</span>
-                        <Image src={ close } alt="Close Malex appointment window" />
-                    </button>
-                </div>
-            </div>
             <div 
                 className={
                     clsx(
@@ -72,5 +69,9 @@ export default function StepWrapper({ children }){
                 { children }
             </div>
         </li>
-    )
+    );
+    
+    const previousI = sDirection == "right" ? index - 1: index + 1;
+
+    return index == sIndex ? step: isScrolling && previousI == sIndex && step ;
 }

@@ -1,21 +1,21 @@
 
 import { SetContextLink } from "@apollo/client/link/context";
 import * as tools from "@src/tools";
-import * as frontQueries from "./requests/frontend";
+import * as frontQueries from "./queries/frontend";
 
 export default class FrontendApolloClient {
     // must be initialiazed only at client component
 
     // gets new 
     async setAT(){
-        const localTokens = this.getAuthTokens();
+        const localTokens = FrontendApolloClient.getAuthTokens();
         const { client } = tools.authApolloClient(localTokens.rt);
         const { at, rt } = (
             await client.mutate({ mutation: frontQueries.AuthQueries.createAT() })
         ).data.createAT.data[0];
-    
+
         // save tokens
-        this.setAuthTokens(at, rt);
+        FrontendApolloClient.setAuthTokens(at, rt);
 
         return { at, rt }
     }
@@ -48,15 +48,19 @@ export default class FrontendApolloClient {
 
     init(){
         const { client, link } = new tools.defaultApolloClient();
+
+        this.link = link;
+        this.client = client;
+
         const frontLink = new SetContextLink(
             async ({ headers }) => {
                 let { at, rt } = FrontendApolloClient.getAuthTokens();
 
                 // checks is AT expired
                 if (tools.isJWTExpired(at)){
-                    
+
                     // reload page if RT has expired, and then replace with new pair of tokens
-                    if (tools.isJWTExpired(rt)) window.location.reload();
+                    if (tools.isJWTExpired(rt)) { window.location.reload() };
 
                     // reset with new value and continue request
                     at = (await this.setAT()).at;
@@ -65,16 +69,13 @@ export default class FrontendApolloClient {
                 return {
                     headers: {
                         ...headers,
-                        authorization: `Bearer ${at}`
+                        authorization: `Bearer ${ at }`
                     }
                 }
             }
         ).concat(link);
 
         client.setLink(frontLink);
-
-        this.link = link;
-        this.client = client;
 
         return this;
     }

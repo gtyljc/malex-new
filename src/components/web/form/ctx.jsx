@@ -13,7 +13,7 @@ export function FormProvider({ children }){
     const closeForm = () => changeState(false);
 
     // scroll
-    const [ index, setIndex ] = useState(1);
+    const [ index, setIndex ] = useState(0);
     const sclForward = () => setIndex(i => i + 1);
     const sclBackward = () => setIndex(i => i - 1);
     const [ isScrolling, setScrollFlag ] = useState(false);

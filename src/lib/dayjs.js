@@ -7,7 +7,9 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import objectSupport from "dayjs/plugin/objectSupport";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
+// others
 import { defaultApolloClient } from "./apollo-clients/base";
 import dayjs from "dayjs";
 import { gql } from "@apollo/client";
@@ -17,6 +19,7 @@ dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(objectSupport);
+dayjs.extend(customParseFormat);
 
 // get timezone
 const { data } = await defaultApolloClient().client.query(

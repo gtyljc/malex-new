@@ -1,17 +1,24 @@
 
-import { Menu } from 'react-admin';
-import LabelIcon from '@mui/icons-material/Label';
+// others
 import { SiteConfigQueries } from '@lib/apollo-clients/queries/backend';
+
+// components
+import { Menu } from 'react-admin';
+
+// icons
+import AssignmentSharpIcon from '@mui/icons-material/AssignmentSharp';
+import AdminPanelSettingsSharpIcon from '@mui/icons-material/AdminPanelSettingsSharp';
+import PhotoSharpIcon from '@mui/icons-material/PhotoSharp';
 
 export default function CustomMenu(){
     return (
         <Menu>
-            <Menu.ResourceItem name="appointment" />
-            <Menu.ResourceItem name="work" />
-            <Menu.Item 
+            <Menu.ResourceItem name="appointment" leftIcon={ <AssignmentSharpIcon /> } />
+            <Menu.ResourceItem name="work" leftIcon={ <PhotoSharpIcon /> } />
+            <Menu.Item
                 to={ `/${SiteConfigQueries.resource}` } 
                 primaryText="Site Config"
-                leftIcon={ <LabelIcon /> } 
+                leftIcon={ <AdminPanelSettingsSharpIcon /> } 
             />
         </Menu>
     )

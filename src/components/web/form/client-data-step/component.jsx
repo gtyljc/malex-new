@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormCtx } from "../ctx";
 import { useContext } from "react";
 import * as z from "zod";
+import * as tools from "@src/lib/tools";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -104,18 +105,14 @@ function SelectInputWithLabel({ id, options, label, formObject }){ // options =>
         </InputLabel>
     )
 }
-
-const enRegex = /^[A-Za-z]+$/;
-const phoneRegex = /^(?:\+[1-9][0-9]{7,14}|[0-9]{10})$/;
-const onlyDecimalRegex = /[^\d+]/g;
 const schema = z.object(
     {
-        name: z.string().min(1).max(50).regex(enRegex),
-        surname: z.string().min(1).max(50).regex(enRegex),
+        name: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
+        surname: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
         address: z.string().min(1).max(255),
         job_desc: z.string().min(1).max(500),
         bwt: z.enum(["WHATSAPP", "TEXT", "PHONE"]),
-        phone_number: z.string().transform(v => v.replace(onlyDecimalRegex, "")).refine(v => phoneRegex.test(v)),
+        phone_number: z.string().transform(v => v.replace(tools.ONLY_DIGITS_REGEX, "")).refine(v => tools.PHONE_NUMBER_REGEX.test(v)),
     }
 )
 const STEP_I = 0;

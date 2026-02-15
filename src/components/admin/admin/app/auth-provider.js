@@ -40,7 +40,7 @@ class AuthProvider {
 
         if (at){
 
-            // if token is too old and need to be refreshed
+            // if admin token is too old and need to be refreshed
             try { 
                 await jwtVerify(at)
                 

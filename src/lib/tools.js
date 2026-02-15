@@ -2,6 +2,12 @@
 import { decodeJwt } from "jose";
 import { dayjs } from "@lib/dayjs";
 
+// REGEX
+export const ONLY_DIGITS_REGEX = /[^\d+]/g;
+export const ENG_LANGUAGE_REGEX = /^[A-Za-z]+$/;
+export const EMAIL_REGEX = /^(?:\+[1-9][0-9]{7,14}|[0-9]{10})$/;
+export const PHONE_NUMBER_REGEX = /^(?:\+[1-9][0-9]{7,14}|[0-9]{10})$/;
+
 // makes first letter capital
 export function capitalize(string){
     return string.charAt(0).toUpperCase() + string.slice(1)

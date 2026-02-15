@@ -1,4 +1,10 @@
 
+
+// others
+import { required, number, email } from "react-admin";
+import { dayjs } from "@lib/dayjs";
+
+// components
 import {
     Edit,
     SimpleForm,
@@ -8,7 +14,6 @@ import {
     SaveButton,
     TextInput
 } from "react-admin";
-import { required } from "react-admin";
 
 function CustomToolbar(){
     return (
@@ -18,23 +23,32 @@ function CustomToolbar(){
     )
 }
 
+// adding timezone and converting time input into ISO format
+function parseTime(value){
+    return dayjs(value, "HH:mm").tz().utc().toISOString()
+}
+
+function CustomTimeInput({ source, label }){
+    return (
+        <TimeInput 
+            source={ source }
+            label={ label }
+            validate={ required() }
+            parse={ parseTime }
+        />
+    )
+}
+
 export default function SiteConfigEdit(){
     return (
         <Edit 
-            title="Admin Config"
+            title="Site Config"
             redirect="show"
+            sx={{ maxWidth: 800 }}
         >
             <SimpleForm toolbar={ <CustomToolbar /> }>
-                <TimeInput 
-                    source="opening_at" 
-                    label="Company opens at" 
-                    validate={ required() }
-                />
-                <TimeInput 
-                    source="closing_at" 
-                    label="Company closes at" 
-                    validate={ required() }
-                />
+                <CustomTimeInput source="opening_at" label="Opening time" />
+                <CustomTimeInput source="closing_at" label="Closing time" />
                 <SelectInput 
                     source="min_duration"
                     choices={
@@ -51,8 +65,8 @@ export default function SiteConfigEdit(){
                     }
                     validate={ required() }
                 />
-                <TextInput source="support_email" />
-                <TextInput source="phone_number" />
+                <TextInput source="support_email" validate={ email() } />
+                <TextInput source="phone_number" validate={ number() } />
             </SimpleForm>
         </Edit>
     )

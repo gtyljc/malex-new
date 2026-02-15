@@ -16,15 +16,11 @@
 
 @layer components {
 
-	/* WEB */
-
 	.row-con {
 		@apply w-full overflow-hidden;
 	}
 
 	.row {
-		/* transition: transform 0.5s var(--scrolling-anim); */
-
 		@apply w-full flex flex-row items-center;
 	}
 
@@ -69,8 +65,6 @@
 	.section-title {
 		@apply text-2xl font-medium md:text-2xl lg:text-3xl;
 	}
-
-	
 }
 
 :root {
@@ -93,49 +87,50 @@
     }
 }
 
-html {
+/* all styles that must applied only to web part */
+.web {
 	height: 100dvh;
 	scroll-behavior: smooth;
-}
 
-body {
-	@apply flex flex-col size-full;
-}
+	body {
+		@apply flex flex-col size-full;
+	}
 
-section {
-	@apply mb-[50px] md:mb-[80px] lg:mb-[100px];
-}
+	section {
+		@apply mb-[50px] md:mb-[80px] lg:mb-[100px];
+	}
 
-button {
-	font-family: var(--malex-font);
-	
-	@apply p-0 bg-none cursor-pointer;
-}
+	button {
+		font-family: var(--malex-font);
+		
+		@apply p-0 bg-none cursor-pointer;
+	}
 
-a {
-	@apply text-black no-underline;
-}
+	a {
+		@apply text-black no-underline;
+	}
 
-ul {
-	@apply p-0 list-none;
-}
+	ul {
+		@apply p-0 list-none;
+	}
 
-main {
-	margin: 0px auto;
-	margin-top: calc(var(--header-h) + 20px);
-	padding: 0px var(--dft-content-p);
+	main {
+		margin: 0px auto;
+		margin-top: calc(var(--header-h) + 20px);
+		padding: 0px var(--dft-content-p);
 
-	@apply w-full max-w-[1250px] flex-1 box-border;
-}
+		@apply w-full max-w-[1250px] flex-1 box-border;
+	}
 
-input {
-	font-family: var(--malex-font);
+	input {
+		font-family: var(--malex-font);
 
-	@apply block text-base focus-visible:outline-none;
-}
+		@apply block text-base focus-visible:outline-none;
+	}
 
-select {
-	font-family: var(--malex-font);
-	
-	@apply block text-sm focus-visible:outline-none;
+	select {
+		font-family: var(--malex-font);
+		
+		@apply block text-sm focus-visible:outline-none;
+	}
 }

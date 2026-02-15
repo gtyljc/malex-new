@@ -45,7 +45,7 @@ export default class BackendApolloClient {
     }
 
     async init(){
-        const { client, link } = defaultApolloClient();
+        const { client, link } = defaultApolloClient({ resultCaching: false });
         
         this.client = client;
         this.link = link;

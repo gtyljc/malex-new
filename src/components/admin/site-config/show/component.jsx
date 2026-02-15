@@ -1,4 +1,8 @@
 
+// others
+import { SiteConfigQueries } from "@lib/apollo-clients/queries/backend";
+
+// componenents
 import {
     Show,
     SimpleShowLayout,
@@ -8,13 +12,24 @@ import {
     EditButton,
     EmailField
 } from "react-admin";
-import { SiteConfigQueries } from "@lib/apollo-clients/queries/backend";
 
 function Actions (){
     return (
         <TopToolbar>
             <EditButton resource={ SiteConfigQueries.resource } />
         </TopToolbar>
+    )
+}
+
+function CustomTimeField({ source, label }){
+    return (
+        <DateField 
+            source={ source }
+            showTime
+            showDate = { false } 
+            label={ label }
+            options={ { timeStyle: "short" } }
+        />
     )
 }
 
@@ -27,21 +42,11 @@ export default function SiteConfigShow(){
             actions={ <Actions /> }
         > 
             <SimpleShowLayout>
-                <DateField 
-                    source="opening_at" 
-                    showTime  
-                    showDate = { false } 
-                    label="Company opens at"
-                />
-                <DateField 
-                    source="closing_at" 
-                    showTime 
-                    showDate = { false } 
-                    label="Company closes at"
-                />
+                <CustomTimeField source="opening_at" label="Company opens at" />
+                <CustomTimeField source="closing_at" label="Company closes at" />
                 <TextField 
-                    source="min_duration" 
-                    label="Minimum time on one appointment ( in hours )" 
+                    source="min_duration"
+                    label="Min duration of appointment" 
                 />
                 <EmailField source="support_email" />
                 <TextField source="phone_number" />

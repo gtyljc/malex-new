@@ -4,9 +4,8 @@
 // others
 import Image from "next/image";
 import { useQuery } from "@apollo/client/react";
-import { SiteConfigQueries } from "@src/apollo-clients/queries/frontend";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import dayjs from "dayjs";
+import { SiteConfigQueries } from "@lib/apollo-clients/queries/frontend";
+import { dayjs } from "@lib/dayjs";
 
 // components
 import PathToPageSection from "@web/path-to-page/component";
@@ -18,8 +17,6 @@ import thumbnail from "./thumbnail.jpg";
 import phone from "./phone.svg";
 import email from "./email.svg";
 import time from "./time.svg";
-
-dayjs.extend(localizedFormat);
 
 function ContactDataField({ children, icon }){
     return (

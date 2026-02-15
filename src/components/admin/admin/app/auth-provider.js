@@ -1,7 +1,7 @@
 
 import { jwtVerify, decodeJwt } from "jose";
-import { AuthQueries } from "@src/apollo-clients/queries/frontend";
-import FrontendApolloClient from "@src/apollo-clients/frontend";
+import { AuthQueries } from "@lib/apollo-clients/queries/frontend";
+import FrontendApolloClient from "@lib/apollo-clients/frontend";
 
 class AuthProvider {
     constructor(apolloClient){

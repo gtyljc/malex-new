@@ -1,7 +1,7 @@
 
-export default function RootLayout({ children }){
+export default function AdminLayout({ children }){    
     return (
-        <html lang="en">
+        <html>
             <head>
                 <title>Malex Admin</title>
             </head>
@@ -9,5 +9,5 @@ export default function RootLayout({ children }){
                 { children }
             </body>
         </html>
-    )
+    );
 }

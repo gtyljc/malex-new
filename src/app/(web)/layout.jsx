@@ -1,11 +1,10 @@
 
-// others
+import { createAuthTokensForFrontend } from "@lib/apollo-clients/backend";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { createAuthTokensForFrontend } from "@src/apollo-clients/backend";
 import clsx from "clsx";
 
 // components
-import PageWrapper from "@web/page-wrapper/component";
+import WebPageBase from "@web/web-page-base/component";
 
 // css
 import "./global.css";
@@ -19,16 +18,17 @@ const plus_jakarta_sans = Plus_Jakarta_Sans(
     }
 );
 
-export default async function RootLayout({ children }){
+export default async function WebLayout({ children }) {
     return (
         <html lang="en" className={ clsx(plus_jakarta_sans.className, "text-sm") }>
             <head>
                 <title>Malex Handyman</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             </head>
             <body>
-                <PageWrapper authTokens={ await createAuthTokensForFrontend() }>
+                <WebPageBase authTokens={ await createAuthTokensForFrontend() }>
                     { children }
-                </PageWrapper>
+                </WebPageBase>
             </body>
         </html>
     )

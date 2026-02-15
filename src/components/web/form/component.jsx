@@ -3,9 +3,10 @@
 // others
 import clsx from "clsx";
 import { useContext } from "react";
-import { createAppointment } from "./actions";
 import { FormCtx } from "./ctx";
 import Image from "next/image";
+import { useApolloClient } from "@apollo/client/react";
+import { AppointmentQueries } from "@lib/apollo-clients/queries/frontend";
 
 // components
 import ClientDataStep from "./client-data-step/component";
@@ -28,8 +29,14 @@ export default function Form() {
         setScrollFlag, 
         isScrolling, 
         sDirection, 
-        inputData 
+        inputData,
+        sclForward,
+        setSubmitState,
+        isSubmited,
+        setWaitingState,
+        setResponseState
     } = useContext(FormCtx);
+    const client = useApolloClient();
 
     return (
         <form
@@ -41,22 +48,28 @@ export default function Form() {
                 )
             }
             onClick={ (e) => { if (e.target === e.currentTarget) closeForm() } }
-            onSubmit={ 
-                async (e) => {
-                    console.log("plwdpldwlp")
-
-                    const form = e.currentTarget;
-                    const formData = new FormData(form);
-
-                    formData.set("name", inputData.name);
-                    formData.set("surname", inputData.surname);
-                    formData.set("address", inputData.address);
-                    formData.set("job_desc", inputData.job_desc);
-                    formData.set("bwt", inputData.bwt);
-                    formData.set("phone_number", inputData.phone_number)
-                    formData.set("date", inputData.date)
+            onSubmit={
+                async (e) => {             
+                    e.preventDefault(); // remove page reload
                     
-                    await createAppointment(formData);
+                    const { error, loading, data } = await client.mutate(
+                        {
+                            mutation: AppointmentQueries.createAppointment(),
+                            variables: { data: inputData } 
+                        }
+                    );
+
+                    // flag as submitted
+                    if (!isSubmited) { setSubmitState(true); setWaitingState(true); sclForward() };
+
+                    // flag when response from server will be loaded
+                    if(!loading) {
+                        setWaitingState(false);
+                        
+                        console.log(data);
+
+                        if (error || !data.createAppointment.success) setResponseState(false);
+                    };
                 }
             }
         >

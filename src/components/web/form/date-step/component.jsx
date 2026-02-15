@@ -3,13 +3,12 @@
 // others
 import Image from "next/image";
 import { useState, useContext, createContext } from "react";
-import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
 import clsx from "clsx";
 import { FormCtx } from "../ctx";
 import { useQuery } from "@apollo/client/react";
-import { AppointmentQueries } from "@src/apollo-clients/queries/frontend";
-import * as tools from "@src/tools";
+import { AppointmentQueries } from "@lib/apollo-clients/queries/frontend";
+import * as tools from "@lib/tools";
+import { dayjs } from "@lib/dayjs";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -22,13 +21,13 @@ import styles from "./styles.module.css";
 // images
 import next from "./next.svg";
 
-dayjs.extend(localizedFormat);
-
 const CalenderCtx = createContext();
 
 function Day({ date, isBusy }){
     const { setDay, currentDay } = useContext(CalenderCtx);
     const isDisabled = isBusy || date.unix() <= dayjs().unix();
+
+    // console.log(date)
 
     return(
         <td className="p-[4px]">
@@ -88,7 +87,9 @@ function Calendar(){
     const tbodyContent = [];
     let rowI = 0;
     let row = [];
-    let dayDate = tools.resetAfterDay(currentMonth.date(1)); // starts always from 1 day
+    let dayDate = tools.resetAfterDay(dayjs.utc(currentMonth).tz().date(1)); // starts always from 1 day
+
+    console.log(dayDate)
 
     // add offset to first row
     for (let i = 0; i < offset; i++){
@@ -109,7 +110,11 @@ function Calendar(){
             <Day
                 key={ dayDate.add(i, "day").toISOString() }
                 date={ dayDate.add(i, "day") } 
-                isBusy={ data.busyInRange.data.filter((e) => dayjs(e.date).date() == i + 1) != 0 }
+                isBusy={ 
+                    data.busyInRange.data.filter(
+                        (e) => dayjs(e.date).date() == i + 1
+                    ).length != 0
+                }
             />
         );
     }

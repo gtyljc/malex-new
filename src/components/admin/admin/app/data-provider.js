@@ -1,7 +1,7 @@
 
-import { ImageUploadQueries } from "@src/apollo-clients/queries/backend";
+import { ImageUploadQueries } from "@lib/apollo-clients/queries/backend";
 import { nanoid } from "nanoid";
-import { capitalize } from "@src/tools";
+import { capitalize } from "@lib/tools";
 
 class DataProvider {
     // read about structure at https://marmelab.com/react-admin/DataProviderWriting.html

@@ -3,8 +3,8 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/apollo-clients/queries/frontend";
-import dayjs from "dayjs";
+import { WorkQueries } from "@lib/apollo-clients/queries/frontend";
+import { dayjs } from "@lib/dayjs";
 import Image from "next/image";
 import { ViewerProvider, ViewerCtx } from "./viewer/ctx";
 import { useContext, createContext, useState } from "react";
@@ -15,7 +15,32 @@ import PanelSection from "@web/our-works/panel/component";
 import Viewer from "./viewer/component";
 import LoadingSection from "@web/loading-section/component";
 
+// images
+import img_placeholder from "./img-placeholder.svg";
+
 export const WorksCtx = createContext();
+
+function ImagePlaceholder(){
+    return (
+        <div className="aspect-square max-w-[300px] w-full flex flex-row justify-center items-center rounded-[5px] bg-ice-blue">
+            <Image
+                width={ 64 }
+                alt="Here must be our work"
+                src={ img_placeholder }
+            />
+        </div>
+    )
+}
+
+function EmptyCategory(){
+    return (
+        <div className="w-full flex flex-row gap-3">
+            <ImagePlaceholder />
+            <ImagePlaceholder />
+            <ImagePlaceholder />
+        </div>
+    )
+}
 
 function Work({ date, img_url, index }){
     const { openViewer, setIndex } = useContext(ViewerCtx);
@@ -55,10 +80,10 @@ function WorkSection({ title, category }){
     );
 
     return (
-        <section>
-            <h1 className="text-2xl mb-2.5">{ title }</h1>
+        <section id={ category.toLowerCase() }>
+            <h1 className="text-3xl mb-4">{ title }</h1>
             <div className="flex flex-row flex-wrap gap-3">
-                { filteredWorks.length == 0 ? <p className="mt-5">Here is nothing right now...</p>: filteredWorks }
+                { filteredWorks.length == 0 ? <EmptyCategory />: filteredWorks }
             </div>
         </section>
     )

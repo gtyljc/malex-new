@@ -12,4 +12,5 @@
     border-radius: 3px;
     cursor: pointer;
     border: 1px solid var(--color-light-gray);
+    user-select: none;
 }

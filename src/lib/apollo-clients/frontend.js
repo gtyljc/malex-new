@@ -1,7 +1,8 @@
 
 import { SetContextLink } from "@apollo/client/link/context";
-import * as tools from "@src/tools";
+import * as tools from "@lib/tools";
 import * as frontQueries from "./queries/frontend";
+import { defaultApolloClient, authApolloClient } from "./base";
 
 export default class FrontendApolloClient {
     // must be initialiazed only at client component
@@ -9,7 +10,7 @@ export default class FrontendApolloClient {
     // gets new 
     async setAT(){
         const localTokens = FrontendApolloClient.getAuthTokens();
-        const { client } = tools.authApolloClient(localTokens.rt);
+        const { client } = authApolloClient(localTokens.rt);
         const { at, rt } = (
             await client.mutate({ mutation: frontQueries.AuthQueries.createAT() })
         ).data.createAT.data[0];
@@ -47,7 +48,7 @@ export default class FrontendApolloClient {
     }
 
     init(){
-        const { client, link } = new tools.defaultApolloClient();
+        const { client, link } = new defaultApolloClient();
 
         this.link = link;
         this.client = client;
@@ -58,6 +59,7 @@ export default class FrontendApolloClient {
 
                 // checks is AT expired
                 if (tools.isJWTExpired(at)){
+                    console.log("wldlwdldw")
 
                     // reload page if RT has expired, and then replace with new pair of tokens
                     if (tools.isJWTExpired(rt)) { window.location.reload() };

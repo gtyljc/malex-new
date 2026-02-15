@@ -1,7 +1,7 @@
 
 // others
 import { required } from "react-admin";
-import dayjs from "dayjs";
+import { dayjs } from "@lib/dayjs";
 
 // components
 import { 

@@ -1,9 +1,9 @@
 
 // others
-import dayjs from "dayjs";
+import { dayjs } from "@lib/dayjs";
 import { required } from "react-admin";
 import { useGetOne } from "react-admin";
-import { SiteConfigQueries } from "@src/apollo-clients/queries/backend";
+import { SiteConfigQueries } from "@lib/apollo-clients/queries/backend";
 
 // components
 import { Edit, SimpleForm, SelectInput, BooleanInput } from "react-admin";

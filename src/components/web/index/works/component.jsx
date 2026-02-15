@@ -9,8 +9,8 @@ import {
 } from "@web/points-scrollbar/ctx";
 import { useContext } from "react";
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/apollo-clients/queries/frontend";
-import dayjs from "dayjs";
+import { WorkQueries } from "@lib/apollo-clients/queries/frontend";
+import { dayjs } from "@lib/dayjs";
 
 // components
 import ScrollProgressBar from "@web/points-scrollbar/component";

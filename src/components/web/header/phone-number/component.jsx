@@ -1,7 +1,7 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import { SiteConfigQueries } from "@src/apollo-clients/queries/frontend";
+import { SiteConfigQueries } from "@lib/apollo-clients/queries/frontend";
 import Image from "next/image";
 
 // images

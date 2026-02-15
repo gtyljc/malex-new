@@ -15,6 +15,9 @@
 }
 
 @layer components {
+
+	/* WEB */
+
 	.row-con {
 		@apply w-full overflow-hidden;
 	}
@@ -66,6 +69,8 @@
 	.section-title {
 		@apply text-2xl font-medium md:text-2xl lg:text-3xl;
 	}
+
+	
 }
 
 :root {

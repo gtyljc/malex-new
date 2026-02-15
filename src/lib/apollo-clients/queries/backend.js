@@ -3,7 +3,7 @@
 // here is all possible GraphQL queries that can be executed at frontend and also at backend
 
 import { gql } from "@apollo/client";
-import { capitalize } from "@src/tools";
+import { capitalize } from "@lib/tools";
 export * as frontendQueries from "./frontend"; // access to frontend requests
 
 export class ResourceQueries {
@@ -197,7 +197,8 @@ export class SiteConfigQueries extends ResourceQueries {
         "closing_at",
         "min_duration",
         "support_email",
-        "phone_number"
+        "phone_number",
+        "timezone"
     ]
 }
 
@@ -211,8 +212,6 @@ export class AdminQueries extends ResourceQueries {
         "support_email",
         "phone_number"
     ]
-
-    static 
 }
 
 export class AuthQueries {

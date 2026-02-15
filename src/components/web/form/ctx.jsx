@@ -13,12 +13,12 @@ export function FormProvider({ children }){
     const closeForm = () => changeState(false);
 
     // scroll
-    const [ index, setIndex ] = useState(0);
-    const sclForward = () => setIndex(i=> i + 1);
+    const [ index, setIndex ] = useState(1);
+    const sclForward = () => setIndex(i => i + 1);
     const sclBackward = () => setIndex(i => i - 1);
     const [ isScrolling, setScrollFlag ] = useState(false);
     const [ sDirection, setSDirection ] = useState("right"); // scroll direction
-    
+
     // input from user
     const [ inputData ] = useState(
         {
@@ -31,6 +31,11 @@ export function FormProvider({ children }){
             date: null
         }
     );
+
+    // submit
+    const [ isSubmited, setSubmitState ] = useState(false);
+    const [ isWaitingOnResponse, setWaitingState ] = useState(false);
+    const [ responseState, setResponseState ] = useState(false); // false => unsuccess; true => success
 
     return (
         <FormCtx
@@ -50,7 +55,15 @@ export function FormProvider({ children }){
                     sDirection,
                     setSDirection,
 
-                    inputData
+                    inputData,
+                    
+                    // submit
+                    isSubmited,
+                    setSubmitState,
+                    isWaitingOnResponse,
+                    setWaitingState,
+                    setResponseState,
+                    responseState
                 } 
             }
         >

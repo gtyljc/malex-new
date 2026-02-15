@@ -24,6 +24,18 @@ export class AppointmentQueries {
             }
         `
     }
+
+    static createAppointment(){
+        return gql`
+            mutation createAppointment($data: AppointmentCreateInput!){
+                createAppointment(data: $data) {
+                    code
+                    success
+                    message
+                }
+            }
+        `
+    }
 }
 
 export class SiteConfigQueries {

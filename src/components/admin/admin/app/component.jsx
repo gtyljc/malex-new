@@ -5,9 +5,9 @@ import { useEffect } from "react";
 import AuthProvider from "./auth-provider";
 import { Route } from "react-router-dom";
 import DataProvider from "./data-provider";
-import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@src/apollo-clients/queries/backend";
+import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@lib/apollo-clients/queries/backend";
 import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
-import FrontendApolloClient from "@src/apollo-clients/frontend";
+import FrontendApolloClient from "@lib/apollo-clients/frontend";
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";

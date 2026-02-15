@@ -1,7 +1,7 @@
 
 import { Menu } from 'react-admin';
 import LabelIcon from '@mui/icons-material/Label';
-import { SiteConfigQueries } from '@src/apollo-clients/queries/backend';
+import { SiteConfigQueries } from '@lib/apollo-clients/queries/backend';
 
 export default function CustomMenu(){
     return (

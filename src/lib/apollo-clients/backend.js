@@ -1,8 +1,9 @@
 
 import * as backend from "./queries/backend";
-import * as tools from "@src/tools";
+import * as tools from "@lib/tools";
 import { SetContextLink } from "@apollo/client/link/context";
 import { nanoid } from "nanoid";
+import { defaultApolloClient, authApolloClient } from "./base";
 
 export default class BackendApolloClient {
 
@@ -19,17 +20,17 @@ export default class BackendApolloClient {
     }
 
     async setAT(){
-        const { client } = tools.authApolloClient(targetClient.rt);
+        const { client } = authApolloClient(this.client.rt);
         const { at, rt } = (
             await client.mutate({ mutation: backend.frontendQueries.AuthQueries.createAT() })
         ).data.createAT.data[0];
     
         // update or set tokens into client instance
-        this.setAuthTokens(at, rt, targetClient);
+        this.setAuthTokens(at, rt);
     }
 
     async setRT() {
-        const { client } = tools.defaultApolloClient();
+        const { client } = defaultApolloClient();
         const { at, rt } = (
             await client.mutate(
                 { 
@@ -44,7 +45,7 @@ export default class BackendApolloClient {
     }
 
     async init(){
-        const { client, link } = tools.defaultApolloClient();
+        const { client, link } = defaultApolloClient();
         
         this.client = client;
         this.link = link;
@@ -82,6 +83,7 @@ export default class BackendApolloClient {
     }
 }
 
+// all backend requests must be executed through this client instance
 export const backendApolloClient = await new BackendApolloClient().init();
 
 // creates new tokens pair and gets it from API !!! can be used only at server component !!!

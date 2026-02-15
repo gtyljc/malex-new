@@ -1,7 +1,7 @@
 
 import Admin from "@admin/admin/component";
-import { createAuthTokensForFrontend } from "@src/apollo-clients/backend";
-import { AuthQueries } from "@src/apollo-clients/queries/backend";
+import { createAuthTokensForFrontend } from "@lib/apollo-clients/backend";
+import { AuthQueries } from "@lib/apollo-clients/queries/backend";
 import NotFound from "@app/not-found";
 
 export default async function Page({ searchParams }){

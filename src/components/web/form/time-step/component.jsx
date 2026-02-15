@@ -2,12 +2,11 @@
 
 // others
 import clsx from "clsx";
-import dayjs from "dayjs";
-import objectSupport from "dayjs/plugin/objectSupport";
+import { dayjs } from "@lib/dayjs";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { SiteConfigQueries, AppointmentQueries } from "@src/apollo-clients/queries/frontend";
-import * as tools from "@src/tools";
+import { SiteConfigQueries, AppointmentQueries } from "@lib/apollo-clients/queries/frontend";
+import * as tools from "@lib/tools";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -17,8 +16,6 @@ import LoadingSection from "@web/loading-section/component";
 // css
 import styles from "./styles.module.css";
 import { useQuery } from "@apollo/client/react";
-
-dayjs.extend(objectSupport);
 
 const TimeSelectCtx = createContext();
 
@@ -37,7 +34,7 @@ function Time({ date, isBusy }){
                 )
             } 
             onClick={ 
-                () => { 
+                () => {
                     if(currentTime){
 
                         // if user double-clicked on day
@@ -81,6 +78,10 @@ function TimeSelect(){
     let appTime = dayjs(start);
 
     // console.log(start.unix(), end.unix(), workTime, step );
+
+    console.log(start, end);
+    console.log(appTime.unix(), workTime)
+    console.log(appTime.unix() < workTime);
 
     while (appTime.unix() < workTime){        
         appTime = appTime.add({ hour: hOffset });
@@ -129,7 +130,7 @@ export default function TimeStep() {
                 <NextButton 
                     onClick={ 
                         () => { 
-                            if (currentTime){ 
+                            if (currentTime){
                                 inputData.date = inputData.date
                                     .add(currentTime.hour(), "hour")
                                     .add(currentTime.minute(), "minute")

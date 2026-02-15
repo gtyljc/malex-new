@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { ViewerCtx } from "./ctx";
 import Image from "next/image";
 import { WorksCtx } from "../component";
-import dayjs from "dayjs";
+import { dayjs } from "@lib/dayjs";
 
 // css
 import styles from "./styles.module.css";

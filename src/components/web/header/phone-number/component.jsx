@@ -8,8 +8,8 @@ import Image from "next/image";
 import phone from "./phone.svg";
 
 export default function PhoneNumber(){
-    const { data, loading } = useQuery(SiteConfigQueries.contactData());
-    const phoneNumber = !loading ? data.contactData.data[0].phone_number: null;
+    const { data, loading } = useQuery(SiteConfigQueries.publicConfig());
+    const phoneNumber = !loading ? data.publicConfig.data[0].phone_number: null;
 
     return (
         <div className="flex flex-row items-center gap-3">

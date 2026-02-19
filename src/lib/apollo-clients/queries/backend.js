@@ -4,7 +4,7 @@
 
 import { gql } from "@apollo/client";
 import { capitalize } from "@lib/tools";
-export * as frontendQueries from "./frontend"; // access to frontend requests
+export * as frontend from "./frontend"; // access to frontend requests
 
 export class ResourceQueries {
     // all children must contain to fields: resource -> name of resource to manipulate
@@ -198,7 +198,8 @@ export class SiteConfigQueries extends ResourceQueries {
         "min_duration",
         "support_email",
         "phone_number",
-        "timezone"
+        "timezone",
+        "c_country"
     ]
 }
 

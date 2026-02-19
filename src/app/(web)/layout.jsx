@@ -1,5 +1,5 @@
 
-import { createAuthTokensForFrontend } from "@lib/apollo-clients/backend";
+import { createAuthTokens } from "@lib/apollo-clients/backend";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import clsx from "clsx";
 
@@ -26,7 +26,7 @@ export default async function WebLayout({ children }) {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             </head>
             <body>
-                <WebPageBase authTokens={ await createAuthTokensForFrontend() }>
+                <WebPageBase authTokens={ await createAuthTokens() }>
                     { children }
                 </WebPageBase>
             </body>

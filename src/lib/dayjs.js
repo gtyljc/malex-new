@@ -11,8 +11,8 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 
 // others
 import { defaultApolloClient } from "./apollo-clients/base";
+import { SiteConfigQueries } from "./apollo-clients/queries/frontend";
 import dayjs from "dayjs";
-import { gql } from "@apollo/client";
 
 // set up dayjs
 dayjs.extend(localizedFormat);
@@ -21,25 +21,9 @@ dayjs.extend(timezone);
 dayjs.extend(objectSupport);
 dayjs.extend(customParseFormat);
 
-// get timezone
-const { data } = await defaultApolloClient().client.query(
-    {
-        query: gql`
-            query GetSiteConfig($id: ID!) {
-                siteConfig (id: $id){
-                    code
-                    success
-                    message
-                    data {
-                        timezone
-                    }
-                }
-            }
-        `, 
-        variables: { id: "1" } 
-    }
-)
+// get and set timezone
+const { data } = await defaultApolloClient().client.query({ query: SiteConfigQueries.publicConfig() });
 
-dayjs.tz.setDefault(data.siteConfig.data[0].timezone);
+dayjs.tz.setDefault(data.publicConfig.data[0].timezone);
 
 export { dayjs };

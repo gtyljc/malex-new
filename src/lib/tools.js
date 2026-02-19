@@ -1,7 +1,4 @@
 
-import { decodeJwt } from "jose";
-import { dayjs } from "@lib/dayjs";
-
 // REGEX
 export const ONLY_DIGITS_REGEX = /[^\d+]/g;
 export const ENG_LANGUAGE_REGEX = /^[A-Za-z]+$/;
@@ -28,17 +25,7 @@ export function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// checks if jwt expired ( JWT must contain "exp" claim )
-export function isJWTExpired(jwt){
-    return decodeJwt(jwt)["exp"] < dayjs().unix();
-}
-
 // sets to 0 all time units after day ( hour, minute, seconds, miliseconds )
-export function resetAfterDay(date){
+export function startOfDay(date){
     return date.hour(0).minute(0).second(0).millisecond(0)
-}
-
-// returns start and end points of time range in one day
-export function inRangeOfOneDay(date){
-    return [ resetAfterDay(date), resetAfterDay(date.add(1, "day")) ]
 }

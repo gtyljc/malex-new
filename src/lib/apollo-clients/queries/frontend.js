@@ -11,8 +11,8 @@ export class AppointmentQueries {
     // time range )
     static busyInRange(){
         return gql`
-            query busyInRange($start: DateTimeISO!, $end: DateTimeISO!, $unit: TimeUnitEnum!){
-                busyInRange(start: $start, end: $end, unit: $unit) {
+            query busyInRange($date: DateTimeISO!, $unit: TimeUnitEnum!){
+                busyInRange(date: $date, unit: $unit) {
                     code
                     success
                     message
@@ -42,10 +42,10 @@ export class SiteConfigQueries {
 
     // returns object with contact data, that includes for instance
     // support email, contact phone number, closing and opening at infos, etc.
-    static contactData(){
+    static publicConfig(){
         return gql`
-            query ContactData {
-                contactData {
+            query PublicConfig {
+                publicConfig {
                     code
                     success
                     message
@@ -55,6 +55,8 @@ export class SiteConfigQueries {
                         support_email
                         phone_number
                         min_duration
+                        timezone
+                        c_country
                     }
                 }
             }

@@ -8,11 +8,13 @@ import { FormCtx } from "../ctx";
 import { useContext } from "react";
 import * as z from "zod";
 import * as tools from "@src/lib/tools";
+import { AsYouType } from "libphonenumber-js/min";
+import { useQuery } from "@apollo/client/react";
+import { SiteConfigQueries } from "@src/lib/apollo-clients/queries/frontend";
 
 // components
 import StepWrapper from "../step-wrapper/component";
 import { NextButton } from "../step-wrapper/component";
-
 
 function InputsRow ({ children }) {
     return (
@@ -105,20 +107,32 @@ function SelectInputWithLabel({ id, options, label, formObject }){ // options =>
         </InputLabel>
     )
 }
-const schema = z.object(
-    {
-        name: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
-        surname: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
-        address: z.string().min(1).max(255),
-        job_desc: z.string().min(1).max(500),
-        bwt: z.enum(["WHATSAPP", "TEXT", "PHONE"]),
-        phone_number: z.string().transform(v => v.replace(tools.ONLY_DIGITS_REGEX, "")).refine(v => tools.PHONE_NUMBER_REGEX.test(v)),
-    }
-)
 const STEP_I = 0;
+
+function createValidationSchema(config){
+    return z.object(
+        {
+            name: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
+            surname: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
+            address: z.string().min(1).max(255),
+            job_desc: z.string().min(1).max(500),
+            bwt: z.enum(["WHATSAPP", "TEXT", "PHONE"]),
+            phone_number: z.string().refine(
+                v => {
+                    const ast = new AsYouType(config.c_country);
+
+                    ast.input(v);
+
+                    return ast.isValid();
+                } 
+            ),
+        }
+    )
+}
 
 // should be insert in ul
 export default function ClientDataStep() {
+    const { data } = useQuery(SiteConfigQueries.publicConfig());
     const formObject = useForm(
         {
             defaultValues: {
@@ -130,7 +144,7 @@ export default function ClientDataStep() {
                 "phone_number": ""
             },
             resetOptions: { keepDefaultValues: true },
-            resolver: zodResolver(schema),
+            resolver: zodResolver(createValidationSchema(data.publicConfig.data[0])),
             mode: "onChange"
         }
     );

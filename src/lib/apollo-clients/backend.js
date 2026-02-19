@@ -1,9 +1,8 @@
 
 import * as backend from "./queries/backend";
-import * as tools from "@lib/tools";
 import { SetContextLink } from "@apollo/client/link/context";
 import { nanoid } from "nanoid";
-import { defaultApolloClient, authApolloClient } from "./base";
+import { defaultApolloClient, authApolloClient, isJWTExpired } from "./base";
 
 export default class BackendApolloClient {
 
@@ -22,7 +21,7 @@ export default class BackendApolloClient {
     async setAT(){
         const { client } = authApolloClient(this.client.rt);
         const { at, rt } = (
-            await client.mutate({ mutation: backend.frontendQueries.AuthQueries.createAT() })
+            await client.mutate({ mutation: backend.frontend.AuthQueries.createAT() })
         ).data.createAT.data[0];
     
         // update or set tokens into client instance
@@ -59,10 +58,10 @@ export default class BackendApolloClient {
                 let token = at;
 
                 //  if AT is expired
-                if (tools.isJWTExpired(at)) {
+                if (isJWTExpired(at)) {
     
                     // if RT is also expired
-                    if (tools.isJWTExpired(rt)) await this.setRT();
+                    if (isJWTExpired(rt)) await this.setRT();
                     else await this.setAT();
                 };
 
@@ -83,13 +82,10 @@ export default class BackendApolloClient {
     }
 }
 
-// all backend requests must be executed through this client instance
-export const backendApolloClient = await new BackendApolloClient().init();
-
 // creates new tokens pair and gets it from API !!! can be used only at server component !!!
-export async function createAuthTokensForFrontend(role = "GUEST", userId = nanoid(16)) {
+export async function createAuthTokens(role = "GUEST", userId = nanoid(16)) {
     const { at, rt } = (
-        await backendApolloClient.client.mutate(
+        await backendClient.client.mutate(
             { 
                 mutation: backend.AuthQueries.createRT(), 
                 variables: { role, user_id: userId } 
@@ -100,3 +96,5 @@ export async function createAuthTokensForFrontend(role = "GUEST", userId = nanoi
     return { at, rt };
 }
 
+// all backend requests must be executed through this client instance
+export const backendClient = await new BackendApolloClient().init();

@@ -2,12 +2,20 @@
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
 import { RetryLink } from "@apollo/client/link/retry";
+import { decodeJwt } from "jose";
+import { dayjs } from "@lib/dayjs";
 
 // returns absolutly standard apollo client, that connected to API
 export function defaultApolloClient(cacheOptions = {}){
     const link = new RetryLink(
-        { attempts: () => { true; console.log("Connecting to API...") },
-        delay: () => parseInt(process.env.API_RECONNECT_DELAY) }
+        { 
+            attempts: () => { 
+                console.log("Connecting to API..."); 
+            
+                return true; 
+            },
+            delay: () => parseInt(process.env.API_RECONNECT_DELAY) 
+        }
     ).concat(new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }));
 
     return {
@@ -33,4 +41,9 @@ export function authApolloClient(jwt){ // can be AT or RT
     client.setLink(authLink);
 
     return { client, link: authLink }
+}
+
+// checks if jwt expired ( JWT must contain "exp" claim )
+export function isJWTExpired(jwt){
+    return decodeJwt(jwt)["exp"] < dayjs().unix();
 }

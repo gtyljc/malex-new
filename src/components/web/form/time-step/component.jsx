@@ -27,7 +27,7 @@ function Time({ date, isBusy }){
             className={
                 clsx(
                     styles.time,
-                    isBusy && "text-ice-blue border-0! cursor-auto!",
+                    isBusy && "bg-ice-blue border-0! cursor-auto!",
                     !isBusy &&
                     (currentTime && date.format("LT") == currentTime.format("LT")) && 
                     "bg-dodger-blue text-white border-0!"
@@ -53,52 +53,36 @@ function Time({ date, isBusy }){
 
 function TimeSelect(){
     const { inputData: { date } } = useContext(FormCtx);
-    const contactData = useQuery(SiteConfigQueries.contactData());
-    const timeRange = tools.inRangeOfOneDay(date);
+    const publicConfig = useQuery(SiteConfigQueries.publicConfig());
     const busyTimesAtDay = useQuery(
         AppointmentQueries.busyInRange(),
-        { 
-            variables: { 
-                start: timeRange[0].toISOString(), 
-                end: timeRange[1].toISOString(), 
-                unit: "APPOINTMENT" 
-            } 
-        }
+        { variables: { date, unit: "APPOINTMENT" } }
     );
 
     // wait until loading
-    if (contactData.loading | busyTimesAtDay.loading ) return <LoadingSection />;
+    if (publicConfig.loading | busyTimesAtDay.loading ) return <LoadingSection />;
 
-    const step = contactData.data.contactData.data[0].min_duration;
-    const start = dayjs(contactData.data.contactData.data[0].opening_at);
-    const end = dayjs(contactData.data.contactData.data[0].closing_at);
+    const step = publicConfig.data.publicConfig.data[0].min_duration;
+    const start = dayjs.tz(publicConfig.data.publicConfig.data[0].opening_at);
+    const end = dayjs.tz(publicConfig.data.publicConfig.data[0].closing_at);
     const times = [];
-    const workTime = end.unix() - start.unix();
-    let hOffset = 0;
-    let appTime = dayjs(start);
+    let appTime = dayjs.tz(date).utc().hour(start.hour()).minute(start.minute());
+    const endTime = dayjs.tz(date).utc().hour(end.hour()).minute(end.minute());
 
-    // console.log(start.unix(), end.unix(), workTime, step );
-
-    console.log(start, end);
-    console.log(appTime.unix(), workTime)
-    console.log(appTime.unix() < workTime);
-
-    while (appTime.unix() < workTime){        
-        appTime = appTime.add({ hour: hOffset });
-
+    while (appTime.unix() < endTime.unix()){
         times.push(
             <Time
                 key={ appTime.toISOString() }
                 date={ appTime }
                 isBusy={ 
                     busyTimesAtDay.data.busyInRange.data.filter(
-                        e => appTime.toISOString() == e.date
+                        e => {  return appTime.toISOString() == e.date }
                     ).length != 0 
                 }
             />
         );
 
-        hOffset += step;
+        appTime = appTime.add({ hour: step });
     }
 
     return (
@@ -134,8 +118,12 @@ export default function TimeStep() {
                                 inputData.date = inputData.date
                                     .add(currentTime.hour(), "hour")
                                     .add(currentTime.minute(), "minute")
-                                    .toISOString()
+                                    .tz()
+                                    .format()
                                 }
+
+                                // // console.log(dayjs.)
+                                // console.log(inputData.date);
                             }
                         } 
                     isSubmit 

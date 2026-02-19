@@ -64,16 +64,9 @@ function Day({ date, isBusy }){
 
 function Calendar(){
     const { currentMonth } = useContext(CalenderCtx);
-    const timeRange = tools.inRangeOfOneDay(currentMonth);
     const { data, loading } = useQuery(
         AppointmentQueries.busyInRange(),
-        { 
-            variables: { 
-                start: timeRange[0].toISOString(), 
-                end: timeRange[1].toISOString(), 
-                unit: "DAY" 
-            } 
-        }
+        { variables: { date: currentMonth.toISOString(), unit: "DAY" } }
     );
 
     // wait until loaded
@@ -87,9 +80,7 @@ function Calendar(){
     const tbodyContent = [];
     let rowI = 0;
     let row = [];
-    let dayDate = tools.resetAfterDay(dayjs.utc(currentMonth).tz().date(1)); // starts always from 1 day
-
-    console.log(dayDate)
+    let dayDate = tools.startOfDay(currentMonth.date(1)); // starts always from 1 day
 
     // add offset to first row
     for (let i = 0; i < offset; i++){
@@ -150,7 +141,7 @@ const STEP_I = 1;
 
 // should be inserted in ul
 export default function DateStep(){
-    const [ currentMonth, setMonth ] = useState(dayjs());
+    const [ currentMonth, setMonth ] = useState(dayjs.tz());
     const [ currentDay, setDay ] = useState(null);
     const { inputData } = useContext(FormCtx);
 
@@ -162,7 +153,10 @@ export default function DateStep(){
             <h2 className="text-center font-light text-xl mb-5">Select a date</h2>
             <div className="w-full max-w-[340px] flex flex-row justify-between items-center">
                 <ScrollMonthBtn 
-                    className={ currentMonth.format("L")  == dayjs().format("L")  && "pointer-events-none opacity-50" }
+                    className={ 
+                        currentMonth.format("DD/MM/YYYY") == dayjs.tz().format("DD/MM/YYYY") && 
+                        "pointer-events-none opacity-50" 
+                    }
                     icon={
                         <Image
                             src={ next }

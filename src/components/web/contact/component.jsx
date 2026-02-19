@@ -55,7 +55,7 @@ function TimeField({ openingAtValue, closingAtValue }){
 }
 
 export default function Contact(){
-    const { data, loading } = useQuery(SiteConfigQueries.contactData());
+    const { data, loading } = useQuery(SiteConfigQueries.publicConfig());
 
     return (
         <main>
@@ -70,11 +70,11 @@ export default function Contact(){
                                 {
                                     loading ? <LoadingSection />: (
                                         <>
-                                            <PhoneNumberField phoneValue={ data.contactData.data[0].phone_number } />
-                                            <SupportEmailField emailValue={ data.contactData.data[0].support_email } />
+                                            <PhoneNumberField phoneValue={ data.publicConfig.data[0].phone_number } />
+                                            <SupportEmailField emailValue={ data.publicConfig.data[0].support_email } />
                                             <TimeField 
-                                                openingAtValue={ dayjs(data.contactData.data[0].starting_at).format("LT") } 
-                                                closingAtValue={ dayjs(data.contactData.data[0].closing_at).format("LT") } 
+                                                openingAtValue={ dayjs(data.publicConfig.data[0].starting_at).format("LT") } 
+                                                closingAtValue={ dayjs(data.publicConfig.data[0].closing_at).format("LT") } 
                                             />
                                         </>
                                     )

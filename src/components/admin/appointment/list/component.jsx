@@ -2,7 +2,7 @@
 // others
 import { useRecordContext } from "react-admin";
 import { styled } from '@mui/styles';
-import { AsYouType } from "libphonenumber-js/min";
+import { parsePhoneNumber } from "libphonenumber-js/min";
 
 // components
 import { 

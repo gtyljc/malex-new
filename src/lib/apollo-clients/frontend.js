@@ -1,6 +1,4 @@
 
-"use client";
-
 import { SetContextLink } from "@apollo/client/link/context";
 import * as frontQueries from "./queries/frontend";
 import { defaultApolloClient, authApolloClient, isJWTExpired } from "./base";
@@ -8,8 +6,15 @@ import { useEffect, useState } from "react";
 
 export default class FrontendApolloClient {
 
+    constructor(){
+        this.client = null;
+        this.link = null;
+        this.siteConfig = null;
+        this.isIntialized = false;
+    }
+
     // gets new 
-    async setAT(){
+    async updateAT(){
         const localTokens = this.getAuthTokens();
         const { client } = authApolloClient(localTokens.rt);
         const { at, rt } = (
@@ -36,51 +41,67 @@ export default class FrontendApolloClient {
         localStorage.setItem("a_token", at); // access token
     }
 
-    // must be called before running init method at, it useEffect hook
-    // checks old ( if they exist ) tokens and replace with new ( if nessecary )
-    initTokens(newAT, newRT){
+    prepareApolloClient(newAuthTokens){
+        const pThis = this;
 
-        // get local RT ( if it is here ) and if RT has expired => resets with new pair that got from server
-        const { rt } = this.getAuthTokens();
+        // checks old tokens ( if they exist ) and replace with new ( if nessecary )
+        function setTokens(newAT, newRT){
 
-        if (rt && isJWTExpired(rt) || !rt) {
-            this.setAuthTokens(newAT, newRT) 
-        };
+            // get local RT ( if it is here ) and if RT has expired => resets with new pair that got from server
+            const { rt } = pThis.getAuthTokens();
+
+            if (rt && isJWTExpired(rt) || !rt) pThis.setAuthTokens(newAT, newRT);
+        }
+
+        const { client, link } = new defaultApolloClient();
+        
+        client.setLink(
+            new SetContextLink(
+                async ({ headers }) => {
+                    let { at, rt } = this.getAuthTokens();
+
+                    // checks is AT expired
+                    if (isJWTExpired(at)){
+
+                        // reload page if RT has expired, and then replace with new pair of tokens
+                        if (isJWTExpired(rt)) { window.location.reload() };
+
+                        // reset with new value and continue request
+                        at = (await this.updateAT()).at;
+                    }
+
+                    return {
+                        headers: {
+                            ...headers,
+                            authorization: `Bearer ${ at }`
+                        }
+                    }
+                }
+            ).concat(link)
+        )
+
+        setTokens(newAuthTokens.at, newAuthTokens.rt);
+
+        return { client, link };
+    }
+
+    async setSiteConfig(){
+        this.siteConfig = (
+            await frontendClient.client.query(
+                { query: frontQueries.SiteConfigQueries.publicConfig() }
+            )
+        ).data.publicConfig.data[0];
     }
 
     // must be called only when document is loaded
-    async init(authTokens){
-        const { client, link } = new defaultApolloClient();
+    async init(newAuthTokens){
+        const { client, link } = this.prepareApolloClient(newAuthTokens);
 
         this.link = link;
         this.client = client;
+        this.isIntialized = true;
 
-        const frontLink = new SetContextLink(
-            async ({ headers }) => {
-                let { at, rt } = this.getAuthTokens();
-
-                // checks is AT expired
-                if (isJWTExpired(at)){
-
-                    // reload page if RT has expired, and then replace with new pair of tokens
-                    if (isJWTExpired(rt)) { window.location.reload() };
-
-                    // reset with new value and continue request
-                    at = (await this.setAT()).at;
-                }
-
-                return {
-                    headers: {
-                        ...headers,
-                        authorization: `Bearer ${ at }`
-                    }
-                }
-            }
-        ).concat(link);
-
-        client.setLink(frontLink);
-
-        this.initTokens(authTokens.at, authTokens.rt);
+        await this.setSiteConfig();
 
         return this;
     }
@@ -88,16 +109,24 @@ export default class FrontendApolloClient {
 
 export const frontendClient = new FrontendApolloClient();
 
-export function useFrontendClient(authTokens){
-    const [ isIntialized, setInitializedFlag ] = useState(false);
+export function useFrontendClient(newAuthTokens){
+    const [ isIntialized, setInitializedFlag ] = useState(frontendClient.isIntialized);
 
-    useEffect( 
+    useEffect(
         () => {
-            frontendClient.init(authTokens).then(
-                () => setInitializedFlag(true)
-            )
+
+            // init client if necessary
+            if (!isIntialized){ 
+                frontendClient.init(newAuthTokens)
+                    .then(() => setInitializedFlag(true))
+            }
         }
     );
 
-    return { isIntialized, frontendClient };
+    return { 
+        isIntialized, 
+        client: frontendClient.client,
+        link: frontendClient.link,
+        siteConfig: frontendClient.siteConfig
+    };
 }

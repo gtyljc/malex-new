@@ -5,8 +5,8 @@ import clsx from "clsx";
 import { dayjs } from "@lib/dayjs";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { SiteConfigQueries, AppointmentQueries } from "@lib/apollo-clients/queries/frontend";
-import * as tools from "@lib/tools";
+import { AppointmentQueries } from "@lib/apollo-clients/queries/frontend";
+import { useFrontendClient } from "@src/lib/apollo-clients/frontend";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -53,21 +53,21 @@ function Time({ date, isBusy }){
 
 function TimeSelect(){
     const { inputData: { date } } = useContext(FormCtx);
-    const publicConfig = useQuery(SiteConfigQueries.publicConfig());
+    const { siteConfig } = useFrontendClient();
     const busyTimesAtDay = useQuery(
         AppointmentQueries.busyInRange(),
         { variables: { date, unit: "APPOINTMENT" } }
     );
 
     // wait until loading
-    if (publicConfig.loading | busyTimesAtDay.loading ) return <LoadingSection />;
+    if (busyTimesAtDay.loading ) return <LoadingSection />;
 
-    const step = publicConfig.data.publicConfig.data[0].min_duration;
-    const start = dayjs.tz(publicConfig.data.publicConfig.data[0].opening_at);
-    const end = dayjs.tz(publicConfig.data.publicConfig.data[0].closing_at);
+    const step = siteConfig.min_duration;
+    const start = dayjs.tz(siteConfig.opening_at);
+    const end = dayjs.tz(siteConfig.closing_at);
     const times = [];
-    let appTime = dayjs.tz(date).utc().hour(start.hour()).minute(start.minute());
-    const endTime = dayjs.tz(date).utc().hour(end.hour()).minute(end.minute());
+    const endTime = dayjs.tz(date).hour(end.hour()).minute(end.minute());
+    let appTime = dayjs.tz(date).hour(start.hour()).minute(start.minute());
 
     while (appTime.unix() < endTime.unix()){
         times.push(
@@ -76,7 +76,7 @@ function TimeSelect(){
                 date={ appTime }
                 isBusy={ 
                     busyTimesAtDay.data.busyInRange.data.filter(
-                        e => {  return appTime.toISOString() == e.date }
+                        e => appTime.toISOString() == e.date
                     ).length != 0 
                 }
             />

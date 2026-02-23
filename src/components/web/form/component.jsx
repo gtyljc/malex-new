@@ -60,15 +60,21 @@ export default function Form() {
                     );
 
                     // flag as submitted
-                    if (!isSubmited) { setSubmitState(true); setWaitingState(true); sclForward() };
+                    if (!isSubmited) { 
+                        setSubmitState(true);
+                        setWaitingState(true);
+                        sclForward() 
+                    };
 
                     // flag when response from server will be loaded
                     if(!loading) {
                         setWaitingState(false);
                         
-                        console.log(data);
+                        if (!error) setResponseState(false);
 
-                        if (error || !data.createAppointment.success) setResponseState(false);
+                        if (!data.createAppointment.success) setResponseState(false);
+
+                        setResponseState(true);
                     };
                 }
             }

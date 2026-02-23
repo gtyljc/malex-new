@@ -12,8 +12,6 @@ import LoadingSection from "@web/loading-section/component";
 import finished from "./finished.svg";
 import declined from "./declined.svg";
 
-const STEP_I = 3;
-
 function ResponseState({ title, message, icon }){
     const { closeForm } = useContext(FormCtx);
 
@@ -38,6 +36,8 @@ function ResponseState({ title, message, icon }){
         </div>
     )
 }
+
+const STEP_I = 3;
 
 export default function FinishStep(){
     const { isWaitingOnResponse, responseState } = useContext(FormCtx);

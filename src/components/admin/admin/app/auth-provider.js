@@ -1,7 +1,7 @@
 
 import { jwtVerify, decodeJwt } from "jose";
 import { AuthQueries } from "@lib/apollo-clients/queries/frontend";
-import FrontendApolloClient from "@lib/apollo-clients/frontend";
+import { frontendClient } from "@lib/apollo-clients/frontend";
 
 class AuthProvider {
     constructor(apolloClient){
@@ -23,7 +23,7 @@ class AuthProvider {
 
         // validation successful
         if(r.data.adminLogin.success){
-            FrontendApolloClient.setAuthTokens(
+            frontendClient.setAuthTokens(
                 r.data.adminLogin.data[0].rt,
                 r.data.adminLogin.data[0].at
             )
@@ -36,7 +36,7 @@ class AuthProvider {
 
     // send username and password to the auth server and get back credentials
     async login({ username, password }) {
-        const { at } = FrontendApolloClient.getAuthTokens();
+        const { at } = frontendClient.getAuthTokens();
 
         if (at){
 
@@ -60,7 +60,7 @@ class AuthProvider {
     
     // when the user navigates, make sure that their credentials are still valid
     async checkAuth() {
-        const { at } = FrontendApolloClient.getAuthTokens();
+        const { at } = frontendClient.getAuthTokens();
 
         if (!at) {
             throw new AuthProvider.authError()
@@ -75,7 +75,7 @@ class AuthProvider {
     
     // remove local credentials and notify the auth server that the user logged out
     async logout() {
-        const authPair = FrontendApolloClient.getAuthTokens();
+        const authPair = frontendClient.getAuthTokens();
         
         if(authPair.a_token && authPair.r_token){
             const claims = decodeJwt(authPair.a_token);
@@ -83,7 +83,7 @@ class AuthProvider {
             if(claims.aud == "ADMIN"){
                 const r = await this.apolloClient.mutate({ mutation: AuthQueries.adminLogout() });
 
-                FrontendApolloClient.setAuthTokens(
+                frontendClient.setAuthTokens(
                     r.data.adminLogout.data[0].at,
                     r.data.adminLogout.data[0].rt
                 )

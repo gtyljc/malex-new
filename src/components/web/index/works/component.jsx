@@ -103,7 +103,7 @@ function WorksRow(){
 
     return (
         <ul
-            className="row"
+            className="row row-animation"
             style={
                 {
                     transform: `translateX(-${index * (100 + rowGap)}%)`,

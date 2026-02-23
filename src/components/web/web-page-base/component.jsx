@@ -12,12 +12,12 @@ import Footer from "@web/footer/component";
 import Form from "@web/form/component";
 
 export default function WebPageBase({ children, authTokens }){
-    const { frontendClient, isIntialized } = useFrontendClient(authTokens);
+    const { client, isIntialized } = useFrontendClient(authTokens);
 
     if (!isIntialized) return null;
 
     return (
-        <ApolloProvider client={ frontendClient.client }>
+        <ApolloProvider client={ client }>
             <FormProvider>
                 <Form />
                 <Header/>

@@ -3,8 +3,7 @@
 
 // others
 import Image from "next/image";
-import { useQuery } from "@apollo/client/react";
-import { SiteConfigQueries } from "@lib/apollo-clients/queries/frontend";
+import { useFrontendClient } from "@src/lib/apollo-clients/frontend";
 import { dayjs } from "@lib/dayjs";
 
 // components
@@ -55,7 +54,7 @@ function TimeField({ openingAtValue, closingAtValue }){
 }
 
 export default function Contact(){
-    const { data, loading } = useQuery(SiteConfigQueries.publicConfig());
+    const { siteConfig } = useFrontendClient();
 
     return (
         <main>
@@ -67,18 +66,12 @@ export default function Contact(){
                         <div className="w-full flex flex-col md:order-2 gap-10">
                             <p>We’re always ready to answer your questions and offer the assistance you need</p>
                             <ul className="flex flex-col gap-6 mb-5 md:mb-0">
-                                {
-                                    loading ? <LoadingSection />: (
-                                        <>
-                                            <PhoneNumberField phoneValue={ data.publicConfig.data[0].phone_number } />
-                                            <SupportEmailField emailValue={ data.publicConfig.data[0].support_email } />
-                                            <TimeField 
-                                                openingAtValue={ dayjs(data.publicConfig.data[0].starting_at).format("LT") } 
-                                                closingAtValue={ dayjs(data.publicConfig.data[0].closing_at).format("LT") } 
-                                            />
-                                        </>
-                                    )
-                                }
+                                <PhoneNumberField phoneValue={ siteConfig.phone_number } />
+                                <SupportEmailField emailValue={ siteConfig.support_email } />
+                                <TimeField 
+                                    openingAtValue={ dayjs(siteConfig.starting_at).format("LT") } 
+                                    closingAtValue={ dayjs(siteConfig.closing_at).format("LT") } 
+                                />
                             </ul>
                         </div>
                     </div>

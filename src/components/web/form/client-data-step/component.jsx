@@ -9,12 +9,11 @@ import { useContext } from "react";
 import * as z from "zod";
 import * as tools from "@src/lib/tools";
 import { AsYouType } from "libphonenumber-js/min";
-import { useQuery } from "@apollo/client/react";
-import { SiteConfigQueries } from "@src/lib/apollo-clients/queries/frontend";
 
 // components
 import StepWrapper from "../step-wrapper/component";
 import { NextButton } from "../step-wrapper/component";
+import { useFrontendClient } from "@src/lib/apollo-clients/frontend";
 
 function InputsRow ({ children }) {
     return (
@@ -132,7 +131,7 @@ function createValidationSchema(config){
 
 // should be insert in ul
 export default function ClientDataStep() {
-    const { data } = useQuery(SiteConfigQueries.publicConfig());
+    const { siteConfig } = useFrontendClient();
     const formObject = useForm(
         {
             defaultValues: {
@@ -144,7 +143,7 @@ export default function ClientDataStep() {
                 "phone_number": ""
             },
             resetOptions: { keepDefaultValues: true },
-            resolver: zodResolver(createValidationSchema(data.publicConfig.data[0])),
+            resolver: zodResolver(createValidationSchema(siteConfig)),
             mode: "onChange"
         }
     );

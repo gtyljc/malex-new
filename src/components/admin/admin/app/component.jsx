@@ -15,21 +15,21 @@ import { SiteConfigShow, SiteConfigEdit } from "@admin/site-config/component";
 import CustomLayout from "@admin/custom-layout/component";
 
 export default function AdminApp({ authTokens }){
-    const { frontendClient, isIntialized } = useFrontendClient(authTokens);
+    const { client, link, isIntialized } = useFrontendClient(authTokens);
     
     if (!isIntialized) return null;
 
     // add link to remove typenames
-    frontendClient.client.setLink(
+    client.setLink(
         new RemoveTypenameFromVariablesLink()
-            .concat(frontendClient.link)
+            .concat(link)
     );
 
     return(
         <Admin 
             dataProvider={
                 new DataProvider(
-                    frontendClient.client,
+                    client,
                     {
                         [ AppointmentQueries.resource ]: AppointmentQueries,
                         [ WorkQueries.resource ]: WorkQueries,
@@ -37,7 +37,7 @@ export default function AdminApp({ authTokens }){
                     }
                 )
             }
-            authProvider={ new AuthProvider(frontendClient.client) }
+            authProvider={ new AuthProvider(client) }
             layout={ CustomLayout }
             requireAuth
             store={ memoryStore() }

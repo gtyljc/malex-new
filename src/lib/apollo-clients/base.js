@@ -9,8 +9,10 @@ import { dayjs } from "@lib/dayjs";
 export function defaultApolloClient(cacheOptions = {}){
     const link = new RetryLink(
         { 
-            attempts: () => { 
-                console.log("Connecting to API..."); 
+            attempts: () => {
+                console.log(process.env.API_RECONNECT_DELAY);
+                
+                // console.log("Connecting to API..."); 
             
                 return true; 
             },

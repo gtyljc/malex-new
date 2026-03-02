@@ -34,7 +34,7 @@ export default class BackendApolloClient {
             await client.mutate(
                 { 
                     mutation: backend.AuthQueries.createRT(), 
-                    variables: { user_id: nanoid(16), role: "SUPERUSER" }  
+                    variables: { user_id: null, role: "SUPERUSER" }  
                 }
             )
         ).data.createRT.data[0];
@@ -83,7 +83,7 @@ export default class BackendApolloClient {
 }
 
 // creates new tokens pair and gets it from API !!! can be used only at server component !!!
-export async function createAuthTokens(role = "GUEST", userId = nanoid(16)) {
+export async function createAuthTokens({ userId = null, role = "GUEST" } = {}) {
     const { at, rt } = (
         await backendClient.client.mutate(
             { 

@@ -10,9 +10,7 @@ export function defaultApolloClient(cacheOptions = {}){
     const link = new RetryLink(
         { 
             attempts: () => {
-                console.log(process.env.API_RECONNECT_DELAY);
-                
-                // console.log("Connecting to API..."); 
+                console.log("Attempting to connect to the API...");
             
                 return true; 
             },

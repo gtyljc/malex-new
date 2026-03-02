@@ -121,9 +121,6 @@ export default function TimeStep() {
                                     .tz()
                                     .format()
                                 }
-
-                                // // console.log(dayjs.)
-                                // console.log(inputData.date);
                             }
                         } 
                     isSubmit 

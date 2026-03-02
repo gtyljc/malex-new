@@ -231,7 +231,7 @@ export class AuthQueries {
 
     static createRT(){
         return gql`
-            mutation createRT($user_id: ID!, $role: RoleEnum!){
+            mutation createRT($user_id: ID, $role: RoleEnum!){
                 createRT(user_id: $user_id, role: $role) {
                     code
                     success

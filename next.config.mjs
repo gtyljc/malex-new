@@ -11,7 +11,7 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'imagedelivery.net'
-            },
+            }
         ],
   },
   output: "standalone"

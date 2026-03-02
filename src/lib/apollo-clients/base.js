@@ -7,16 +7,18 @@ import { dayjs } from "@lib/dayjs";
 
 // returns absolutly standard apollo client, that connected to API
 export function defaultApolloClient(cacheOptions = {}){
-    const link = new RetryLink(
-        { 
-            attempts: () => {
-                console.log("Attempting to connect to the API...");
+    // const link = new RetryLink(
+    //     { 
+    //         attempts: () => {
+    //             console.log("Attempting to connect to the API...");
             
-                return true; 
-            },
-            delay: () => parseInt(process.env.API_RECONNECT_DELAY) 
-        }
-    ).concat(new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }));
+    //             return true; 
+    //         },
+    //         delay: () => parseInt(process.env.API_RECONNECT_DELAY) 
+    //     }
+    // ).concat(new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }));
+
+    const link = new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL });
 
     return {
         client: new ApolloClient({ link, cache: new InMemoryCache(cacheOptions) }),

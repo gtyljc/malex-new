@@ -15,7 +15,7 @@ export default function WebPageBase({ children, authTokens }){
     const { client, isIntialized } = useFrontendClient(authTokens);
 
     if (!isIntialized) return null;
-
+    
     return (
         <ApolloProvider client={ client }>
             <FormProvider>

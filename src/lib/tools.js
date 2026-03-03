@@ -29,3 +29,11 @@ export function sleep(ms) {
 export function startOfDay(date){
     return date.hour(0).minute(0).second(0).millisecond(0)
 }
+
+export async function hashRaw(raw, alg){
+    const encoder = new TextEncoder();
+    const data = encoder.encode(raw);
+
+    // hash
+    return new Uint8Array(await crypto.subtle.digest(alg, data)).toHex();
+}

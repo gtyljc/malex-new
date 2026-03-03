@@ -1,8 +1,13 @@
 
 import * as backend from "./queries/backend";
 import { SetContextLink } from "@apollo/client/link/context";
-import { nanoid } from "nanoid";
 import { defaultApolloClient, authApolloClient, isJWTExpired } from "./base";
+import { nanoid } from "nanoid";
+import dayjs from "dayjs";
+import crypto from "node:crypto";
+import * as tools from "@lib/tools";
+
+const DEFAULT_HASH_ALG = "SHA-256";
 
 export default class BackendApolloClient {
 
@@ -29,15 +34,33 @@ export default class BackendApolloClient {
     }
 
     async setRT() {
-        const { client } = defaultApolloClient();
-        const { at, rt } = (
-            await client.mutate(
-                { 
-                    mutation: backend.AuthQueries.createRT(), 
-                    variables: { user_id: null, role: "SUPERUSER" }  
-                }
-            )
-        ).data.createRT.data[0];
+        const body = {
+            userId: null,
+            role: "SUPERUSER"
+        }
+        const hashedBody = await tools.hashRaw(JSON.stringify(body));
+        const path = "rt/create";
+        const method = "POST";
+        const timestamp = dayjs().unix();
+        const nonce = nanoid(16);
+        const signature = method + path + nonce + hashedBody;
+            crypto.createHmac(, env("RT_CREATE_SECRET"))
+            .update(resultStringToSign)
+            .digest(DEFAULT_SIGN_ENCRYPTION);
+        
+        const headers = {
+            "x-timestamp": toString(dayjs().unix()),
+            "x-nonce": nonce,
+            "x-body-hash": 
+        };
+        const { at, rt } = await fetch(
+            process.env.NEXT_PUBLIC_API_URL + path,
+            {
+                method,
+                headers,
+                body: JSON.stringify(body)
+            }
+        );
     
         // update or set tokens into client instance
         this.setAuthTokens(at, rt);

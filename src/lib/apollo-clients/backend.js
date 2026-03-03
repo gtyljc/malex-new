@@ -7,7 +7,8 @@ import dayjs from "dayjs";
 import crypto from "node:crypto";
 import * as tools from "@lib/tools";
 
-const DEFAULT_HASH_ALG = "SHA-256";
+const DEFAULT_HASH_FUNC = "SHA-256";
+const DEFAULT_ENCRYPTION = "hex";
 
 export default class BackendApolloClient {
 
@@ -38,22 +39,26 @@ export default class BackendApolloClient {
             userId: null,
             role: "SUPERUSER"
         }
-        const hashedBody = await tools.hashRaw(JSON.stringify(body));
+        const hashedBody = await tools.hashRaw(
+            JSON.stringify(body), 
+            DEFAULT_HASH_FUNC,
+            DEFAULT_ENCRYPTION
+        );
         const path = "rt/create";
         const method = "POST";
         const timestamp = dayjs().unix();
         const nonce = nanoid(16);
-        const signature = method + path + nonce + hashedBody;
-            crypto.createHmac(, env("RT_CREATE_SECRET"))
-            .update(resultStringToSign)
-            .digest(DEFAULT_SIGN_ENCRYPTION);
-        
+        const stringToSign = method + path + nonce + hashedBody;
+        const signature = crypto.createHmac(DEFAULT_HASH_FUNC, process.env.RT_CREATE_SECRET)
+            .update(stringToSign)
+            .digest(DEFAULT_ENCRYPTION);
         const headers = {
-            "x-timestamp": toString(dayjs().unix()),
+            "x-timestamp": timestamp.toString(),
             "x-nonce": nonce,
-            "x-body-hash": 
+            "x-signature": signature,
+            "x-body-hash": hashedBody
         };
-        const { at, rt } = await fetch(
+        const r = await fetch(
             process.env.NEXT_PUBLIC_API_URL + path,
             {
                 method,
@@ -61,7 +66,9 @@ export default class BackendApolloClient {
                 body: JSON.stringify(body)
             }
         );
-    
+        
+        console.log(await r.json());
+
         // update or set tokens into client instance
         this.setAuthTokens(at, rt);
     }
@@ -107,16 +114,16 @@ export default class BackendApolloClient {
 
 // creates new tokens pair and gets it from API !!! can be used only at server component !!!
 export async function createAuthTokens({ userId = null, role = "GUEST" } = {}) {
-    const { at, rt } = (
-        await backendClient.client.mutate(
-            { 
-                mutation: backend.AuthQueries.createRT(), 
-                variables: { role, user_id: userId } 
-            }
-        )
-    ).data.createRT.data[0];
+    // const { at, rt } = (
+    //     await backendClient.client.mutate(
+    //         { 
+    //             mutation: backend.AuthQueries.createRT(), 
+    //             variables: { role, user_id: userId } 
+    //         }
+    //     )
+    // ).data.createRT.data[0];
 
-    return { at, rt };
+    // return { at, rt };
 }
 
 // all backend requests must be executed through this client instance

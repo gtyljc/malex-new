@@ -7,16 +7,17 @@ import { dayjs } from "@lib/dayjs";
 
 // returns absolutly standard apollo client, that connected to API
 export function defaultApolloClient(cacheOptions = {}){
+    const uri = process.env.NEXT_PUBLIC_API_URL + "graphql";
     const link = new RetryLink(
         { 
             attempts: () => {
-                console.log("Attempting to reconnect to API...");
+                console.log(`Attempting to reconnect to ${ uri }...`);
             
                 return true; 
             },
-            delay: () => parseInt(APOLLO_CLIENT_RECONNECT_DELAY) 
+            delay: () => parseInt(process.env.APOLLO_CLIENT_RECONNECT_DELAY) 
         }
-    ).concat(new HttpLink({ uri: process.env.NEXT_PUBLIC_API_URL }));
+    ).concat(new HttpLink({ uri }));
 
     return {
         client: new ApolloClient({ link, cache: new InMemoryCache(cacheOptions) }),
@@ -40,7 +41,7 @@ export function authApolloClient(jwt){ // can be AT or RT
 
     client.setLink(authLink);
 
-    return { client, link: authLink }
+    return { client, link: authLink };
 }
 
 // checks if jwt expired ( JWT must contain "exp" claim )

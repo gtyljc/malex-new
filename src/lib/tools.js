@@ -30,10 +30,11 @@ export function startOfDay(date){
     return date.hour(0).minute(0).second(0).millisecond(0)
 }
 
-export async function hashRaw(raw, alg){
+export async function hashRaw(raw, alg, encoding){
     const encoder = new TextEncoder();
     const data = encoder.encode(raw);
+    const buffer = new Uint8Array(await crypto.subtle.digest(alg, data));
 
     // hash
-    return new Uint8Array(await crypto.subtle.digest(alg, data)).toHex();
+    return Buffer.from(buffer).toString(encoding);
 }

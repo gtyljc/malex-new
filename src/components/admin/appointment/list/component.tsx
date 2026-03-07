@@ -15,6 +15,8 @@ import {
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import MessageIcon from '@mui/icons-material/Message';
+import React from "react";
+import { DataTableColumnProps } from "react-admin"; 
 
 const LinkToApp = styled("a")(
     { 
@@ -46,8 +48,8 @@ function BWTField(){
     //  wait until will be loaded
     if (!record) return null;
 
-    let icon;
-    let href;
+    let icon: React.ReactElement;
+    let href: string;
 
     switch (record.bwt){
         case "WHATSAPP": 
@@ -86,7 +88,12 @@ function DurationField(){
     )
 }
 
-function CustomTableColumn({ children, args }){
+interface CustomTableColumnParams {
+    children?: React.ReactElement,
+    args: DataTableColumnProps
+}
+
+function CustomTableColumn({ children, args }: CustomTableColumnParams){
     const record = useRecordContext();
     
     return (

@@ -21,7 +21,12 @@ function Actions (){
     )
 }
 
-function CustomTimeField({ source, label }){
+interface CustomTimeFieldParams {
+    source: string;
+    label: string;
+}
+
+function CustomTimeField({ source, label }: CustomTimeFieldParams){
     return (
         <DateField 
             source={ source }

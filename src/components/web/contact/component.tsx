@@ -3,13 +3,12 @@
 
 // others
 import Image from "next/image";
-import { useFrontendClient } from "@src/lib/apollo-clients/frontend";
 import { dayjs } from "@lib/dayjs";
+import { frontendClient } from "@src/lib/apollo-clients/frontend";
 
 // components
 import PathToPageSection from "@web/path-to-page/component";
 import FormPreviewSection from "@web/form-preview/component";
-import LoadingSection from "@web/loading-section/component";
 
 // images
 import thumbnail from "./thumbnail.jpg";
@@ -17,7 +16,12 @@ import phone from "./phone.svg";
 import email from "./email.svg";
 import time from "./time.svg";
 
-function ContactDataField({ children, icon }){
+interface ContactDataFieldParams {
+    children: React.ReactElement,
+    icon: string
+}
+
+function ContactDataField({ children, icon }: ContactDataFieldParams){
     return (
         <li className="flex flex-row items-center gap-3">
             <Image src={ icon } alt="Malex contact" className="lg:size-[32px]" />
@@ -26,8 +30,11 @@ function ContactDataField({ children, icon }){
     )
 }
 
+interface PhoneNumberFieldParams {
+    phoneValue: string;
+}
 
-function PhoneNumberField({ phoneValue }){
+function PhoneNumberField({ phoneValue }: PhoneNumberFieldParams){
     return (
         <ContactDataField icon={ phone }>
             <span className="font-semibold lg:text-lg">{ phoneValue }</span>
@@ -35,7 +42,11 @@ function PhoneNumberField({ phoneValue }){
     )
 }
 
-function SupportEmailField({ emailValue }){
+interface SupportEmailFieldParams {
+    emailValue: string;
+}
+
+function SupportEmailField({ emailValue }: SupportEmailFieldParams){
     return (
         <ContactDataField icon={ email }>
             <span className="font-semibold lg:text-lg">{ emailValue }</span>
@@ -43,7 +54,12 @@ function SupportEmailField({ emailValue }){
     )
 }
 
-function TimeField({ openingAtValue, closingAtValue }){
+interface WorkTimeFieldParams {
+    openingAtValue: string;
+    closingAtValue: string;
+}
+
+function WorkTimeField({ openingAtValue, closingAtValue }: WorkTimeFieldParams){
     return (
         <ContactDataField icon={ time }>
             <span className="font-semibold lg:text-lg">
@@ -54,7 +70,7 @@ function TimeField({ openingAtValue, closingAtValue }){
 }
 
 export default function Contact(){
-    const { siteConfig } = useFrontendClient();
+    const { siteConfig } = frontendClient;
 
     return (
         <main>
@@ -68,7 +84,7 @@ export default function Contact(){
                             <ul className="flex flex-col gap-6 mb-5 md:mb-0">
                                 <PhoneNumberField phoneValue={ siteConfig.phone_number } />
                                 <SupportEmailField emailValue={ siteConfig.support_email } />
-                                <TimeField 
+                                <WorkTimeField 
                                     openingAtValue={ dayjs(siteConfig.starting_at).format("LT") } 
                                     closingAtValue={ dayjs(siteConfig.closing_at).format("LT") } 
                                 />

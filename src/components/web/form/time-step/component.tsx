@@ -5,8 +5,8 @@ import clsx from "clsx";
 import { dayjs } from "@lib/dayjs";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { AppointmentQueries } from "@lib/apollo-clients/queries/frontend";
-import { useFrontendClient } from "@src/lib/apollo-clients/frontend";
+import { AppointmentQueries } from "@src/lib/apollo-clients/queries/frontend";
+import { frontendClient } from "@src/lib/apollo-clients/frontend";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -17,9 +17,19 @@ import LoadingSection from "@web/loading-section/component";
 import styles from "./styles.module.css";
 import { useQuery } from "@apollo/client/react";
 
-const TimeSelectCtx = createContext();
+interface TimeSelectCtx {
+    setTime: Function | undefined,
+    currentTime: dayjs.Dayjs | null | undefined
+}
 
-function Time({ date, isBusy }){
+const TimeSelectCtx = createContext<TimeSelectCtx>(
+    { 
+        setTime: undefined, 
+        currentTime: undefined 
+    }
+);
+
+function Time({ date, isBusy }: {  }){
     const { setTime, currentTime } = useContext(TimeSelectCtx);
 
     return (
@@ -53,7 +63,7 @@ function Time({ date, isBusy }){
 
 function TimeSelect(){
     const { inputData: { date } } = useContext(FormCtx);
-    const { siteConfig } = useFrontendClient();
+    const { siteConfig } = frontendClient;
     const busyTimesAtDay = useQuery(
         AppointmentQueries.busyInRange(),
         { variables: { date, unit: "APPOINTMENT" } }

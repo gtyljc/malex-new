@@ -1,6 +1,6 @@
 "use client";
 
-export default function Error({ error, reset }){
+export default function Error({ error }){
     return (
         <div className="">
             <span>{ error.name }</span>

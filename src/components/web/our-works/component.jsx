@@ -3,7 +3,7 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@lib/apollo-clients/queries/frontend";
+import { WorkQueries } from "@src/lib/apollo-clients/queries/frontend";
 import { dayjs } from "@lib/dayjs";
 import Image from "next/image";
 import { ViewerProvider, ViewerCtx } from "./viewer/ctx";

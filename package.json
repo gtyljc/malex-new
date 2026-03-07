@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@apollo/client": "^4.0.7",
@@ -18,7 +19,7 @@
     "nanoid": "^5.1.6",
     "next": "^15.5.7",
     "react": "19.1.0",
-    "react-admin": "^5.12.2",
+    "react-admin": "^5.5.3",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.63.0",
     "rxjs": "^7.8.2",
@@ -26,8 +27,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
+    "@graphql-codegen/cli": "^6.1.2",
+    "@graphql-codegen/typescript": "^5.0.8",
+    "@graphql-codegen/typescript-operations": "^5.0.8",
     "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "25.3.3",
+    "@types/react-dom": "^19.2.3",
     "eslint": "^10.0.1",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "typescript": "5.9.3"
   }
 }

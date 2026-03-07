@@ -2,14 +2,17 @@
 // others
 import Link from "next/link";
 import Image from "next/image";
-import clsx from "clsx";
 
 // images
 import email from "./email.svg";
 import phone from "./phone.svg";
 import logo from "./logo.svg";
 
-function NavigationLinksCon({ children }){
+interface NavigationLinksConParams {
+    children: React.ReactNode
+} 
+
+function NavigationLinksCon({ children }: NavigationLinksConParams){
     return (
         <div className="flex flex-row gap-10 lg:flex-col">
             { children }
@@ -17,7 +20,12 @@ function NavigationLinksCon({ children }){
     )
 }
 
-function NavigationLink({ url, label }){
+interface NavigationLinkParams {
+    url: string;
+    label: string;
+}
+
+function NavigationLink({ url, label }: NavigationLinkParams){
     return (
         <Link 
             href={ url } 
@@ -28,7 +36,13 @@ function NavigationLink({ url, label }){
     )
 }
 
-function ContactData({ icon, alt, value }){
+interface ContactDataParams {
+    icon: string;
+    alt: string;
+    value: string;
+}
+
+function ContactData({ icon, alt, value }: ContactDataParams){
     return (
         <div className="flex flex-row gap-2.5">
             <Image 

@@ -14,12 +14,10 @@ import {
     DateTimeInput,
     TextInput
 } from "react-admin";
+import { frontendClient } from "@src/lib/apollo-clients/frontend";
 
 export default function AppointmentEdit() {
-    const { data, isPending } = useGetOne(SiteConfigQueries.resource, { id: "1" });
-
-    // wait until data will be loaded
-    if (isPending) { return <p>Loading...</p> };
+    const { siteConfig } = useApolloClient() as ;
 
     // generating choices
     const choices = [];

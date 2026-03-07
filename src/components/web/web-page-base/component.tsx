@@ -3,21 +3,17 @@
 
 // others
 import { ApolloProvider } from "@apollo/client/react";
-import { FormProvider } from "@web/form/ctx"
-import { useFrontendClient } from "@src/lib/apollo-clients/frontend";
+import { FormProvider } from "@web/form/ctx";
+import { frontendClient } from "@src/lib/apollo-clients/frontend";
 
 // components
 import Header from "@web/header/component";
 import Footer from "@web/footer/component";
 import Form from "@web/form/component";
 
-export default function WebPageBase({ children, authTokens }){
-    const { client, isIntialized } = useFrontendClient(authTokens);
-
-    if (!isIntialized) return null;
-    
+export default function WebPageBase({ children }){
     return (
-        <ApolloProvider client={ client }>
+        <ApolloProvider client={ frontendClient.client }>
             <FormProvider>
                 <Form />
                 <Header/>

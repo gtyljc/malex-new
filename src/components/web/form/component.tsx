@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { FormCtx } from "./ctx";
 import Image from "next/image";
 import { useApolloClient } from "@apollo/client/react";
-import { AppointmentQueries } from "@lib/apollo-clients/queries/frontend";
+import { AppointmentQueries } from "@src/lib/apollo-clients/queries/frontend";
 
 // components
 import ClientDataStep from "./client-data-step/component";

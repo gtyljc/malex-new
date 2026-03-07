@@ -10,9 +10,9 @@ import objectSupport from "dayjs/plugin/objectSupport";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
 // others
-import { defaultApolloClient } from "./apollo-clients/base";
 import { SiteConfigQueries } from "./apollo-clients/queries/frontend";
 import dayjs from "dayjs";
+import BaseApolloClient from "./apollo-clients/base";
 
 // set up dayjs
 dayjs.extend(localizedFormat);
@@ -22,7 +22,7 @@ dayjs.extend(objectSupport);
 dayjs.extend(customParseFormat);
 
 // get and set timezone
-const { data } = await defaultApolloClient().client.query({ query: SiteConfigQueries.publicConfig() });
+const { data } = await new BaseApolloClient().client.query({ query: SiteConfigQueries.publicConfig() });
 
 dayjs.tz.setDefault(data.publicConfig.data[0].timezone);
 

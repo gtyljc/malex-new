@@ -10,8 +10,17 @@ export class ResourceQueries {
     // all children must contain to fields: resource -> name of resource to manipulate
     // and fields -> all available fields at resource
 
+    static resource: string;
+    fields: string[];
+    resource: string;
+
+    constructor(resource: string, fields: string[]){
+        this.fields = fields;
+        this.resource = resource;
+    }
+
     // get a list of records based on sort, filter, and pagination
-    static getList() {
+    getList() {
         return gql`
             query GetList($filter: JSONObject!, $pagination: PaginationInput!, $sort: SortInput) {
                 ${this.resource}s (filter: $filter, pagination: $pagination, sort: $sort) {
@@ -34,7 +43,7 @@ export class ResourceQueries {
     }
 
     // get a single record by id
-    static getOne(){
+    getOne(){
         return gql`
             query GetOne($id: ID!) {
                 ${this.resource} (id: $id){
@@ -50,7 +59,7 @@ export class ResourceQueries {
     }
 
     // get a list of records based on an array of ids
-    static getMany(){
+    getMany(){
         return gql`
             query GetMany($ids: [ID]!) {
                 ${this.resource}s (ids: $ids) {
@@ -66,7 +75,7 @@ export class ResourceQueries {
     }
 
     // create a record
-    static create(){
+    create(){
         const capitalizedResorceName = capitalize(this.resource);
 
         return gql`
@@ -86,7 +95,7 @@ export class ResourceQueries {
     }
 
     // update a record based on a patch
-    static update(){
+    update(){
         const capitalizedResorceName = capitalize(this.resource);
 
         return gql`
@@ -106,7 +115,7 @@ export class ResourceQueries {
     }
 
     // update a list of records based on an array of ids and a common patch
-    static updateMany(){
+    updateMany(){
         const capitalizedResorceName = capitalize(this.resource);
 
         return gql`
@@ -126,7 +135,7 @@ export class ResourceQueries {
     }
 
     // delete a record by id
-    static delete(){
+    delete(){
         return gql`
             mutation Delete($id: ID!){
                 delete${capitalize(this.resource)}(id: $id) {
@@ -144,7 +153,7 @@ export class ResourceQueries {
     }
 
     // delete a list of records based on an array of ids
-    static deleteMany(){
+    deleteMany(){
         return gql`
             mutation DeleteMany($ids: [ID]!){
                 deleteMany${capitalize(this.resource)}s(ids: $ids) {
@@ -164,55 +173,61 @@ export class ResourceQueries {
 
 export class AppointmentQueries extends ResourceQueries {
     static resource = "appointment";
-    static fields = [
-        "id",
-        "name",
-        "surname",
-        "address",
-        "job_desc",
-        "bwt",
-        "phone_number",
-        "date",
-        "duration",
-        "completed"
-    ]
+
+    constructor(){
+        super(
+            "appointment",
+            [
+                "id",
+                "name",
+                "surname",
+                "address",
+                "job_desc",
+                "bwt",
+                "phone_number",
+                "date",
+                "duration",
+                "completed"
+            ]
+        )
+    }
 }
 
 export class WorkQueries extends ResourceQueries {
     static resource = "work";
-    static fields = [
-        "id",
-        "img_url",
-        "img_id",
-        "category",
-        "timestamp"
-    ]
+
+    constructor(){
+        super(
+            "work",
+            [
+                "id",
+                "img_url",
+                "img_id",
+                "category",
+                "timestamp"
+            ]       
+        )
+    }
 }
 
 export class SiteConfigQueries extends ResourceQueries {
     static resource = "siteConfig";
-    static fields = [
-        "id",
-        "opening_at",
-        "closing_at",
-        "min_duration",
-        "support_email",
-        "phone_number",
-        "timezone",
-        "c_country"
-    ]
-}
 
-export class AdminQueries extends ResourceQueries {
-    static resource = "admin";
-    static fields = [
-        "id",
-        "opening_at",
-        "closing_at",
-        "min_duration",
-        "support_email",
-        "phone_number"
-    ]
+    constructor(){
+        super(
+            "siteConfig",
+            [
+                "id",
+                "opening_at",
+                "closing_at",
+                "min_duration",
+                "support_email",
+                "phone_number",
+                "timezone",
+                "c_country"
+            ]       
+        )
+    }
 }
 
 export class AuthQueries {

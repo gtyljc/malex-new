@@ -8,7 +8,12 @@ import experience_svg from "./experience.svg";
 import client_svg from "./client.svg";
 import certicate_svg from "./certificate.svg";
 
-function Card({ label, img }){
+interface CardParams {
+    label: React.ReactElement;
+    img: React.ReactElement
+}
+
+function Card({ label, img }: CardParams){
     return(
         <div className={ 
                 clsx(
@@ -18,7 +23,9 @@ function Card({ label, img }){
             }
         >
             { img }
-            <h1 className="text-sm/[20px] font-medium text-center lg:text-left lg:text-base/[25px]">{ label }</h1>
+            <h1 className="text-sm/[20px] font-medium text-center lg:text-left lg:text-base/[25px]">
+                { label }
+            </h1>
         </div>
     );
 }

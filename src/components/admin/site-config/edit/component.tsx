@@ -24,11 +24,16 @@ function CustomToolbar(){
 }
 
 // adding timezone and converting time input into ISO format
-function parseTime(value){
+function parseTime(value: string){
     return dayjs(value, "HH:mm").tz().utc().toISOString()
 }
 
-function CustomTimeInput({ source, label }){
+interface CustomTimeInputParams { 
+    source: string;
+    label: string;
+}
+
+function CustomTimeInput({ source, label }: CustomTimeInputParams){
     return (
         <TimeInput 
             source={ source }

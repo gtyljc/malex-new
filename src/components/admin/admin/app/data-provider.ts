@@ -1,25 +1,49 @@
 
+import { ResourceQueries } from "@lib/apollo-clients/queries/backend";
 import { ImageUploadQueries } from "@lib/apollo-clients/queries/backend";
 import { nanoid } from "nanoid";
 import { capitalize } from "@lib/tools";
+import { ApolloClient } from "@apollo/client";
+import * as types from "@lib/types";
+import {
+    CreateParams,
+    CreateResult,
+    DeleteManyResult,
+    DeleteManyParams,
+    DeleteParams,
+    DeleteResult,
+    GetListParams,
+    GetListResult,
+    GetOneParams,
+    GetOneResult,
+    GetManyParams,
+    GetManyResult,
+    GetManyReferenceParams,
+    GetManyReferenceResult,
+    UpdateManyParams,
+    UpdateManyResult,
+    UpdateResult,
+    UpdateParams
+} from "react-admin";
 
 class DataProvider {
-    // read about structure at https://marmelab.com/react-admin/DataProviderWriting.html
+    apolloClient: ApolloClient;
+    resourceQueries: ResourceQueries[];
 
-    constructor(gql_client, resource_queries) {
-        this.gqlClient = gql_client;
-        this.resourceQueries = resource_queries;
+    constructor(apolloClient: ApolloClient, resourceQueries: ResourceQueries[]) {
+        this.apolloClient = apolloClient;
+        this.resourceQueries = resourceQueries;
     }
 
     // checks if in data has img field and then
     // saves image in Cloudflare Storage and returns 
     // new data in each case returns data
-    async #imageInterception(data){
+    private async imageInterception(data: Record<string, any>){
         if (data.img_url){
             const imgId = nanoid(15);
 
             // get upload link
-            const startResponse = await this.gqlClient.mutate(
+            const startResponse = await this.apolloClient.mutate(
                 {
                     mutation: ImageUploadQueries.startImageUpload(),
                     variables: { id: imgId }
@@ -37,7 +61,7 @@ class DataProvider {
             );
 
             // get info about uploaded image
-            const finalizeResponse = await this.gqlClient.mutate(
+            const finalizeResponse = await this.apolloClient.mutate(
                 {
                     mutation: ImageUploadQueries.finalizeImageUpload(),
                     variables: { id: imgId }
@@ -54,15 +78,16 @@ class DataProvider {
         return data;
     }
 
+
     // get a list of records based on sort, filter, and pagination
-    async getList(resource, params) {
+    async getList(resource: types.Resource, params: GetListParams): Promise<GetListResult> {
         const {
             pagination, 
             sort, 
             filter = {} 
         } = params;
         const responseData = (
-            await this.gqlClient.query(
+            await this.apolloClient.query(
                 {
                     query: this.resourceQueries[resource].getList(),
                     variables: {
@@ -82,10 +107,10 @@ class DataProvider {
     }
 
     // get a single record by id
-    async getOne(resource, params) {
+    async getOne(resource: types.Resource, params: GetOneParams): Promise<GetOneResult> {
         const { id } = params;
         const responseData = (
-            await this.gqlClient.query(
+            await this.apolloClient.query(
                 {
                     query: this.resourceQueries[resource].getOne(),
                     variables: { id }
@@ -97,10 +122,10 @@ class DataProvider {
     }
 
     // get a list of records based on an array of ids
-    async getMany(resource, params) {
+    async getMany(resource: types.Resource, params: GetManyParams): Promise<GetManyResult> {
         const { ids } = params;
         const responseData = (
-            await this.gqlClient.query(
+            await this.apolloClient.query(
                 {
                     query: this.resourceQueries[resource].getMany(),
                     variables: { ids }
@@ -112,7 +137,7 @@ class DataProvider {
     }
 
     // get the records referenced to another record, e.g. comments for a post
-    async getManyReference(resource, params) {
+    async getManyReference(resource: types.Resource, params: GetManyReferenceParams): Promise<GetManyReferenceResult> {
         const { 
             target,
             id,
@@ -121,7 +146,7 @@ class DataProvider {
             filter = {}
         } = params;
         const responseData = (
-            await this.gqlClient.query(
+            await this.apolloClient.query(
                 {
                     query: this.resourceQueries[resource].getList(),
                     variables: { 
@@ -144,14 +169,14 @@ class DataProvider {
     }
 
     // create a record
-    async create(resource, params) {
+    async create(resource: types.Resource, params: CreateParams): Promise<CreateResult> {
         let { data } = params;
 
         // check if img was inserted
-        data = await this.#imageInterception(data);
+        data = await this.imageInterception(data);
         
         const responseData = (
-            await this.gqlClient.mutate(
+            await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].create(),
                     variables: { data }
@@ -163,17 +188,17 @@ class DataProvider {
     }
 
     // update a record based on a patch
-    async update(resource, params) {
+    async update(resource: types.Resource, params: UpdateParams): Promise<UpdateResult> {
         const { id } = params;
         let { data } = params;
 
         delete data.id;
 
         // check if img was inserted
-        data = await this.#imageInterception(data);
+        data = await this.imageInterception(data);
 
         const responseData = (
-            await this.gqlClient.mutate(
+            await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].update(),
                     variables: { id, data }
@@ -185,17 +210,17 @@ class DataProvider {
     }
 
     // update a list of records based on an array of ids and a common patch
-    async updateMany(resource, params) {
+    async updateMany(resource: types.Resource, params: UpdateManyParams): Promise<UpdateManyResult> {
         const { ids } = params;
         let { data } = params;
 
         delete data.id;
 
         // check if img was inserted
-        data = await this.#imageInterception(data);
+        data = await this.imageInterception(data);
 
         const responseData = (
-            await this.gqlClient.mutate(
+            await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].updateMany(),
                     variables: { ids, data }
@@ -207,10 +232,10 @@ class DataProvider {
     }
 
     // delete a record by id
-    async delete(resource, params) {
+    async delete(resource: types.Resource, params: DeleteParams): Promise<DeleteResult> {
         const { id } = params;
         const responseData = (
-            await this.gqlClient.mutate(
+            await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].delete(),
                     variables: { id }
@@ -222,10 +247,10 @@ class DataProvider {
     }
 
     // delete a list of records based on an array of ids
-    async deleteMany(resource, params) {
+    async deleteMany(resource: types.Resource, params: DeleteManyParams): Promise<DeleteManyResult> {
         const { ids } = params;
         const responseData = (
-            await this.gqlClient.mutate(
+            await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].deleteMany(),
                     variables: { ids }

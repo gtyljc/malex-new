@@ -1,14 +1,13 @@
 
 // others
-import { useQuery } from "@apollo/client/react";
-import { useFrontendClient } from "@src/lib/apollo-clients/frontend";
+import { frontendClient } from "@src/lib/apollo-clients/frontend";
 import Image from "next/image";
 
 // images
 import phone from "./phone.svg";
 
 export default function PhoneNumber(){
-    const { siteConfig } = useFrontendClient();
+    const { siteConfig } = frontendClient;
 
     return (
         <div className="flex flex-row items-center gap-3">

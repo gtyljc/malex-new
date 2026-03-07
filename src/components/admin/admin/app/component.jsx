@@ -6,67 +6,67 @@ import { Route } from "react-router-dom";
 import DataProvider from "./data-provider";
 import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@lib/apollo-clients/queries/backend";
 import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
-import { useFrontendClient } from "@src/lib/apollo-clients/frontend";
+import { frontendClient } from "@src/lib/apollo-clients/frontend";
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";
 import { WorkCreate, WorkEdit, WorkList } from "@admin/work/component";
 import { SiteConfigShow, SiteConfigEdit } from "@admin/site-config/component";
 import CustomLayout from "@admin/custom-layout/component";
+import { ApolloProvider } from "@apollo/client/react";
 
-export default function AdminApp({ authTokens }){
-    const { client, link, isIntialized } = useFrontendClient(authTokens);
-    
-    if (!isIntialized) return null;
+export default function AdminApp(){
 
     // add link to remove typenames
-    client.setLink(
+    frontendClient.client.setLink(
         new RemoveTypenameFromVariablesLink()
-            .concat(link)
+            .concat(frontendClient.link)
     );
 
     return(
-        <Admin 
-            dataProvider={
-                new DataProvider(
-                    client,
-                    {
-                        [ AppointmentQueries.resource ]: AppointmentQueries,
-                        [ WorkQueries.resource ]: WorkQueries,
-                        [ SiteConfigQueries.resource ]: SiteConfigQueries
-                    }
-                )
-            }
-            authProvider={ new AuthProvider(client) }
-            layout={ CustomLayout }
-            requireAuth
-            store={ memoryStore() }
-        >
-            <Resource 
-                name={ AppointmentQueries.resource } 
-                list={ AppointmentList } 
-                edit={ AppointmentEdit }
-                recordRepresentation={ (record) => `ID: ${ record.id }` }
-            />
-            <Resource 
-                name={ WorkQueries.resource } 
-                list={ WorkList } 
-                create={ WorkCreate } 
-                edit={ WorkEdit }
-                recordRepresentation={ (record) => `ID: ${ record.id }` }
-            />
-            <Resource 
-                name={ SiteConfigQueries.resource } 
-                edit={ SiteConfigEdit } 
-                show={ SiteConfigShow }
-                recordRepresentation={ (record) => "Site Config" }
-            />
-            <CustomRoutes>
-                <Route 
-                    path={ `/${SiteConfigQueries.resource}` } 
-                    element={ <SiteConfigShow /> } 
+        <ApolloProvider client={ frontendClient }>
+            <Admin 
+                dataProvider={
+                    new DataProvider(
+                        client,
+                        {
+                            [ AppointmentQueries.resource ]: new AppointmentQueries(),
+                            [ WorkQueries.resource ]: new WorkQueries(),
+                            [ SiteConfigQueries.resource ]: new SiteConfigQueries()
+                        }
+                    )
+                }
+                authProvider={ new AuthProvider(frontendClient) }
+                layout={ CustomLayout }
+                requireAuth
+                store={ memoryStore() }
+            >
+                <Resource 
+                    name={ AppointmentQueries.resource } 
+                    list={ AppointmentList } 
+                    edit={ AppointmentEdit }
+                    recordRepresentation={ (record) => `ID: ${ record.id }` }
                 />
-            </CustomRoutes>
-        </Admin>
+                <Resource 
+                    name={ WorkQueries.resource } 
+                    list={ WorkList } 
+                    create={ WorkCreate } 
+                    edit={ WorkEdit }
+                    recordRepresentation={ (record) => `ID: ${ record.id }` }
+                />
+                <Resource 
+                    name={ SiteConfigQueries.resource } 
+                    edit={ SiteConfigEdit } 
+                    show={ SiteConfigShow }
+                    recordRepresentation={ (record) => "Site Config" }
+                />
+                <CustomRoutes>
+                    <Route 
+                        path={ `/${SiteConfigQueries.resource}` } 
+                        element={ <SiteConfigShow /> } 
+                    />
+                </CustomRoutes>
+            </Admin>
+        </ApolloProvider>
     );
 }

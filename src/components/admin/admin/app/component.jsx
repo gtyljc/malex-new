@@ -4,9 +4,9 @@ import { Admin, Resource, CustomRoutes, memoryStore } from "react-admin";
 import AuthProvider from "./auth-provider";
 import { Route } from "react-router-dom";
 import DataProvider from "./data-provider";
-import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@lib/apollo-clients/queries/backend";
+import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@src/lib/apollo-clients/queries/server";
 import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
-import { frontendClient } from "@src/lib/apollo-clients/frontend";
+import { frontendClient } from "@src/lib/apollo-clients/client";
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";

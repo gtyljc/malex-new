@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { FormCtx } from "./ctx";
 import Image from "next/image";
 import { useApolloClient } from "@apollo/client/react";
-import { AppointmentQueries } from "@src/lib/apollo-clients/queries/frontend";
+import { AppointmentQueries } from "@src/lib/apollo-clients/queries/client";
 
 // components
 import ClientDataStep from "./client-data-step/component";
@@ -66,7 +66,7 @@ export default function Form() {
                         sclForward() 
                     };
 
-                    // flag when response from server will be loaded
+                    // flag when response from server willя  be loaded
                     if(!loading) {
                         setWaitingState(false);
                         

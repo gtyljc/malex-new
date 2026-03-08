@@ -103,6 +103,7 @@ export class WorkQueries {
     }
 }
 
+
 export class AuthQueries {    
 
     // verifies data from Admin Panel Login Page

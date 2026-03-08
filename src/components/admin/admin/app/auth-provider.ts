@@ -1,6 +1,6 @@
 
-import { AuthQueries } from "@src/lib/apollo-clients/queries/frontend";
-import { frontendClient } from "@lib/apollo-clients/frontend";
+import { AuthQueries } from "@src/lib/apollo-clients/queries/client";
+import { frontendClient } from "@src/lib/apollo-clients/client";
 import { ApolloClient } from "@apollo/client";
 
 interface LoginParams {

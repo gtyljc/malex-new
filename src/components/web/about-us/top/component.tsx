@@ -1,4 +1,6 @@
 
+"use cache";
+
 export default function TopSection(){
     return (
         <section className="md:text-base mb-[70px]!">

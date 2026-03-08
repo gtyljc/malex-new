@@ -1,7 +1,7 @@
 "use client";
 
 // others
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useContext, useEffect } from "react";
 import {
@@ -18,7 +18,12 @@ import banner_1 from "./banner_1.jpg"
 import banner_2 from "./banner_2.jpg"
 import banner_3 from "./banner_3.jpg"
 
-function BannerTitle({ title, underlined }){
+interface BannerTitleParams {
+    title: string,
+    underlined: string
+}
+
+function BannerTitle({ title, underlined }: BannerTitleParams){
     const i = title.indexOf(underlined);
     const before = title.slice(0, i);
     const after = title.slice(i + underlined.length);
@@ -32,7 +37,14 @@ function BannerTitle({ title, underlined }){
     )
 }
 
-function Banner({ title, underlined, undertitle, thumbnail }){
+interface BannerParams {
+    title: string,
+    underlined: string,
+    undertitle: string,
+    thumbnail: StaticImageData
+}
+
+function Banner({ title, underlined, undertitle, thumbnail }: BannerParams){
     const { openForm } = useContext(FormCtx);
 
     return (

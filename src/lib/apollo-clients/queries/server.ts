@@ -2,9 +2,10 @@
 
 // here is all possible GraphQL queries that can be executed at frontend and also at backend
 
+import "server-only";
 import { gql } from "@apollo/client";
 import { capitalize } from "@lib/tools";
-export * as frontend from "./frontend"; // access to frontend requests
+import * as clientQueries from "./client";
 
 export class ResourceQueries {
     // all children must contain to fields: resource -> name of resource to manipulate
@@ -176,7 +177,7 @@ export class AppointmentQueries extends ResourceQueries {
 
     constructor(){
         super(
-            "appointment",
+            AppointmentQueries.resource,
             [
                 "id",
                 "name",
@@ -198,7 +199,7 @@ export class WorkQueries extends ResourceQueries {
 
     constructor(){
         super(
-            "work",
+            WorkQueries.resource,
             [
                 "id",
                 "img_url",
@@ -215,7 +216,7 @@ export class SiteConfigQueries extends ResourceQueries {
 
     constructor(){
         super(
-            "siteConfig",
+            SiteConfigQueries.resource,
             [
                 "id",
                 "opening_at",
@@ -230,7 +231,7 @@ export class SiteConfigQueries extends ResourceQueries {
     }
 }
 
-export class AuthQueries {
+export class AuthQueries extends clientQueries.AuthQueries {
     static adminPanelKey(){
         return gql`
             query adminPanelKey {

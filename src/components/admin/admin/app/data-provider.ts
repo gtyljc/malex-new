@@ -1,6 +1,6 @@
 
-import { ResourceQueries } from "@lib/apollo-clients/queries/backend";
-import { ImageUploadQueries } from "@lib/apollo-clients/queries/backend";
+import { ResourceQueries } from "@src/lib/apollo-clients/queries/server";
+import { ImageUploadQueries } from "@src/lib/apollo-clients/queries/server";
 import { nanoid } from "nanoid";
 import { capitalize } from "@lib/tools";
 import { ApolloClient } from "@apollo/client";

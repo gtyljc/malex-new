@@ -4,7 +4,7 @@
 // others
 import { ApolloProvider } from "@apollo/client/react";
 import { FormProvider } from "@web/form/ctx";
-import { frontendClient } from "@src/lib/apollo-clients/frontend";
+import { clientAC} from "@src/lib/apollo-clients/client";
 
 // components
 import Header from "@web/header/component";
@@ -13,7 +13,7 @@ import Form from "@web/form/component";
 
 export default function WebPageBase({ children }){
     return (
-        <ApolloProvider client={ frontendClient.client }>
+        <ApolloProvider client={ clientAC.client }>
             <FormProvider>
                 <Form />
                 <Header/>

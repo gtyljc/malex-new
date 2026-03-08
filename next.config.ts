@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from 'next';
 
-const nextConfig = {
+const nextConfig: NextConfig = {
     experimental: {
         serverActions: {
             bodySizeLimit: "5mb"
@@ -13,8 +13,9 @@ const nextConfig = {
                 hostname: 'imagedelivery.net'
             }
         ],
-  },
-  output: "standalone"
+    },
+    output: "standalone",
+    cacheComponents: true
 };
 
 export default nextConfig;

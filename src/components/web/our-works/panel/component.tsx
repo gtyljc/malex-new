@@ -1,5 +1,10 @@
 
-function PanelButton({ href, text }){
+interface PanelButtonParams {
+    href: string,
+    text: string
+}
+
+function PanelButton({ href, text }: PanelButtonParams){
     return (
         <a href={ href } className="redirect-btn redirect-btn-white max-w-[230px]">
             <span>{ text }</span>

@@ -1,24 +1,30 @@
 
 import { NextRequest } from "next/server";
 import { decodeJwt } from "jose";
-import { dayjs } from "@lib/dayjs";
+import { dayjs } from "@lib/dayjs/server";
 import { NextResponse } from "next/server";
 import { createRT } from "@src/lib/auth";
 import { env } from "@src/lib/tools";
 import * as types from "@lib/types";
 
+interface RedirectWithNewPairOptions {
+    userId: string, 
+    role: types.Role
+}
+
 async function redirectWithNewPair(
     request: NextRequest, 
-    { userId, role }: { userId: string, role: types.Role }
+    { userId, role }: RedirectWithNewPairOptions
 ): Promise<NextResponse>{
-    const headers = new Headers(request.headers);
     const newPair = await createRT({ role, userId });
 
     if(!newPair.success){
         return new NextResponse(null, { status: 500 });
     }
 
-    const response = NextResponse.redirect(request.nextUrl.pathname, { headers });
+    console.log("wl[d[lwd[ld")
+    
+    const response = NextResponse.next();
     const newRT = newPair.data[0].rt;
     const newRTClaims = decodeJwt(newRT);
     const newAT = newPair.data[0].at;
@@ -29,7 +35,7 @@ async function redirectWithNewPair(
         newRT,
         {
             httpOnly: true,
-            secure: false, // change it in development
+            secure: env("NODE_ENV") == "development" ? false: true,
             domain: env("API_HOST"),
             maxAge: newRTClaims.exp - newRTClaims.iat
         }
@@ -40,7 +46,7 @@ async function redirectWithNewPair(
         newAT,
         {
             httpOnly: true,
-            secure: false, // change it in development
+            secure: env("NODE_ENV") == "development" ? false: true,
             domain: env("API_HOST"),
             maxAge: newATClaims.exp - newATClaims.iat
         }
@@ -50,19 +56,25 @@ async function redirectWithNewPair(
 }
 
 // start point of site
-export async function proxy(request: NextRequest): Promise<NextResponse> {
-    const rt = request.cookies.get("r_token").value;
+export default async function proxy(request: NextRequest): Promise<NextResponse> {
+    let rt = request.cookies.get("r_token");
 
-    // user is guest
-    if (rt === undefined){
-        return await redirectWithNewPair(request, { userId: null, role: "GUEST" });
+    // user is absolutly new or his RT is expired
+    if (rt === undefined || decodeJwt(rt.value).exp <= dayjs().unix()){
+        return await redirectWithNewPair(
+            request, 
+            { userId: null, role: "GUEST" }
+        );
     }
 
-    const rtClaims = decodeJwt(rt);
+    const rtClaims = decodeJwt(rt.value);
 
     // is expired or not
     if (rtClaims.exp < dayjs().unix()){
-        return await redirectWithNewPair(request, { userId: rtClaims.sub, role: rtClaims.aud as types.Role });
+        return await redirectWithNewPair(
+            request, 
+            { userId: rtClaims.sub, role: rtClaims.aud as types.Role }
+        );
     }
 
     return NextResponse.next();

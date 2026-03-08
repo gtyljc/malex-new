@@ -8,7 +8,13 @@ import quality from "./quality.svg"
 import effiency from "./efficiency.svg"
 import transparency from "./transparency.svg"
 
-function WcuCard({ title, undertitle, icon }) {
+interface WCUCardParams {
+    title: string,
+    undertitle: string,
+    icon: string
+}
+
+function WCUCard({ title, undertitle, icon }: WCUCardParams) {
     return (
         <div
             className="
@@ -26,7 +32,11 @@ function WcuCard({ title, undertitle, icon }) {
     )    
 }
 
-function WcuCardRow({ children }){
+interface WCUCardRowParams {
+    children?: React.ReactNode
+}
+
+function WCUCardRow({ children }: WCUCardRowParams){
     return (
         <li className="w-full max-w-[650px] flex flex-row gap-3 lg:max-w-none lg:w-[50%]">
             { children }
@@ -39,30 +49,30 @@ export default function WcuSection(){
         <section>
             <h1 className="mb-7 text-center section-title">Why Choose us</h1>
             <ul className="flex flex-col justify-center items-center gap-3 lg:flex-row">
-                <WcuCardRow>
-                    <WcuCard
+                <WCUCardRow>
+                    <WCUCard
                         title="Experience"
                         undertitle="over 10 years of industry experience."
                         icon={ expirience }
                     />
-                    <WcuCard
+                    <WCUCard
                         title="Quality"
                         undertitle="we use only certified materials and equipment."
                         icon={ quality }
                     />
-                </WcuCardRow>
-                <WcuCardRow>
-                    <WcuCard
+                </WCUCardRow>
+                <WCUCardRow>
+                    <WCUCard
                         title="Efficiency"
                         undertitle="we complete projects on time and according to a agreed plan."
                         icon={ effiency }
                     />
-                    <WcuCard
+                    <WCUCard
                         title="Transparency"
                         undertitle="clear and affordable pricing with no hidden fees."
                         icon={ transparency }
                     />
-                </WcuCardRow>
+                </WCUCardRow>
             </ul>
         </section>
     )

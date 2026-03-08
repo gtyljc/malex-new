@@ -8,19 +8,27 @@ import clsx from "clsx";
 // css
 import styles from "./styles.module.css";
 
-function Points({ p_num }){
+interface PointsParams {
+    pointsNum: number
+}
+
+function Points({ pointsNum }: PointsParams){
     const arr = [];
     
-    for(let i = 0; i < p_num; i++){
+    for(let i = 0; i < pointsNum; i++){
         arr.push(
-            <Point i={i} key={i}/>
+            <Point pIndex={ i } key={ i }/>
         );
     }
 
     return arr;
 }
 
-function Point({ i }){
+interface PointParams {
+    pIndex: number
+}
+
+function Point({ pIndex }: PointParams){
     const { index, setIndex } = useContext(PointsScrollbarCtx);
 
     return(
@@ -31,15 +39,19 @@ function Point({ i }){
                     index == i && "after:transform-[scale(1)]!"
                 )
             }
-            onClick={ () => setIndex(i) }
+            onClick={ () => setIndex(pIndex) }
         >
         </button>
     )
 }
 
+interface PointsScrollbarParams {
+    pointsNum: number
+}
+
 // must be wrapped in PointsScrollbarProvider
-export default function PointsScrollbar({ p_num }){
-    const points = useMemo(() => <Points p_num={ p_num }/>);
+export default function PointsScrollbar({ pointsNum }: PointsScrollbarParams){
+    const points = useMemo((): React.ReactNode => <Points pointsNum={ pointsNum } />, [ pointsNum ]);
     
     return (
         <div className="flex flex-row gap-5">

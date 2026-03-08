@@ -3,7 +3,7 @@
 import { dayjs } from "@lib/dayjs";
 import { required } from "react-admin";
 import { useGetOne } from "react-admin";
-import { SiteConfigQueries } from "@lib/apollo-clients/queries/backend";
+import { SiteConfigQueries } from "@src/lib/apollo-clients/queries/server";
 
 // components
 import { 
@@ -14,7 +14,7 @@ import {
     DateTimeInput,
     TextInput
 } from "react-admin";
-import { frontendClient } from "@src/lib/apollo-clients/frontend";
+import { frontendClient } from "@src/lib/apollo-clients/client";
 
 export default function AppointmentEdit() {
     const { siteConfig } = useApolloClient() as ;

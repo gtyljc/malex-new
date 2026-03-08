@@ -9,18 +9,30 @@ import {
 } from "@web/points-scrollbar/ctx";
 import { useContext } from "react";
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/lib/apollo-clients/queries/frontend";
-import { dayjs } from "@lib/dayjs";
+import { WorkQueries } from "@src/lib/apollo-clients/queries/client";
+import { dayjs } from "@lib/dayjs/client";
+import * as types from "@lib/types";
 
 // components
 import ScrollProgressBar from "@web/points-scrollbar/component";
 import LoadingSection from "@web/loading-section/component";
 
+
 function EmptyWork(){
     return <div className="size-full bg-ice-blue"></div>
 }
 
-function Work({ work }){
+interface WorkData {
+    imgUrl: string,
+    timestamp: string,
+    category: string
+}
+
+interface WorkParams {
+    workData: WorkData
+}
+
+function Work({ workData }: WorkParams){
     return (
         <div 
             className="
@@ -38,19 +50,19 @@ function Work({ work }){
             >        
             </div>
             {
-                work && <div 
+                workData && <div 
                     className="
                         flex flex-col gap-4 absolute bottom-[-20px] left-[20px] transition-transform
                          text-white group-hover:transform-[translateY(-35px)]
                     "
                 >
-                    <span className="select-none">{ dayjs(work.timestamp).format("DD.MM.YYYY") }</span>
+                    <span className="select-none">{ dayjs(workData.timestamp).format("DD.MM.YYYY") }</span>
                     <a href="/our-works" className="text-dodger-blue!">More</a>
                 </div>
             }
             { 
-                work ? <Image 
-                    src={ work.img_url } 
+                workData ? <Image 
+                    src={ workData.imgUrl } 
                     alt="Our work" 
                     width={ 300 } 
                     height={ 300 } 
@@ -60,11 +72,17 @@ function Work({ work }){
     )
 }
 
-function WorksSector({ offset, works, perSector }){
+interface WorksSectorParams {
+    offset: number,
+    works: WorkData[],
+    perSector: number // works per sector
+}
+
+function WorksSector({ offset, works, perSector }: WorksSectorParams){
     const imgs = [];
 
     for(let i = 0; i < perSector; i++){
-        imgs.push(<Work work={ works[offset + i] } key={ i } />)
+        imgs.push(<Work workData={ works[offset + i] } key={ i } />)
     }
 
     return (
@@ -74,12 +92,19 @@ function WorksSector({ offset, works, perSector }){
     )
 }
 
+interface SourceWorkData {
+    img_url: string,
+    timestamp: string,
+    category: types.WorkCategory
+}
+
+const PER_SECTOR = 3;
+const SECTOR_NUM = 3;
+
 function WorksRow(){
-    const perSector = 3;
-    const sectorsNum = 3;
     const { data, loading } = useQuery(
         WorkQueries.newWorks(),
-        { variables: { num: sectorsNum * 3 } }
+        { variables: { num: SECTOR_NUM * 3 } }
     )
     const { index } = useContext(PointsScrollbarCtx);
 
@@ -89,16 +114,26 @@ function WorksRow(){
     const sectors = [];
     let offset = 0;
 
-    for (let i = 0; i < sectorsNum; i++){
+    for (let i = 0; i < SECTOR_NUM; i++){
         sectors.push(
             <WorksSector 
                 offset={ offset } 
-                works={ data.newWorks.data } 
-                perSector={ perSector } 
+                works={ 
+                    data.newWorks.data.map(
+                        (workData: SourceWorkData): WorkData => (
+                            { 
+                                imgUrl: workData.img_url,  
+                                category: workData.category,
+                                timestamp: workData.timestamp
+                            }
+                        )
+                    ) 
+                } 
+                perSector={ PER_SECTOR } 
                 key={ i }
             />);
     
-        offset += perSector - 1;
+        offset += PER_SECTOR - 1;
     }
 
     return (
@@ -123,7 +158,7 @@ function WorksSectionContent(){
             <div className="row-con">
                 <WorksRow />
             </div>
-            <ScrollProgressBar p_num={ 3 }/>
+            <ScrollProgressBar pointsNum={ 3 }/>
             <a className="redirect-btn redirect-btn-white max-w-[250px]" href="/our-works">
                 See all works
             </a>    

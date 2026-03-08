@@ -4,17 +4,37 @@
 // tools
 import { useState, createContext } from "react";
 
-export const ViewerCtx = createContext();
+interface ViewerCtx {
+    isOpened: boolean | undefined,
+    openViewer: Function | undefined,
+    closeViewer: Function | undefined,
+    index: number | undefined,
+    setIndex: Function | undefined,
+    sclBack: Function | undefined,
+    sclForward: Function | undefined
+}
+
+export const ViewerCtx = createContext<ViewerCtx>(
+    {
+        isOpened: undefined,
+        openViewer: undefined,
+        closeViewer: undefined,
+        index: undefined,
+        setIndex: undefined,
+        sclBack: undefined, 
+        sclForward: undefined
+    }
+);
 
 export function ViewerProvider({ children }){
     
     // open / close
-    const [ isOpened, changeState ] = useState(false);
+    const [ isOpened, changeState ] = useState<boolean>(false);
     const openViewer = () => changeState(true);
     const closeViewer = () => changeState(false);
 
     // scroll
-    const [ index, setIndex ] = useState(0);
+    const [ index, setIndex ] = useState<number>(0);
     const sclForward = () => setIndex(i => i + 1);
     const sclBack = () => setIndex(i => i - 1);
 

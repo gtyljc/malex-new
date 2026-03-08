@@ -12,7 +12,13 @@ import LoadingSection from "@web/loading-section/component";
 import finished from "./finished.svg";
 import declined from "./declined.svg";
 
-function ResponseState({ title, message, icon }){
+interface ResponseStateParams {
+    title: string,
+    message: string,
+    icon: string
+}   
+
+function ResponseState({ title, message, icon }: ResponseStateParams){
     const { closeForm } = useContext(FormCtx);
 
     return (

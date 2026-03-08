@@ -8,7 +8,13 @@ import { FormCtx } from "../ctx";
 // css
 import styles from "./styles.module.css";
 
-export function NextButton({ onClick, isSubmit = false, args = {} }){ // onClick must be a check and return boolean value
+interface NextButtonParams {
+    onClick: Function,
+    isSubmit?: boolean,
+    args?: Record<string, any>
+}
+
+export function NextButton({ onClick, isSubmit = false, args = {} }: NextButtonParams){ // onClick must be a check and return boolean value
     const { setSDirection, setScrollFlag, sclForward } = useContext(FormCtx);
 
     return (
@@ -46,7 +52,11 @@ export function BackButton(){
     )
 }
 
-export function ScrollBtnsCon({ children }){
+interface ScrollBtnsConParams {
+    children: React.ReactNode
+}
+
+export function ScrollBtnsCon({ children }: ScrollBtnsConParams){
     return (
         <div className="w-full flex flex-row gap-2">
             { children }
@@ -54,7 +64,12 @@ export function ScrollBtnsCon({ children }){
     )
 }
 
-export default function StepWrapper({ children, sIndex }){
+interface StepWrapperParams {
+    children: React.ReactNode,
+    sIndex: number
+}
+
+export default function StepWrapper({ children, sIndex }: StepWrapperParams){
     const { index, isScrolling, sDirection } = useContext(FormCtx);
     const step = (
         <li className={clsx(styles.step, "row-el")}>

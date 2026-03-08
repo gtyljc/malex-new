@@ -1,4 +1,6 @@
 
+"use cache";
+
 // others
 import { FormProvider } from "@web/form/ctx";
 
@@ -12,7 +14,7 @@ export default function AboutUs() {
     return (
         <FormProvider>
             <main className="leading-[33px]">
-                <PathToPageSection page_name="About Us" />
+                <PathToPageSection pageName="About Us" />
                 <TopSection/>
                 <MiddleSection/>
                 <BottomSection/>

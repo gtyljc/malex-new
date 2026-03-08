@@ -6,9 +6,9 @@ import { useState, useContext, createContext } from "react";
 import clsx from "clsx";
 import { FormCtx } from "../ctx";
 import { useQuery } from "@apollo/client/react";
-import { AppointmentQueries } from "@src/lib/apollo-clients/queries/frontend";
+import { AppointmentQueries } from "@src/lib/apollo-clients/queries/client";
 import * as tools from "@lib/tools";
-import { dayjs } from "@lib/dayjs";
+import { dayjs } from "@lib/dayjs/client";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -21,9 +21,26 @@ import styles from "./styles.module.css";
 // images
 import next from "./next.svg";
 
-const CalenderCtx = createContext();
+interface CalenderCtx {
+    currentDay: dayjs.Dayjs | null | undefined, 
+    setDay: Function, 
+    currentMonth: dayjs.Dayjs | null | undefined
+}
 
-function Day({ date, isBusy }){
+const CalenderCtx = createContext<CalenderCtx>(
+    {
+        currentDay: undefined,
+        setDay: undefined,
+        currentMonth: undefined
+    }
+);
+
+interface DayParams {
+    date: dayjs.Dayjs,
+    isBusy: boolean
+}
+
+function Day({ date, isBusy }: DayParams ){
     const { setDay, currentDay } = useContext(CalenderCtx);
     const isDisabled = isBusy || date.unix() <= dayjs().unix();
 
@@ -70,7 +87,7 @@ function Calendar(){
     );
 
     // wait until loaded
-    if (loading) return <LoadingSection loadingIconStyles="size-[60px]!" />;
+    if (loading) return <LoadingSection loadingIconClassName="size-[60px]!" />;
 
     const weekDays = [ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ]
     const daysInMonth = currentMonth.daysInMonth();
@@ -129,7 +146,13 @@ function Calendar(){
     );
 }
 
-function ScrollMonthBtn({ icon, func, className }){
+interface ScrollMonthBtnParams {
+    icon: React.ReactNode,
+    func: (event?: React.MouseEvent<HTMLButtonElement>) => void,
+    className?: string // tailwind css
+}
+
+function ScrollMonthBtn({ icon, func, className }: ScrollMonthBtnParams){
     return (
         <button onClick={ func } className={ clsx("svg-btn select-none", className) } type="button">
             { icon }
@@ -141,8 +164,8 @@ const STEP_I = 1;
 
 // should be inserted in ul
 export default function DateStep(){
-    const [ currentMonth, setMonth ] = useState(dayjs.tz());
-    const [ currentDay, setDay ] = useState(null);
+    const [ currentMonth, setMonth ] = useState<dayjs.Dayjs>(dayjs.tz());
+    const [ currentDay, setDay ] = useState<dayjs.Dayjs | null>(null);
     const { inputData } = useContext(FormCtx);
 
     return (
@@ -164,7 +187,7 @@ export default function DateStep(){
                             style={ { transform: "rotate(180deg)" } }
                         />
                     }
-                    func={ () => { setMonth(currentMonth.subtract(1, "month")) } }
+                    func={ () => setMonth(currentMonth.subtract(1, "month")) }
                 />
                 <div className="font-medium text-lg">
                     { currentMonth.format("MMMM YYYY") }

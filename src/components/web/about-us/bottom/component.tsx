@@ -1,4 +1,6 @@
 
+"use cache";
+
 // others
 import Image from "next/image";
 

@@ -14,13 +14,17 @@ import styles from "./styles.module.css";
 import close from "./close.svg";
 import next from "./next.svg";
 
-function ScrollForwardBtn({ className }) {
+interface ScrollBtnParams {
+    className?: string
+}
+
+function ScrollForwardBtn({ className }: ScrollBtnParams) {
     const { sclForward, index } = useContext(ViewerCtx);
     const { works } = useContext(WorksCtx);
 
     return (
         <button 
-            onClick={ sclForward } 
+            onClick={ () => sclForward } 
             className={ clsx(styles.scroll_btn, "right-0", index == works.length - 1 && "hidden!", className) }
         >
             <Image src={ next } alt="Scroll to next work" />
@@ -28,12 +32,12 @@ function ScrollForwardBtn({ className }) {
     )
 }
 
-function ScrollBackBtn({ className }) {
+function ScrollBackBtn({ className }: ScrollBtnParams) {
     const { sclBack, index } = useContext(ViewerCtx);
 
     return (
         <button 
-            onClick={ sclBack } 
+            onClick={ () => sclBack }
             className={ clsx(styles.scroll_btn, "left-0", index == 0 && "hidden!", className) }
         >
             <Image src={ next } alt="Scroll to previous work" className="rotate-180" />
@@ -63,7 +67,7 @@ export default function Viewer(){
                 <div className="w-full flex flex-row justify-end mb-4">
                     <button
                         className="flex flex-row justify-center items-center text-white text-base gap-2"
-                        onClick={ closeViewer }
+                        onClick={ () => closeViewer }
                         type="button"
                     >
                         <span>Close</span>
@@ -87,7 +91,7 @@ export default function Viewer(){
                         <ScrollForwardBtn />
                         {
                             works.length != 0 && <Image
-                                src={ works[index].img_url }
+                                src={ works[index].imgUrl }
                                 alt="Opened work"
                                 width={ 300 }
                                 height={ 300 }

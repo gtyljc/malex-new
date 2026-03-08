@@ -3,11 +3,12 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/lib/apollo-clients/queries/frontend";
+import { WorkQueries } from "@src/lib/apollo-clients/queries/client";
 import { dayjs } from "@lib/dayjs";
 import Image from "next/image";
 import { ViewerProvider, ViewerCtx } from "./viewer/ctx";
 import { useContext, createContext, useState } from "react";
+import * as types from "@lib/types";
 
 // components
 import PathToPageSection from "@web/path-to-page/component";
@@ -18,7 +19,17 @@ import LoadingSection from "@web/loading-section/component";
 // images
 import img_placeholder from "./img-placeholder.svg";
 
-export const WorksCtx = createContext();
+interface WorksCtx {
+    setWorks: Function | undefined,
+    works: WorkData[] | undefined;
+}
+
+export const WorksCtx = createContext<WorksCtx>(
+    {
+        setWorks: undefined,
+        works: undefined
+    }
+);
 
 function ImagePlaceholder(){
     return (
@@ -42,7 +53,13 @@ function EmptyCategory(){
     )
 }
 
-function Work({ date, img_url, index }){
+interface WorkParams {
+    date: string,
+    imgUrl: string,
+    index: number
+}
+
+function Work({ date, imgUrl, index }: WorkParams){
     const { openViewer, setIndex } = useContext(ViewerCtx);
 
     return (
@@ -55,7 +72,7 @@ function Work({ date, img_url, index }){
         >
             <Image
                 className="absolute z-[-1]"
-                src={ img_url }
+                src={ imgUrl }
                 width={ 300 }
                 height={ 300 }
                 alt="Our work"
@@ -67,14 +84,19 @@ function Work({ date, img_url, index }){
     )
 }
 
-function WorkSection({ title, category }){
+interface WorkSectionParams {
+    title: string,
+    category: types.WorkCategory
+}
+
+function WorkSection({ title, category }: WorkSectionParams){
     const { works } = useContext(WorksCtx);
     const filteredWorks = works.filter(
         e => e.category == category
     ).map(
         e => <Work 
             date={ e.timestamp } 
-            img_url={ e.img_url }
+            imgUrl={ e.imgUrl }
             index={ e.index }
         />
     );
@@ -89,8 +111,21 @@ function WorkSection({ title, category }){
     )
 }
 
+interface WorkData {
+    index: number,
+    imgUrl: string,
+    timestamp: string,
+    category: types.WorkCategory
+}
+
+interface SourceWorkData {
+    img_url: string,
+    timestamp: string,
+    category: types.WorkCategory
+}
+
 export default function OurWorks(){
-    const [ works, setWorks ] = useState(null);
+    const [ works, setWorks ] = useState<WorkData[] | null>(null);
     const { data, loading } = useQuery(
         WorkQueries.getWorks(),
         {
@@ -109,10 +144,10 @@ export default function OurWorks(){
 
     !works && setWorks(
         data.getWorks.data.map(
-            (e, i) => (
+            (e: SourceWorkData, i: number): WorkData => (
                 {
                     index: i,
-                    img_url: e.img_url, 
+                    imgUrl: e.img_url, 
                     timestamp: e.timestamp, 
                     category: e.category
                 }
@@ -125,7 +160,7 @@ export default function OurWorks(){
             <WorksCtx.Provider value={ { works, setWorks } }>
                 <ViewerProvider>
                     <Viewer />
-                    <PathToPageSection page_name="Our Works"/>
+                    <PathToPageSection pageName="Our Works"/>
                     <PanelSection />
                     <WorkSection title="Plumbing" category="PLUMBING" />
                     <WorkSection title="Assembling" category="ASSEMBLING" />

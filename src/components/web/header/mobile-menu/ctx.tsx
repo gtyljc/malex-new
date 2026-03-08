@@ -2,10 +2,24 @@
 // others
 import { createContext, useState } from "react";
 
-export const MobileMenuCtx = createContext();
+interface MobileMenuCtx {
+    isOpened: boolean | undefined,
+    openMenu: Function | undefined,
+    toggleMenu: Function | undefined,
+    closeMenu: Function | undefined,
+}
+
+export const MobileMenuCtx = createContext<MobileMenuCtx>(
+    {
+        isOpened: undefined,
+        openMenu: undefined,
+        toggleMenu: undefined,
+        closeMenu: undefined
+    }
+);
 
 export function MobileMenuProvider({ children }){
-    const [isOpened, changeState] = useState(false);
+    const [isOpened, changeState] = useState<boolean>(false);
 
     const openMenu = () => changeState(true);
     const closeMenu = () => changeState(false);

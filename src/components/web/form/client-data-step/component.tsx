@@ -2,7 +2,7 @@
 
 // others
 import clsx from "clsx";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormCtx } from "../ctx";
 import { useContext } from "react";
@@ -10,12 +10,22 @@ import * as z from "zod";
 import * as tools from "@src/lib/tools";
 import { AsYouType } from "libphonenumber-js/min";
 import { UseFormProps } from "react-hook-form";
-import { SiteConfig } from "@src/lib/apollo-clients/frontend";
+import { SiteConfig } from "@src/lib/apollo-clients/client";
+import * as types from "@lib/types";
 
 // components
 import StepWrapper from "../step-wrapper/component";
 import { NextButton } from "../step-wrapper/component";
-import { frontendClient } from "@src/lib/apollo-clients/frontend";
+import { clientAC } from "@src/lib/apollo-clients/client";
+
+type FormValues = {
+    name: string;
+    surname: string;
+    address: string;
+    jobDesc: string;
+    bwt: types.BWT;
+    phoneNumber: string;
+};
 
 interface InputsRowParams {
     children: React.ReactNode
@@ -31,8 +41,8 @@ function InputsRow({ children }: InputsRowParams) {
 
 interface InputCon {
     children: React.ReactNode;
-    inputId: string;
-    formObject: ReturnType<typeof useForm>;
+    inputId: keyof FormValues;
+    formObject: UseFormReturn<FormValues>;
 }
 
 function InputCon({ children, inputId, formObject }: InputCon) { // errors from formState
@@ -54,8 +64,8 @@ function InputCon({ children, inputId, formObject }: InputCon) { // errors from 
 }
 
 interface TextInput {
-    id: string;
-    formObject: ReturnType<typeof useForm<FormValues>>;
+    id: keyof FormValues;
+    formObject: UseFormReturn<FormValues>;
     props: Record<string, any>;
 }
 
@@ -98,9 +108,9 @@ function InputLabel({ children, label }: InputLabel) {
 }
 
 interface TextInputWithLabelParams {
-    id: string;
+    id: keyof FormValues;
     label: string;
-    formObject: ReturnType<typeof useForm<FormValues>>;
+    formObject: UseFormReturn<FormValues>;
     props: Record<string, any>;
 }
 
@@ -124,9 +134,9 @@ function TextInputWithLabel({ id, label, formObject, props }: TextInputWithLabel
 }
 
 interface SelectInputWithLabelParams {
-    id: string;
+    id: keyof FormValues;
     options: Record<string, string>[];
-    formObject: ReturnType<typeof useForm<FormValues>>;
+    formObject: UseFormReturn<FormValues>;
     label: string;
 }
 
@@ -151,9 +161,9 @@ function createValidationSchema(siteConfig: SiteConfig) {
             name: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
             surname: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
             address: z.string().min(1).max(255),
-            job_desc: z.string().min(1).max(500),
+            jobDesc: z.string().min(1).max(500),
             bwt: z.enum(["WHATSAPP", "TEXT", "PHONE"]),
-            phone_number: z.string().refine(
+            phoneNumber: z.string().refine(
                 v => {
                     const ast = new AsYouType(siteConfig.cCountry);
 
@@ -166,24 +176,15 @@ function createValidationSchema(siteConfig: SiteConfig) {
     )
 }
 
-type FormValues = {
-    name: string;
-    surname: string;
-    address: string;
-    job_desc: string;
-    bwt: "WHATSAPP" | "TELEGRAM" | "PHONE";
-    phone_number: string;
-};
-
 const useFormHookProps = (siteConfig: SiteConfig): UseFormProps<FormValues> => (
     {
         defaultValues: {
             name: "",
             surname: "",
             address: "",
-            job_desc: "",
+            jobDesc: "",
             bwt: "WHATSAPP",
-            phone_number: "",
+            phoneNumber: "",
         },
         resetOptions: { keepDefaultValues: true },
         resolver: zodResolver(createValidationSchema(siteConfig)),
@@ -193,7 +194,7 @@ const useFormHookProps = (siteConfig: SiteConfig): UseFormProps<FormValues> => (
 
 // should be insert in ul
 export default function ClientDataStep() {
-    const { siteConfig } = frontendClient;
+    const { siteConfig } = clientAC;
     const formObject = useForm<FormValues>(useFormHookProps(siteConfig));
     const { inputData } = useContext(FormCtx);
 
@@ -204,12 +205,12 @@ export default function ClientDataStep() {
             </h1>
             <div className="w-full flex flex-col gap-4 max-w-[430px]">
                 <InputsRow>
-                    <InputCon inputId="name" formObject={formObject}>
+                    <InputCon inputId="name" formObject={ formObject }>
                         <TextInputWithLabel
                             id="name"
                             label="Name"
                             props={{ maxLength: 50, placeholder: "Your name" }}
-                            formObject={formObject}
+                            formObject={ formObject }
                         />
                     </InputCon>
                     <InputCon inputId="surname" formObject={formObject}>
@@ -229,9 +230,9 @@ export default function ClientDataStep() {
                         formObject={formObject}
                     />
                 </InputCon>
-                <InputCon inputId="job_desc" formObject={formObject}>
+                <InputCon inputId="jobDesc" formObject={formObject}>
                     <TextInputWithLabel
-                        id="job_desc"
+                        id="jobDesc"
                         label="Job description"
                         props={{ maxLength: 500, placeholder: "Tell us what to do" }}
                         formObject={formObject}
@@ -252,9 +253,9 @@ export default function ClientDataStep() {
                             formObject={formObject}
                         />
                     </InputCon>
-                    <InputCon inputId="phone_number" formObject={formObject}>
+                    <InputCon inputId="phoneNumber" formObject={formObject}>
                         <TextInput
-                            id="phone_number"
+                            id="phoneNumber"
                             props={{ maxLength: 20, placeholder: "Number" }}
                             formObject={formObject}
                         />
@@ -271,17 +272,17 @@ export default function ClientDataStep() {
                                 name,
                                 surname,
                                 address,
-                                job_desc,
+                                jobDesc,
                                 bwt,
-                                phone_number
+                                phoneNumber
                             } = formObject.getValues();
 
                             inputData.name = name;
                             inputData.surname = surname;
                             inputData.address = address;
-                            inputData.job_desc = job_desc;
+                            inputData.jobDesc = jobDesc;
                             inputData.bwt = bwt;
-                            inputData.phone_number = phone_number;
+                            inputData.phoneNumber = phoneNumber;
 
                             return true;
                         }

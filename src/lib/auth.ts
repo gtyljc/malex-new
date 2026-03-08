@@ -43,7 +43,10 @@ export async function createRT(
     const timestamp = dayjs().unix();
     const nonce = nanoid(16);
     const stringToSign = method + path + timestamp.toString() + nonce + hashedBody;
-    const signature = crypto.createHmac(env("RT_CREATE_REQUEST_ENCODING"), env("RT_CREATE_REQUEST_SECRET"))
+    const signature = crypto.createHmac(
+        env("RT_CREATE_REQUEST_HASH_FUNC"), 
+        env("RT_CREATE_REQUEST_SECRET")
+    )
         .update(stringToSign)
         .digest(env("RT_CREATE_REQUEST_ENCODING") as BinaryToTextEncoding);
     const headers = {
@@ -56,7 +59,7 @@ export async function createRT(
 
     return await (
         await fetch(
-            process.env.NEXT_PUBLIC_API_URL + path,
+            env("NEXT_PUBLIC_API_BASE_URL") + path,
             {
                 method,
                 headers,

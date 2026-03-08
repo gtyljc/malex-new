@@ -9,7 +9,11 @@ import { FormCtx } from "@web/form/ctx";
 // images
 import thumbnail from "./thumbnail.jpg";
 
-function InputsRow({ children }){
+interface InputsRowParams {
+    children?: React.ReactNode
+}
+
+function InputsRow({ children }: InputsRowParams){
     return (
         <div className="w-full flex flex-col items-end gap-2.5 md:flex-row">
             { children }
@@ -17,7 +21,12 @@ function InputsRow({ children }){
     )
 }
 
-function InputLabel({children, label}){
+interface InputLabelParams {
+    children?: React.ReactElement,
+    label: string
+}
+
+function InputLabel({children, label}: InputLabelParams){
     return (
         <div className="w-full">
             <span className="flex flex-row gap-1 after:text-scarlet-red after:content-['*'] mb-[7px]">
@@ -28,7 +37,11 @@ function InputLabel({children, label}){
     )
 }
 
-function TextInput({ children }){
+interface TextInputParams {
+    children?: React.ReactElement
+}
+
+function TextInput({ children }: TextInputParams){
     return <div className="input w-full">{ children }</div>
 }
 

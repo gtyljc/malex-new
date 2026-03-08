@@ -4,7 +4,7 @@
 // others
 import Image from "next/image";
 import { dayjs } from "@lib/dayjs";
-import { frontendClient } from "@src/lib/apollo-clients/frontend";
+import { frontendClient } from "@src/lib/apollo-clients/client";
 
 // components
 import PathToPageSection from "@web/path-to-page/component";

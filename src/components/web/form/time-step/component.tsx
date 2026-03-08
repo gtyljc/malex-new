@@ -2,11 +2,11 @@
 
 // others
 import clsx from "clsx";
-import { dayjs } from "@lib/dayjs";
+import { dayjs } from "@lib/dayjs/client";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { AppointmentQueries } from "@src/lib/apollo-clients/queries/frontend";
-import { frontendClient } from "@src/lib/apollo-clients/frontend";
+import { AppointmentQueries } from "@src/lib/apollo-clients/queries/client";
+import { clientAC } from "@src/lib/apollo-clients/client";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -29,7 +29,12 @@ const TimeSelectCtx = createContext<TimeSelectCtx>(
     }
 );
 
-function Time({ date, isBusy }: {  }){
+interface TimeParams {
+    date: dayjs.Dayjs,
+    isBusy: boolean
+}
+
+function Time({ date, isBusy }: TimeParams){
     const { setTime, currentTime } = useContext(TimeSelectCtx);
 
     return (
@@ -63,7 +68,7 @@ function Time({ date, isBusy }: {  }){
 
 function TimeSelect(){
     const { inputData: { date } } = useContext(FormCtx);
-    const { siteConfig } = frontendClient;
+    const { siteConfig } = clientAC;
     const busyTimesAtDay = useQuery(
         AppointmentQueries.busyInRange(),
         { variables: { date, unit: "APPOINTMENT" } }
@@ -72,9 +77,9 @@ function TimeSelect(){
     // wait until loading
     if (busyTimesAtDay.loading ) return <LoadingSection />;
 
-    const step = siteConfig.min_duration;
-    const start = dayjs.tz(siteConfig.opening_at);
-    const end = dayjs.tz(siteConfig.closing_at);
+    const step = siteConfig.minDuration;
+    const start = dayjs.tz(siteConfig.openingAt);
+    const end = dayjs.tz(siteConfig.closingAt);
     const times = [];
     const endTime = dayjs.tz(date).hour(end.hour()).minute(end.minute());
     let appTime = dayjs.tz(date).hour(start.hour()).minute(start.minute());

@@ -19,7 +19,12 @@ import logo from "./logo.svg";
 import mobile from "./mobile.svg";
 import close from "./close.svg";
 
-function CardSide({ children, className }){
+interface CardSideParams {
+    children?: React.ReactNode,
+    className?: string
+}
+
+function CardSide({ children, className }: CardSideParams){
     return (
         <span className={ 
             clsx(
@@ -33,7 +38,11 @@ function CardSide({ children, className }){
     )
 }
 
-export function NavigationLink({ url }){
+interface NavigationLinkParams {
+    url: string
+}
+
+export function NavigationLink({ url }: NavigationLinkParams){
     const pathname = usePathname();
 
     return (
@@ -53,7 +62,7 @@ export function NavigationLink({ url }){
 
 function HeaderContent() {
     const { toggleMenu, closeMenu, isOpened } = useContext(MobileMenuCtx);
-    const { openForm} = useContext(FormCtx);
+    const { openForm } = useContext(FormCtx);
 
     return (
         <header className="w-full h-(--header-h) flex flex-row justify-center bg-white fixed z-100">

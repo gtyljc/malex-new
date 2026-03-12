@@ -1,7 +1,6 @@
 
 import { Plus_Jakarta_Sans } from "next/font/google";
 import clsx from "clsx";
-import React from "react";
 import WebPageWrapper from "@web/web-page-base/component";
 
 // css
@@ -16,7 +15,7 @@ const plusJakaraSans= Plus_Jakarta_Sans(
     }
 );
 
-export default async function WebLayout({ children }: { children: React.ReactNode }) {
+export default async function WebLayout({ children }: { children: React.ReactNode }) {    
     return (
         <html lang="en" className={ clsx(plusJakaraSans.className, "web", "text-sm") }>
             <head>

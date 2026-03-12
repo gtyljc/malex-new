@@ -4,9 +4,9 @@ import { createContext, useState } from "react";
 
 interface MobileMenuCtx {
     isOpened: boolean | undefined,
-    openMenu: Function | undefined,
-    toggleMenu: Function | undefined,
-    closeMenu: Function | undefined,
+    openMenu: () => void | undefined,
+    toggleMenu: () => void | undefined,
+    closeMenu: () => void | undefined,
 }
 
 export const MobileMenuCtx = createContext<MobileMenuCtx>(

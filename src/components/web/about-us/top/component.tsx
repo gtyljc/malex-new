@@ -1,7 +1,5 @@
 
-"use cache";
-
-export default function TopSection(){
+export default async function TopSection(){
     return (
         <section className="md:text-base mb-[70px]!">
             <h1 className="mb-[50px] text-4xl font-medium">About Us</h1>

@@ -16,7 +16,7 @@ export default function CustomMenu(){
             <Menu.ResourceItem name="appointment" leftIcon={ <AssignmentSharpIcon /> } />
             <Menu.ResourceItem name="work" leftIcon={ <PhotoSharpIcon /> } />
             <Menu.Item
-                to={ `/${SiteConfigQueries.resource}` } 
+                to={ `/${ SiteConfigQueries.resourceName }` } 
                 primaryText="Site Config"
                 leftIcon={ <AdminPanelSettingsSharpIcon /> } 
             />

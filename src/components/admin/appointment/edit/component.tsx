@@ -1,9 +1,7 @@
 
 // others
-import { dayjs } from "@lib/dayjs";
+import { dayjs } from "@lib/dayjs/client";
 import { required } from "react-admin";
-import { useGetOne } from "react-admin";
-import { SiteConfigQueries } from "@src/lib/apollo-clients/queries/server";
 
 // components
 import { 
@@ -14,20 +12,20 @@ import {
     DateTimeInput,
     TextInput
 } from "react-admin";
-import { frontendClient } from "@src/lib/apollo-clients/client";
+import { useConfig } from "@src/lib/apollo-clients/client";
 
 export default function AppointmentEdit() {
-    const { siteConfig } = useApolloClient() as ;
+    const { siteConfig } = useConfig();
 
     // generating choices
     const choices = [];
-    const opensAt = dayjs(data["opening_at"]).unix();
-    const closesAt = dayjs(data["closing_at"]).unix();
-    const timeStep = data["min_duration"] * 60 * 60; // from hours to seconds
+    const opensAt = dayjs(siteConfig.openingAt).unix();
+    const closesAt = dayjs(siteConfig.closingAt).unix();
+    const timeStep = siteConfig.minDuration * 60 * 60; // from hours to seconds
     let cName = 0;
 
     for (let timeOffset = opensAt; timeOffset < closesAt - timeStep; timeOffset += timeStep){
-        cName += data["min_duration"];
+        cName += siteConfig.minDuration;
         
         choices.push(
             { 

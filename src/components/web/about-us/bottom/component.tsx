@@ -1,13 +1,11 @@
 
-"use cache";
-
 // others
 import Image from "next/image";
 
 // images
 import thumbnail from "./thumbnail.jpg";
 
-export default function BottomSection(){
+export default async function BottomSection(){
     return (
         <section className="w-full flex flex-col items-center gap-8 md:text-base lg:flex-row lg:gap-[70px]">
             <div className="w-full flex flex-col justify-center items-center md:order-2">

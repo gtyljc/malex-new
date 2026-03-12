@@ -26,11 +26,27 @@ import {
     UpdateParams
 } from "react-admin";
 
+interface DataProviderErrorParams {
+    code?: number;
+    message?: string;
+}
+
+export class DataProviderError extends Error {    
+    code: number;
+    
+    constructor({ code, message }: DataProviderErrorParams = {}){
+        super();
+
+        this.code = code;
+        this.message = message;
+    }
+}
+
 class DataProvider {
     apolloClient: ApolloClient;
-    resourceQueries: ResourceQueries[];
+    resourceQueries: Record<string, ResourceQueries>;
 
-    constructor(apolloClient: ApolloClient, resourceQueries: ResourceQueries[]) {
+    constructor(apolloClient: ApolloClient, resourceQueries: Record<string, ResourceQueries>) {
         this.apolloClient = apolloClient;
         this.resourceQueries = resourceQueries;
     }
@@ -78,26 +94,38 @@ class DataProvider {
         return data;
     }
 
+    private catch(fieldName: string, response: Record<string, any>){
+        if (response.error){
+            throw new DataProviderError();
+        }
+
+        if (response.data && !response.data[fieldName].success){
+            throw new DataProviderError(
+                { 
+                    code: response.data[fieldName].code, 
+                    message: response.data[fieldName].message 
+                }
+            );
+        }
+
+        return response.data[fieldName];
+    }
 
     // get a list of records based on sort, filter, and pagination
     async getList(resource: types.Resource, params: GetListParams): Promise<GetListResult> {
-        const {
-            pagination, 
-            sort, 
-            filter = {} 
-        } = params;
-        const responseData = (
+        const responseData = this.catch(
+            `${resource}s`,
             await this.apolloClient.query(
                 {
                     query: this.resourceQueries[resource].getList(),
                     variables: {
-                        filter,
-                        sort,
-                        pagination
+                        filter: params.filter,
+                        sort: params.sort,
+                        pagination: params.pagination
                     }
                 }
             )
-        ).data[`${resource}s`];
+        );
 
         return {
             data: responseData.data,
@@ -108,44 +136,38 @@ class DataProvider {
 
     // get a single record by id
     async getOne(resource: types.Resource, params: GetOneParams): Promise<GetOneResult> {
-        const { id } = params;
-        const responseData = (
+        const responseData = this.catch(
+            resource,
             await this.apolloClient.query(
                 {
                     query: this.resourceQueries[resource].getOne(),
-                    variables: { id }
+                    variables: { id: params.id }
                 }
             )
-        ).data[resource];
+        )
 
         return { data: responseData.data[0] };
     }
 
     // get a list of records based on an array of ids
     async getMany(resource: types.Resource, params: GetManyParams): Promise<GetManyResult> {
-        const { ids } = params;
-        const responseData = (
+        const responseData = this.catch(
+            `${resource}s`,
             await this.apolloClient.query(
                 {
                     query: this.resourceQueries[resource].getMany(),
-                    variables: { ids }
+                    variables: { ids: params.ids }
                 }
             )
-        ).data[`${resource}s`];
+        );
 
         return { data: responseData.data }
     }
 
     // get the records referenced to another record, e.g. comments for a post
     async getManyReference(resource: types.Resource, params: GetManyReferenceParams): Promise<GetManyReferenceResult> {
-        const { 
-            target,
-            id,
-            pagination,
-            sort,
-            filter = {}
-        } = params;
-        const responseData = (
+        const responseData = this.catch(
+            `${resource}s`,
             await this.apolloClient.query(
                 {
                     query: this.resourceQueries[resource].getList(),
@@ -153,17 +175,17 @@ class DataProvider {
                         filter: {
                             
                             // condition to find references
-                            where: { [target]: { is: { id } } },
+                            where: { [params.target]: { is: { id: params.id } } },
 
                             // RA specified filter
-                            ...filter
+                            ...params.filter
                         },
-                        sort,
-                        pagination
+                        sort: params.sort,
+                        pagination: params.pagination
                     }
                 }
             )
-        ).data[`${resource}s`];
+        );
 
         return { data: responseData.data }
     }
@@ -175,21 +197,21 @@ class DataProvider {
         // check if img was inserted
         data = await this.imageInterception(data);
         
-        const responseData = (
+        const responseData = this.catch(
+            `create${capitalize(resource)}`,
             await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].create(),
                     variables: { data }
                 }
             )
-        ).data[`create${capitalize(resource)}`]
+        )
 
         return { data: responseData.data[0] };
     }
 
     // update a record based on a patch
     async update(resource: types.Resource, params: UpdateParams): Promise<UpdateResult> {
-        const { id } = params;
         let { data } = params;
 
         delete data.id;
@@ -197,21 +219,21 @@ class DataProvider {
         // check if img was inserted
         data = await this.imageInterception(data);
 
-        const responseData = (
+        const responseData = this.catch(
+            `update${capitalize(resource)}`,
             await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].update(),
-                    variables: { id, data }
+                    variables: { id: params.id, data }
                 }
             )
-        ).data[`update${capitalize(resource)}`]
+        )
 
         return { data: responseData.data[0] };
     }
 
     // update a list of records based on an array of ids and a common patch
     async updateMany(resource: types.Resource, params: UpdateManyParams): Promise<UpdateManyResult> {
-        const { ids } = params;
         let { data } = params;
 
         delete data.id;
@@ -219,44 +241,47 @@ class DataProvider {
         // check if img was inserted
         data = await this.imageInterception(data);
 
-        const responseData = (
+        const responseData = this.catch(
+            `updateMany${capitalize(resource)}s`,
             await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].updateMany(),
-                    variables: { ids, data }
+                    variables: { ids: params.ids, data }
                 }
             )
-        ).data[`updateMany${capitalize(resource)}s`]
+        )
 
         return { data: responseData.data };
     }
 
     // delete a record by id
     async delete(resource: types.Resource, params: DeleteParams): Promise<DeleteResult> {
-        const { id } = params;
-        const responseData = (
+        const responseData = this.catch(
+            `delete${capitalize(resource)}`,
             await this.apolloClient.mutate(
                 {
                     mutation: this.resourceQueries[resource].delete(),
-                    variables: { id }
+                    variables: { id: params.id }
                 }
             )
-        ).data[`delete${capitalize(resource)}`];
+        )
 
         return { data: responseData.data[0] }
     }
 
     // delete a list of records based on an array of ids
     async deleteMany(resource: types.Resource, params: DeleteManyParams): Promise<DeleteManyResult> {
-        const { ids } = params;
-        const responseData = (
-            await this.apolloClient.mutate(
-                {
-                    mutation: this.resourceQueries[resource].deleteMany(),
-                    variables: { ids }
-                }
+        const responseData = this.catch(
+            `deleteMany${capitalize(resource)}s`,
+            (
+                await this.apolloClient.mutate(
+                    {
+                        mutation: this.resourceQueries[resource].deleteMany(),
+                        variables: { ids: params.ids }
+                    }
+                )
             )
-        ).data[`deleteMany${capitalize(resource)}s`];
+        )
 
         return { data: responseData.data };
     }

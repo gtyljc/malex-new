@@ -4,9 +4,9 @@ import { Admin, Resource, CustomRoutes, memoryStore } from "react-admin";
 import AuthProvider from "./auth-provider";
 import { Route } from "react-router-dom";
 import DataProvider from "./data-provider";
-import { AppointmentQueries, WorkQueries, SiteConfigQueries } from "@src/lib/apollo-clients/queries/server";
+import * as serverQueries from "@src/lib/apollo-clients/queries/server";
 import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
-import { frontendClient } from "@src/lib/apollo-clients/client";
+import { clientAC } from "@src/lib/apollo-clients/client";
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";
@@ -18,51 +18,51 @@ import { ApolloProvider } from "@apollo/client/react";
 export default function AdminApp(){
 
     // add link to remove typenames
-    frontendClient.client.setLink(
+    clientAC.client.setLink(
         new RemoveTypenameFromVariablesLink()
-            .concat(frontendClient.link)
+            .concat(clientAC.link)
     );
 
     return(
-        <ApolloProvider client={ frontendClient }>
+        <ApolloProvider client={ clientAC.client }>
             <Admin 
                 dataProvider={
                     new DataProvider(
-                        client,
+                        clientAC.client,
                         {
-                            [ AppointmentQueries.resource ]: new AppointmentQueries(),
-                            [ WorkQueries.resource ]: new WorkQueries(),
-                            [ SiteConfigQueries.resource ]: new SiteConfigQueries()
+                            [ serverQueries.AppointmentQueries.resourceName ]: serverQueries.AppointmentQueries,
+                            [ serverQueries.WorkQueries.resourceName ]: serverQueries.WorkQueries,
+                            [ serverQueries.SiteConfigQueries.resourceName ]: serverQueries.SiteConfigQueries
                         }
                     )
                 }
-                authProvider={ new AuthProvider(frontendClient) }
+                authProvider={ new AuthProvider(clientAC.client) }
                 layout={ CustomLayout }
                 requireAuth
                 store={ memoryStore() }
             >
                 <Resource 
-                    name={ AppointmentQueries.resource } 
+                    name={ serverQueries.AppointmentQueries.resourceName } 
                     list={ AppointmentList } 
                     edit={ AppointmentEdit }
                     recordRepresentation={ (record) => `ID: ${ record.id }` }
                 />
                 <Resource 
-                    name={ WorkQueries.resource } 
+                    name={ serverQueries.WorkQueries.resourceName } 
                     list={ WorkList } 
                     create={ WorkCreate } 
                     edit={ WorkEdit }
                     recordRepresentation={ (record) => `ID: ${ record.id }` }
                 />
                 <Resource 
-                    name={ SiteConfigQueries.resource } 
+                    name={ serverQueries.SiteConfigQueries.resourceName } 
                     edit={ SiteConfigEdit } 
                     show={ SiteConfigShow }
                     recordRepresentation={ (record) => "Site Config" }
                 />
                 <CustomRoutes>
                     <Route 
-                        path={ `/${SiteConfigQueries.resource}` } 
+                        path={ `/${ serverQueries.SiteConfigQueries.resourceName }` } 
                         element={ <SiteConfigShow /> } 
                     />
                 </CustomRoutes>

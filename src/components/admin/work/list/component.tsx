@@ -4,9 +4,7 @@ import {
     List,
     DataTable,
     ImageField,
-    DateField,
-    EditButton,
-    DeleteButton
+    DateField
 } from "react-admin"
 
 export default function WorkList(){

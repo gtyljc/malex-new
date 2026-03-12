@@ -10,7 +10,7 @@ import TopSection from "./top/component";
 import MiddleSection from "./middle/component";
 import BottomSection from "./bottom/component";
 
-export default function AboutUs() {    
+export default async function AboutUs() {    
     return (
         <FormProvider>
             <main className="leading-[33px]">

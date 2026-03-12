@@ -16,7 +16,7 @@ import {
 function Actions (){
     return (
         <TopToolbar>
-            <EditButton resource={ SiteConfigQueries.resource } />
+            <EditButton resource={ SiteConfigQueries.resourceName } />
         </TopToolbar>
     )
 }

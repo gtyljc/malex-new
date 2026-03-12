@@ -1,5 +1,4 @@
 
-import "server-only";
 import { serverAC } from "../apollo-clients/server";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import utc from "dayjs/plugin/utc";

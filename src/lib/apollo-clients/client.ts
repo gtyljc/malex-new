@@ -7,7 +7,8 @@ import dayjs from "dayjs";
 import { CountryCode } from "libphonenumber-js";
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/client";
 import * as types from "@lib/types";
-import { env } from "../tools";
+import { useEffect, useState } from "react";
+import { RetryLink } from "@apollo/client/link/retry";
 
 export interface SiteConfig {
     openingAt: dayjs.Dayjs;
@@ -25,11 +26,25 @@ export default class ClientAC {
     link: ApolloLink;
 
     constructor(){
-        const link = new HttpLink(
-            { 
-                uri: "http://localhost:2000" + "/graphql",
-                fetch: this.customFetch.bind(this)
-            }
+        const link = ApolloLink.from(
+            [
+                new RetryLink(
+                    { 
+                        attempts: () => {
+                            console.log("No connection with API at client, reconnecting...");
+
+                            return true;
+                        }, 
+                        delay: () => parseInt(process.env.NEXT_PUBLIC_API_RECONNECT_DELAY)
+                    }
+                ),
+                new HttpLink(
+                    { 
+                        uri: process.env.NEXT_PUBLIC_API_BASE_URL + "/graphql",
+                        fetch: this.customFetch.bind(this)
+                    }
+                )
+            ]
         );
         const cache = new InMemoryCache();
 
@@ -43,13 +58,13 @@ export default class ClientAC {
                 credentials: "include",
                 ...options
             }
-        )
+        );
         const responseJSON: types.APIResponse<any> = await response.clone().json();
 
         // if AT is too old
         if (responseJSON.code == 403) {
             const atResponse = await this.generateNewAT();
-
+            
             // if RT is too old
             if (atResponse.data.createAT.code == 403){
                 return window.location.reload();
@@ -68,14 +83,12 @@ export default class ClientAC {
         );
     }
 
-    private async setConfig(): Promise<this> {
+    async setConfig(): Promise<this> {
         const config = (
             await this.client.query(
                 { query: clientQueries.SiteConfigQueries.publicConfig() }
             )
         ).data.publicConfig.data[0];
-
-        console.log(config);
 
         this.siteConfig = {
             openingAt: dayjs(config["opening_at"]),
@@ -89,13 +102,26 @@ export default class ClientAC {
 
         return this;
     }
-
-    // must be called only when document is loaded
-    async init(): Promise<this>{
-        
-
-        return await this.setConfig();
-    }
 }
 
-export const clientAC = await new ClientAC().init();
+export const clientAC = new ClientAC();
+
+interface UseConfigReturn {
+    isConfigLoaded: boolean,
+    siteConfig: SiteConfig | undefined, 
+    client: ClientAC
+}
+
+export function useConfig(): UseConfigReturn {
+    const [ isConfigLoaded, setConfigAsLoaded ] = useState<boolean>(false);
+
+    useEffect(
+        () => { clientAC.setConfig().then(e => setConfigAsLoaded(true)); }
+    )
+
+    return {
+        isConfigLoaded,
+        siteConfig: clientAC.siteConfig,
+        client: clientAC
+    }
+}

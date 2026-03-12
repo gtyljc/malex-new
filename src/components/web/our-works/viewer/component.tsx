@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { ViewerCtx } from "./ctx";
 import Image from "next/image";
 import { WorksCtx } from "../component";
-import { dayjs } from "@lib/dayjs";
+import { dayjs } from "@lib/dayjs/client";
 
 // css
 import styles from "./styles.module.css";
@@ -24,7 +24,7 @@ function ScrollForwardBtn({ className }: ScrollBtnParams) {
 
     return (
         <button 
-            onClick={ () => sclForward } 
+            onClick={ sclForward } 
             className={ clsx(styles.scroll_btn, "right-0", index == works.length - 1 && "hidden!", className) }
         >
             <Image src={ next } alt="Scroll to next work" />
@@ -37,7 +37,7 @@ function ScrollBackBtn({ className }: ScrollBtnParams) {
 
     return (
         <button 
-            onClick={ () => sclBack }
+            onClick={ sclBack }
             className={ clsx(styles.scroll_btn, "left-0", index == 0 && "hidden!", className) }
         >
             <Image src={ next } alt="Scroll to previous work" className="rotate-180" />
@@ -67,7 +67,7 @@ export default function Viewer(){
                 <div className="w-full flex flex-row justify-end mb-4">
                     <button
                         className="flex flex-row justify-center items-center text-white text-base gap-2"
-                        onClick={ () => closeViewer }
+                        onClick={ closeViewer }
                         type="button"
                     >
                         <span>Close</span>

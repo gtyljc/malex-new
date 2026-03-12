@@ -3,7 +3,7 @@
 // tools
 import { useState, createContext } from "react";
 import * as types from "@lib/types";
-import { dayjs } from "@lib/dayjs";
+import { dayjs } from "@lib/dayjs/client";
 
 type Direction = "left" | "right";
 
@@ -14,26 +14,24 @@ interface InputData {
     jobDesc: null | string,
     bwt: types.BWT | null,
     phoneNumber: string | null,
-    date: string | dayjs.Dayjs
+    date: dayjs.Dayjs | null
 }
 
 interface FormCtx {
     isOpened: boolean | undefined,
-    openForm: Function | undefined,
-    closeForm: Function | undefined,
+    openForm: () => void | undefined,
+    closeForm: () => void | undefined,
     index: number | undefined,
-    sclForward: Function | undefined,
-    sclBackward: Function | undefined,
+    sclForward: () => void | undefined,
+    sclBackward: () => void | undefined,
     isScrolling: boolean | undefined,
-    setScrollFlag: Function | undefined,
+    setScrollFlag: (value: boolean) => void | undefined,
     sDirection: Direction | undefined,
-    setSDirection: Function | undefined,
+    setSDirection: (value: Direction) => void | undefined,
     inputData: InputData | undefined,
-    isSubmited: boolean | undefined,
-    setSubmitState: Function | undefined,
     isWaitingOnResponse: boolean | undefined,
-    setWaitingState: Function | undefined,
-    setResponseState: Function | undefined,
+    setWaitingState: (value: boolean) => void | undefined,
+    setResponseState: (value: boolean) => void | undefined,
     responseState: boolean | undefined
 }
 
@@ -50,8 +48,6 @@ export const FormCtx = createContext<FormCtx>(
         setSDirection: undefined,
         sclForward: undefined,
         inputData: undefined,
-        isSubmited: undefined,
-        setSubmitState: undefined,
         isWaitingOnResponse: undefined,
         setWaitingState: undefined,
         setResponseState: undefined,
@@ -87,7 +83,6 @@ export function FormProvider({ children }){
     );
 
     // submit
-    const [ isSubmited, setSubmitState ] = useState<boolean>(false);
     const [ isWaitingOnResponse, setWaitingState ] = useState<boolean>(false);
     const [ responseState, setResponseState ] = useState<boolean>(false); // false => unsuccess; true => success
 
@@ -112,8 +107,6 @@ export function FormProvider({ children }){
                     inputData,
                     
                     // submit
-                    isSubmited,
-                    setSubmitState,
                     isWaitingOnResponse,
                     setWaitingState,
                     setResponseState,

@@ -22,9 +22,7 @@ async function redirectWithNewPair(
         return new NextResponse(null, { status: 500 });
     }
 
-    console.log("wl[d[lwd[ld")
-    
-    const response = NextResponse.next();
+    const response = NextResponse.redirect(new URL(request.url));
     const newRT = newPair.data[0].rt;
     const newRTClaims = decodeJwt(newRT);
     const newAT = newPair.data[0].at;
@@ -55,12 +53,11 @@ async function redirectWithNewPair(
     return response;
 }
 
-// start point of site
 export default async function proxy(request: NextRequest): Promise<NextResponse> {
     let rt = request.cookies.get("r_token");
 
     // user is absolutly new or his RT is expired
-    if (rt === undefined || decodeJwt(rt.value).exp <= dayjs().unix()){
+    if (rt === undefined){
         return await redirectWithNewPair(
             request, 
             { userId: null, role: "GUEST" }

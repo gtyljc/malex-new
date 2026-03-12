@@ -36,7 +36,7 @@ function Point({ pIndex }: PointParams){
             className={
                 clsx(
                     styles.point,
-                    index == i && "after:transform-[scale(1)]!"
+                    index == pIndex && "after:transform-[scale(1)]!"
                 )
             }
             onClick={ () => setIndex(pIndex) }

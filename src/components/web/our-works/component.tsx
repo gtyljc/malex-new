@@ -4,7 +4,7 @@
 // others
 import { useQuery } from "@apollo/client/react";
 import { WorkQueries } from "@src/lib/apollo-clients/queries/client";
-import { dayjs } from "@lib/dayjs";
+import { dayjs } from "@lib/dayjs/client";
 import Image from "next/image";
 import { ViewerProvider, ViewerCtx } from "./viewer/ctx";
 import { useContext, createContext, useState } from "react";

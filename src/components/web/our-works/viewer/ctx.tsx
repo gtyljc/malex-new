@@ -6,12 +6,12 @@ import { useState, createContext } from "react";
 
 interface ViewerCtx {
     isOpened: boolean | undefined,
-    openViewer: Function | undefined,
-    closeViewer: Function | undefined,
+    openViewer: () => void | undefined,
+    closeViewer: () => void | undefined,
     index: number | undefined,
-    setIndex: Function | undefined,
-    sclBack: Function | undefined,
-    sclForward: Function | undefined
+    setIndex: (value: number) => void | undefined,
+    sclBack: () => void | undefined,
+    sclForward: () => void | undefined
 }
 
 export const ViewerCtx = createContext<ViewerCtx>(

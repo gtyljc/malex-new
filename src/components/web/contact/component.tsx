@@ -3,8 +3,8 @@
 
 // others
 import Image from "next/image";
-import { dayjs } from "@lib/dayjs";
-import { frontendClient } from "@src/lib/apollo-clients/client";
+import { dayjs } from "@lib/dayjs/client";
+import { useConfig } from "@src/lib/apollo-clients/client";
 
 // components
 import PathToPageSection from "@web/path-to-page/component";
@@ -70,11 +70,11 @@ function WorkTimeField({ openingAtValue, closingAtValue }: WorkTimeFieldParams){
 }
 
 export default function Contact(){
-    const { siteConfig } = frontendClient;
+    const { siteConfig } = useConfig();
 
     return (
         <main>
-            <PathToPageSection page_name="Contact" />
+            <PathToPageSection pageName="Contact" />
             <section className="w-full flex flex-col items-center">
                 <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:w-full">
                     <div className="w-full max-w-[470px] flex flex-col gap-5">
@@ -82,11 +82,11 @@ export default function Contact(){
                         <div className="w-full flex flex-col md:order-2 gap-10">
                             <p>We’re always ready to answer your questions and offer the assistance you need</p>
                             <ul className="flex flex-col gap-6 mb-5 md:mb-0">
-                                <PhoneNumberField phoneValue={ siteConfig.phone_number } />
-                                <SupportEmailField emailValue={ siteConfig.support_email } />
+                                <PhoneNumberField phoneValue={ siteConfig.phoneNumber } />
+                                <SupportEmailField emailValue={ siteConfig.supportEmail } />
                                 <WorkTimeField 
-                                    openingAtValue={ dayjs(siteConfig.starting_at).format("LT") } 
-                                    closingAtValue={ dayjs(siteConfig.closing_at).format("LT") } 
+                                    openingAtValue={ dayjs(siteConfig.openingAt).format("LT") } 
+                                    closingAtValue={ dayjs(siteConfig.closingAt).format("LT") } 
                                 />
                             </ul>
                         </div>

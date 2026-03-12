@@ -1,6 +1,4 @@
 
-"use cache";
-
 // others
 import Image from "next/image";
 import clsx from "clsx";
@@ -32,7 +30,7 @@ function Card({ label, img }: CardParams){
     );
 }
 
-export default function MiddleSection(){
+export default async function MiddleSection(){
     return (
         <section className="w-full flex flex-row justify-center gap-1 mb-[70px]! lg:gap-5 md:text-base">
             <Card

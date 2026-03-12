@@ -31,8 +31,6 @@ export default function Form() {
         sDirection, 
         inputData,
         sclForward,
-        setSubmitState,
-        isSubmited,
         setWaitingState,
         setResponseState
     } = useContext(FormCtx);
@@ -51,31 +49,30 @@ export default function Form() {
             onSubmit={
                 async (e) => {             
                     e.preventDefault(); // remove page reload
-                    
-                    const { error, loading, data } = await client.mutate(
+
+                    setWaitingState(true);
+
+                    const { error, data } = await client.mutate(
                         {
                             mutation: AppointmentQueries.createAppointment(),
-                            variables: { data: inputData } 
+                            variables: { 
+                                data: {
+                                    name: inputData.name,
+                                    surname: inputData.surname,
+                                    address: inputData.address,
+                                    job_desc: inputData.jobDesc,
+                                    bwt: inputData.bwt,
+                                    phone_number: inputData.phoneNumber,
+                                    date: inputData.date.tz().format()
+                                } 
+                            } 
                         }
                     );
+                
+                    setWaitingState(false);
 
-                    // flag as submitted
-                    if (!isSubmited) { 
-                        setSubmitState(true);
-                        setWaitingState(true);
-                        sclForward() 
-                    };
-
-                    // flag when response from server willя  be loaded
-                    if(!loading) {
-                        setWaitingState(false);
-                        
-                        if (!error) setResponseState(false);
-
-                        if (!data.createAppointment.success) setResponseState(false);
-
-                        setResponseState(true);
-                    };
+                    if (error || !data.createAppointment.success) setResponseState(false);
+                    else setResponseState(true);
                 }
             }
         >
@@ -99,7 +96,7 @@ export default function Form() {
                             isScrolling && "row-animation", 
                             sDirection == "right" && "justify-start",
                             sDirection == "left" && "justify-end"
-                        ) 
+                        )
                     }
                     style={ { transform: isScrolling && `translateX(${ sDirection == "right" ? "-": "" }100%)` } }
                     onTransitionStart={ (e) => { if (e.target === e.currentTarget) setScrollFlag(true) } }

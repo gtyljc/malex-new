@@ -153,7 +153,6 @@ function SelectInputWithLabel({ id, options, label, formObject }: SelectInputWit
         </InputLabel>
     )
 }
-const STEP_I = 0;
 
 function createValidationSchema(siteConfig: SiteConfig) {
     return z.object(
@@ -191,6 +190,8 @@ const useFormHookProps = (siteConfig: SiteConfig): UseFormProps<FormValues> => (
         mode: "onChange",
     }
 )
+
+const STEP_I = 0;
 
 // should be insert in ul
 export default function ClientDataStep() {

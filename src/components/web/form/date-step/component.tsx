@@ -47,7 +47,7 @@ function Day({ date, isBusy }: DayParams ){
     // console.log(date)
 
     return(
-        <td className="p-[4px]">
+        <td className="p-1">
             <div
                 className={
                     clsx(

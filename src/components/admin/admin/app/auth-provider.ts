@@ -1,11 +1,22 @@
 
-import { AuthQueries } from "@src/lib/apollo-clients/queries/client";
-import { frontendClient } from "@src/lib/apollo-clients/client";
+import { AuthQueries } from "@src/lib/apollo-clients/queries/server";
 import { ApolloClient } from "@apollo/client";
+import { DataProviderError } from "./data-provider";
 
 interface LoginParams {
     username: string,
     password: string
+}
+
+class AuthError extends Error {
+    redirectTo: string | boolean;
+    
+    constructor(message: string){
+        super();
+
+        this.message = message;
+        this.redirectTo = false;
+    }
 }
 
 class AuthProvider {
@@ -31,11 +42,6 @@ class AuthProvider {
 
         // validation successful
         if(r.data.adminLogin.success){
-            frontendClient.setAuthTokens(
-                r.data.adminLogin.data[0].rt,
-                r.data.adminLogin.data[0].at
-            )
-
             return { redirectTo: "/" };
         }
 
@@ -43,18 +49,30 @@ class AuthProvider {
     }
 
     // when the dataProvider returns an error, check if this is an authentication error
-    async checkError() {
-        return null;
+    async checkError(error: Error) {
+        if (error instanceof DataProviderError){
+            if (error.code == 403){
+                throw new Error();
+            }
+        }
     }
     
     // when the user navigates, make sure that their credentials are still valid
     async checkAuth() {
-        
+        const r = await this.apolloClient.query({ query: AuthQueries.checkAdmin() });
+    
+        if (r.error || (!r.data.checkAdmin.success && r.data.checkAdmin.code != 403)){
+            throw new AuthError("Authentication has failed! Try one more time later.");
+        }
+
+        if (r.data.checkAdmin.code == 403){
+            throw new AuthError("Not authenticated! Are you sure that you are admin?)");
+        }
     }
     
     // remove local credentials and notify the auth server that the user logged out
     async logout() {
-        
+        await this.apolloClient.mutate({ mutation: AuthQueries.adminLogout() });
     }
 };
 

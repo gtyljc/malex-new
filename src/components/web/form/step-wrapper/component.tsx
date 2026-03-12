@@ -14,7 +14,7 @@ interface NextButtonParams {
     args?: Record<string, any>
 }
 
-export function NextButton({ onClick, isSubmit = false, args = {} }: NextButtonParams){ // onClick must be a check and return boolean value
+export function NextButton({ onClick, isSubmit = false }: NextButtonParams){ // onClick must be a check and return boolean value
     const { setSDirection, setScrollFlag, sclForward } = useContext(FormCtx);
 
     return (
@@ -22,12 +22,12 @@ export function NextButton({ onClick, isSubmit = false, args = {} }: NextButtonP
             className="redirect-btn redirect-btn-blue mt-8 min-[450px]:max-w-[250px]"
             onClick={ 
                 async () => {
-                    const r = onClick(args);
+                    const r = onClick();
 
                     if (r instanceof Promise ? await r: r){
                         sclForward();
                         setSDirection("right"); 
-                        setScrollFlag(true); 
+                        setScrollFlag(true);
                     }
                 }
             }
@@ -44,7 +44,13 @@ export function BackButton(){
     return (
         <button 
             className="redirect-btn redirect-btn-circled mt-8 min-[450px]:max-w-[250px]"
-            onClick={ async () => { sclBackward(); setSDirection("left"); setScrollFlag(true); } }
+            onClick={ 
+                () => { 
+                    sclBackward(); 
+                    setSDirection("left"); 
+                    setScrollFlag(true); 
+                } 
+            }
             type="button"
         >
             <span>Back</span>

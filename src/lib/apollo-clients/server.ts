@@ -3,12 +3,12 @@ import "server-only";
 import * as serverQueries from "./queries/server";
 import { createRT } from "../auth";
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/client";
-import * as errors from "@lib/errors";
+import { RetryLink } from "@apollo/client/link/retry";
 import * as types from "@lib/types";
 import * as tools from "@lib/tools";
-import { env } from "../tools";
 import dayjs from "dayjs";
 import { CountryCode } from "libphonenumber-js";
+import * as errors from "@src/lib/errors";
 
 export interface SiteConfig {
     openingAt: dayjs.Dayjs;
@@ -44,12 +44,26 @@ export default class ServerAC {
     siteConfig: SiteConfig;
 
     constructor() {
-        const link = new HttpLink(
-            {  
-                uri: "http://localhost:2000" + "/graphql", 
-                fetch: this.customFetch.bind(this)
-            }
-        );
+        const link = ApolloLink.from(
+            [
+                new RetryLink(
+                    { 
+                        attempts: () => {
+                            console.log("No connection with API at server, reconnecting...");
+                            
+                            return true;
+                        }, 
+                        delay: () => parseInt(process.env.NEXT_PUBLIC_API_RECONNECT_DELAY)
+                    } 
+                ),
+                new HttpLink(
+                    { 
+                        uri: process.env.NEXT_PUBLIC_API_BASE_URL + "/graphql",
+                        fetch: this.customFetch.bind(this)
+                    }
+                )
+            ]
+        )
         const cache = new InMemoryCache();
 
         this.client = new ApolloClient({ link, cache });
@@ -102,11 +116,10 @@ export default class ServerAC {
     async generateNewRT(): Promise<void> {
         const r = await createRT({ userId: null, role: "SUPERUSER" });
 
-        console.log(r);
-
-        // if (!r.success){
-        //     throw new errors.RTCreationError();
-        // }
+        
+        if (!r.success){
+            throw new errors.RTCreationError();
+        }
 
         // update or set tokens into client instance
         this.tokenStorage.set(r.data[0].at, r.data[0].rt);
@@ -116,7 +129,7 @@ export default class ServerAC {
         const config = (
             await this.client.query(
                 { 
-                    query: new serverQueries.SiteConfigQueries().getOne(), 
+                    query: serverQueries.SiteConfigQueries.getOne(), 
                     variables: { id: "1" } 
                 },
             )

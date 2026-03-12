@@ -128,14 +128,14 @@ export default function TimeStep() {
                 <BackButton />
                 <NextButton 
                     onClick={ 
-                        () => { 
+                        () => {
                             if (currentTime){
                                 inputData.date = inputData.date
                                     .add(currentTime.hour(), "hour")
                                     .add(currentTime.minute(), "minute")
-                                    .tz()
-                                    .format()
                                 }
+
+                                return true;
                             }
                         } 
                     isSubmit 

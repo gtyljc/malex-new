@@ -34,8 +34,8 @@ function ResponseState({ title, message, icon }: ResponseStateParams){
             <p className="max-w-[320px] text-[15px]/6 text-center mt-2">{ message }</p>
             <Link
                 href="/"
-                className="redirect-btn redirect-btn-white  mt-8 min-[450px]:max-w-[250px]"
-                onClick={ () => closeForm() }
+                className="redirect-btn redirect-btn-white mt-8 min-[450px]:max-w-[250px]"
+                onClick={ closeForm }
             >
                 <span>Back to Home</span>
             </Link>

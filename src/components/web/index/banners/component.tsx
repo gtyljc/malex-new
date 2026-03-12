@@ -68,10 +68,11 @@ function Banner({ title, underlined, undertitle, thumbnail }: BannerParams){
                 <div 
                     className="
                         w-full flex flex-col items-center justify-center max-h-[240px] rounded-[10px] 
-                        overflow-hidden lg:w-[50%] lg:max-h-none lg:h-full
+                        overflow-hidden lg:w-[60%] lg:max-h-none lg:h-full
                     "
                 >
                     <Image
+                        className="w-full"
                         src={ thumbnail }
                         alt="Malex plumbing"
                     />
@@ -102,8 +103,8 @@ function BannersSectionContent() {
         <section className="w-full flex flex-col justify-center items-center">
             <div 
                 className="
-                    max-w-[645px] flex flex-col items-center gap-5 bg-ice-blue rounded-[10px] p-4
-                    box-border md:p-6 lg:p-8 lg:gap-3 lg:max-w-none
+                    max-w-[645px] flex flex-col items-center gap-5 bg-ice-blue rounded-[10px]
+                    p-4 box-border md:p-6 lg:p-8 lg:gap-3 w-full lg:max-w-none 
                 "
             >
                 <div className="row-con">
@@ -112,7 +113,7 @@ function BannersSectionContent() {
                         style={ 
                             { 
                                 transform: `translateX(-${ index * (100 + rowGap) }%)`,
-                                gap: `${rowGap}%`
+                                gap: `${ rowGap }%`
                             } 
                         }
                     >
@@ -137,7 +138,7 @@ function BannersSectionContent() {
                     </ul>
                 </div>
                 <div className="w-full flex flex-row justify-center lg:justify-start">
-                    <PointsScrollbar p_num={ pointsNum }/>
+                    <PointsScrollbar pointsNum={ pointsNum }/>
                 </div>
             </div>
         </section>

@@ -1,6 +1,5 @@
 
-import { ResourceQueries } from "@src/lib/apollo-clients/queries/server";
-import { ImageUploadQueries } from "@src/lib/apollo-clients/queries/server";
+import * as queries from "@src/lib/apollo-clients/queries/admin";
 import { nanoid } from "nanoid";
 import { capitalize } from "@lib/tools";
 import { ApolloClient } from "@apollo/client";
@@ -44,9 +43,9 @@ export class DataProviderError extends Error {
 
 class DataProvider {
     apolloClient: ApolloClient;
-    resourceQueries: Record<string, ResourceQueries>;
+    resourceQueries: Record<string, queries.ResourceQueries>;
 
-    constructor(apolloClient: ApolloClient, resourceQueries: Record<string, ResourceQueries>) {
+    constructor(apolloClient: ApolloClient, resourceQueries: Record<string, queries.ResourceQueries>) {
         this.apolloClient = apolloClient;
         this.resourceQueries = resourceQueries;
     }
@@ -61,7 +60,7 @@ class DataProvider {
             // get upload link
             const startResponse = await this.apolloClient.mutate(
                 {
-                    mutation: ImageUploadQueries.startImageUpload(),
+                    mutation:queries.ImageUploadQueries.startImageUpload(),
                     variables: { id: imgId }
                 }
             );
@@ -79,7 +78,7 @@ class DataProvider {
             // get info about uploaded image
             const finalizeResponse = await this.apolloClient.mutate(
                 {
-                    mutation: ImageUploadQueries.finalizeImageUpload(),
+                    mutation: queries.ImageUploadQueries.finalizeImageUpload(),
                     variables: { id: imgId }
                 }
             );

@@ -1,7 +1,7 @@
 
 
 // others
-import { required, number, email } from "react-admin";
+import { required, email } from "react-admin";
 import { dayjs } from "@lib/dayjs/client";
 
 // components
@@ -71,7 +71,7 @@ export default function SiteConfigEdit(){
                     validate={ required() }
                 />
                 <TextInput source="support_email" validate={ email() } />
-                <TextInput source="phone_number" validate={ number() } />
+                <TextInput source="phone_number" />
             </SimpleForm>
         </Edit>
     )

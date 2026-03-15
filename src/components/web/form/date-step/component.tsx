@@ -6,7 +6,7 @@ import { useState, useContext, createContext } from "react";
 import clsx from "clsx";
 import { FormCtx } from "../ctx";
 import { useQuery } from "@apollo/client/react";
-import { AppointmentQueries } from "@src/lib/apollo-clients/queries/client";
+import { AppointmentQueries } from "@src/lib/apollo-clients/queries/web";
 import * as tools from "@lib/tools";
 import { dayjs } from "@lib/dayjs/client";
 

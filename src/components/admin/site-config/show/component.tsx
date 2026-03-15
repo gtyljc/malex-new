@@ -1,6 +1,6 @@
 
 // others
-import { SiteConfigQueries } from "@src/lib/apollo-clients/queries/server";
+import { SiteConfigQueries } from "@src/lib/apollo-clients/queries/admin";
 
 // componenents
 import {
@@ -42,7 +42,7 @@ export default function SiteConfigShow(){
     return (
         <Show 
             id={ 1 }
-            resource={ SiteConfigQueries.resource }
+            resource={ SiteConfigQueries.resourceName }
             title="Site Config"
             actions={ <Actions /> }
         > 

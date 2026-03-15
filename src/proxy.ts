@@ -8,17 +8,17 @@ import { env } from "@src/lib/tools";
 import * as types from "@lib/types";
 
 interface RedirectWithNewPairOptions {
-    userId: string, 
+    userId: string,
     role: types.Role
 }
 
 async function redirectWithNewPair(
-    request: NextRequest, 
+    request: NextRequest,
     { userId, role }: RedirectWithNewPairOptions
-): Promise<NextResponse>{
+): Promise<NextResponse> {
     const newPair = await createRT({ role, userId });
 
-    if(!newPair.success){
+    if (!newPair.success) {
         return new NextResponse(null, { status: 500 });
     }
 
@@ -29,22 +29,22 @@ async function redirectWithNewPair(
     const newATClaims = decodeJwt(newAT);
 
     response.cookies.set(
-        "r_token", 
+        "r_token",
         newRT,
         {
             httpOnly: true,
-            secure: env("NODE_ENV") == "development" ? false: true,
+            secure: env("NODE_ENV") == "development" ? false : true,
             domain: env("API_HOST"),
             maxAge: newRTClaims.exp - newRTClaims.iat
         }
     )
 
     response.cookies.set(
-        "a_token", 
+        "a_token",
         newAT,
         {
             httpOnly: true,
-            secure: env("NODE_ENV") == "development" ? false: true,
+            secure: env("NODE_ENV") == "development" ? false : true,
             domain: env("API_HOST"),
             maxAge: newATClaims.exp - newATClaims.iat
         }
@@ -53,13 +53,21 @@ async function redirectWithNewPair(
     return response;
 }
 
+export const config = {
+    matcher: [
+        
+        // Exclude API routes, static files, image optimizations, and .png files
+        '/((?!api|_next/static|_next/image|.*\\.png$).*)',
+    ],
+}
+
 export default async function proxy(request: NextRequest): Promise<NextResponse> {
     let rt = request.cookies.get("r_token");
 
     // user is absolutly new or his RT is expired
-    if (rt === undefined){
+    if (rt === undefined) {
         return await redirectWithNewPair(
-            request, 
+            request,
             { userId: null, role: "GUEST" }
         );
     }
@@ -67,9 +75,9 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     const rtClaims = decodeJwt(rt.value);
 
     // is expired or not
-    if (rtClaims.exp < dayjs().unix()){
+    if (rtClaims.exp < dayjs().unix()) {
         return await redirectWithNewPair(
-            request, 
+            request,
             { userId: rtClaims.sub, role: rtClaims.aud as types.Role }
         );
     }

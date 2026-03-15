@@ -4,7 +4,7 @@
 // others
 import Image from "next/image";
 import { dayjs } from "@lib/dayjs/client";
-import { useConfig } from "@src/lib/apollo-clients/client";
+import { useClientAC } from "@src/lib/apollo-clients/client";
 
 // components
 import PathToPageSection from "@web/path-to-page/component";
@@ -70,7 +70,7 @@ function WorkTimeField({ openingAtValue, closingAtValue }: WorkTimeFieldParams){
 }
 
 export default function Contact(){
-    const { siteConfig } = useConfig();
+    const { siteConfig } = useClientAC();
 
     return (
         <main>

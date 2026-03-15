@@ -15,7 +15,7 @@ const plusJakaraSans= Plus_Jakarta_Sans(
     }
 );
 
-export default async function WebLayout({ children }: { children: React.ReactNode }) {    
+export default async function WebLayout({ children }) {    
     return (
         <html lang="en" className={ clsx(plusJakaraSans.className, "web", "text-sm") }>
             <head>

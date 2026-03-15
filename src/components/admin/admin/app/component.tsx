@@ -4,9 +4,10 @@ import { Admin, Resource, CustomRoutes, memoryStore } from "react-admin";
 import AuthProvider from "./auth-provider";
 import { Route } from "react-router-dom";
 import DataProvider from "./data-provider";
-import * as serverQueries from "@src/lib/apollo-clients/queries/server";
+import * as queries from "@src/lib/apollo-clients/queries/admin";
 import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-typename";
-import { clientAC } from "@src/lib/apollo-clients/client";
+import { useClientAC } from "@src/lib/apollo-clients/client";
+import { ApolloLink } from "@apollo/client";
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";
@@ -16,53 +17,53 @@ import CustomLayout from "@admin/custom-layout/component";
 import { ApolloProvider } from "@apollo/client/react";
 
 export default function AdminApp(){
+    const { isInitialized, link, client } = useClientAC();
+
+    if (!isInitialized) return null;
 
     // add link to remove typenames
-    clientAC.client.setLink(
-        new RemoveTypenameFromVariablesLink()
-            .concat(clientAC.link)
-    );
+    client.setLink(ApolloLink.from([ new RemoveTypenameFromVariablesLink(), link ]));
 
     return(
-        <ApolloProvider client={ clientAC.client }>
+        <ApolloProvider client={ client }>
             <Admin 
                 dataProvider={
                     new DataProvider(
-                        clientAC.client,
+                        client,
                         {
-                            [ serverQueries.AppointmentQueries.resourceName ]: serverQueries.AppointmentQueries,
-                            [ serverQueries.WorkQueries.resourceName ]: serverQueries.WorkQueries,
-                            [ serverQueries.SiteConfigQueries.resourceName ]: serverQueries.SiteConfigQueries
+                            [ queries.AppointmentQueries.resourceName ]: new queries.AppointmentQueries(),
+                            [ queries.WorkQueries.resourceName ]: new queries.WorkQueries(),
+                            [ queries.SiteConfigQueries.resourceName ]: new queries.SiteConfigQueries()
                         }
                     )
                 }
-                authProvider={ new AuthProvider(clientAC.client) }
+                authProvider={ new AuthProvider(client) }
                 layout={ CustomLayout }
                 requireAuth
                 store={ memoryStore() }
             >
                 <Resource 
-                    name={ serverQueries.AppointmentQueries.resourceName } 
+                    name={ queries.AppointmentQueries.resourceName } 
                     list={ AppointmentList } 
                     edit={ AppointmentEdit }
                     recordRepresentation={ (record) => `ID: ${ record.id }` }
                 />
                 <Resource 
-                    name={ serverQueries.WorkQueries.resourceName } 
+                    name={ queries.WorkQueries.resourceName } 
                     list={ WorkList } 
                     create={ WorkCreate } 
                     edit={ WorkEdit }
                     recordRepresentation={ (record) => `ID: ${ record.id }` }
                 />
                 <Resource 
-                    name={ serverQueries.SiteConfigQueries.resourceName } 
+                    name={ queries.SiteConfigQueries.resourceName } 
                     edit={ SiteConfigEdit } 
                     show={ SiteConfigShow }
                     recordRepresentation={ (record) => "Site Config" }
                 />
                 <CustomRoutes>
                     <Route 
-                        path={ `/${ serverQueries.SiteConfigQueries.resourceName }` } 
+                        path={ `/${ queries.SiteConfigQueries.resourceName }` } 
                         element={ <SiteConfigShow /> } 
                     />
                 </CustomRoutes>

@@ -12,10 +12,10 @@ import {
     DateTimeInput,
     TextInput
 } from "react-admin";
-import { useConfig } from "@src/lib/apollo-clients/client";
+import { useClientAC } from "@src/lib/apollo-clients/client";
 
 export default function AppointmentEdit() {
-    const { siteConfig } = useConfig();
+    const { siteConfig } = useClientAC();
 
     // generating choices
     const choices = [];

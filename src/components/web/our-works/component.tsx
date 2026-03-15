@@ -3,7 +3,7 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/lib/apollo-clients/queries/client";
+import { WorkQueries } from "@src/lib/apollo-clients/queries/web";
 import { dayjs } from "@lib/dayjs/client";
 import Image from "next/image";
 import { ViewerProvider, ViewerCtx } from "./viewer/ctx";
@@ -98,6 +98,7 @@ function WorkSection({ title, category }: WorkSectionParams){
             date={ e.timestamp } 
             imgUrl={ e.imgUrl }
             index={ e.index }
+            key={ e.index }
         />
     );
 

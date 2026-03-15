@@ -104,24 +104,7 @@ export class WorkQueries {
 }
 
 
-export class AuthQueries {    
-
-    // verifies data from Admin Panel Login Page
-    static adminLogin(){
-         return gql`
-            mutation AdminLogin($username: String!, $password: String!){
-                adminLogin(username: $username, password: $password) {
-                    code
-                    success
-                    message
-                    data {
-                        at,
-                        rt
-                    }
-                }
-            }
-        `
-    }
+export class AuthQueries {
 
     // creates new AT using RT
     static createAT(){
@@ -131,29 +114,10 @@ export class AuthQueries {
                     code
                     success
                     message
-                    data {
-                        at,
-                        rt
-                    }
-                }
-            }
-        `
-    }
-
-    // creates new AT using RT
-    static adminLogout(){
-        return gql`
-            mutation adminLogout{
-                adminLogout {
-                    code
-                    success
-                    message
-                    data {
-                        at,
-                        rt
-                    }
+                    data
                 }
             }
         `
     }
 }
+

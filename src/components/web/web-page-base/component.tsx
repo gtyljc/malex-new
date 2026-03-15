@@ -4,7 +4,7 @@
 // others
 import { ApolloProvider } from "@apollo/client/react";
 import { FormProvider } from "@web/form/ctx";
-import { clientAC, useConfig } from "@src/lib/apollo-clients/client";
+import { useClientAC } from "@src/lib/apollo-clients/client";
 
 // components
 import Header from "@web/header/component";
@@ -12,12 +12,12 @@ import Footer from "@web/footer/component";
 import Form from "@web/form/component";
 
 export default function WebPageBase({ children }){
-    const { isConfigLoaded } = useConfig();
+    const { isInitialized, client } = useClientAC();
 
-    if (!isConfigLoaded) return null;
+    if (!isInitialized) return null;
 
     return (
-        <ApolloProvider client={ clientAC.client }>
+        <ApolloProvider client={ client }>
             <FormProvider>
                 <Form />
                 <Header/>

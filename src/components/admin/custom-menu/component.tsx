@@ -1,6 +1,6 @@
 
 // others
-import { SiteConfigQueries } from '@src/lib/apollo-clients/queries/server';
+import { SiteConfigQueries } from '@src/lib/apollo-clients/queries/admin';
 
 // components
 import { Menu } from 'react-admin';

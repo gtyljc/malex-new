@@ -4,7 +4,6 @@
 "use client"; 
 
 import "client-only";
-import { clientAC } from "../apollo-clients/client";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -18,6 +17,5 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(objectSupport);
 dayjs.extend(customParseFormat);
-// dayjs.tz.setDefault(clientAC.siteConfig.timezone);
 
 export { dayjs };

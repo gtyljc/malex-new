@@ -9,7 +9,7 @@ import {
 } from "@web/points-scrollbar/ctx";
 import { useContext } from "react";
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/lib/apollo-clients/queries/client";
+import { WorkQueries } from "@src/lib/apollo-clients/queries/web";
 import { dayjs } from "@lib/dayjs/client";
 import * as types from "@lib/types";
 

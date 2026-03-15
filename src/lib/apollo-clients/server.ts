@@ -1,24 +1,11 @@
 
 import "server-only";
-import * as serverQueries from "./queries/server";
+import * as queries from "./queries/server";
 import { createRT } from "../auth";
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/client";
-import { RetryLink } from "@apollo/client/link/retry";
 import * as types from "@lib/types";
-import * as tools from "@lib/tools";
-import dayjs from "dayjs";
-import { CountryCode } from "libphonenumber-js";
 import * as errors from "@src/lib/errors";
-
-export interface SiteConfig {
-    openingAt: dayjs.Dayjs;
-    closingAt: dayjs.Dayjs;
-    minDuration: number;
-    supportEmail: string;
-    phoneNumber: string;
-    timezone: string;
-    cCountry: CountryCode;
-}
+import { BaseAC } from "./base";
+import { dayjs } from "@lib/dayjs/server";
 
 class AuthTokenStorage {
     private rt!: string;
@@ -37,75 +24,39 @@ class AuthTokenStorage {
     }
 }
 
-export default class ServerAC {
+export default class ServerAC extends BaseAC {
     tokenStorage: AuthTokenStorage;
-    client: ApolloClient;
-    link: ApolloLink;
-    siteConfig: SiteConfig;
 
     constructor() {
-        const link = ApolloLink.from(
-            [
-                new RetryLink(
-                    { 
-                        attempts: () => {
-                            console.log("No connection with API at server, reconnecting...");
-                            
-                            return true;
-                        }, 
-                        delay: () => parseInt(process.env.NEXT_PUBLIC_API_RECONNECT_DELAY)
-                    } 
-                ),
-                new HttpLink(
-                    { 
-                        uri: process.env.NEXT_PUBLIC_API_BASE_URL + "/graphql",
-                        fetch: this.customFetch.bind(this)
-                    }
-                )
-            ]
-        )
-        const cache = new InMemoryCache();
+        super({ toLoad: [ () => dayjs.tz.setDefault(this.siteConfig.timezone) ] });
 
-        this.client = new ApolloClient({ link, cache });
+        this.toLoad = [ this.generateNewRT.bind(this) ].concat(this.toLoad)
+
         this.tokenStorage = new AuthTokenStorage();
     }
 
     async customFetch(resource: string | URL | Request, options: RequestInit): Promise<Response> {        
-        // be careful, before to send this request, make sure
-        // that you set "aud" param to "SUPERUSER", otherwise
-        // you will get no tokens
+        const requestOptions = options;
+        const headers = new Headers(options.headers);
 
-        const RECONNECT_DELAY = 2000;
+        headers.append("Authorization", "Bearer " + this.tokenStorage.get().at);
 
-        while (true){
-            try {
-                const response = await fetch(
-                    resource,
-                    {
-                        headers: { "Authorization": "Bearer " + this.tokenStorage.get().at },
-                        ...options
-                    }
-                )
-                const responseJSON: types.APIResponse<any> = await response.json();
+        requestOptions.headers = headers;
 
-                if (responseJSON.code == 403){
-                    await this.generateNewAT();
-                }
-                
-                return response;
-            }
-            catch {
-                await tools.sleep(RECONNECT_DELAY);
+        const response = await super.customFetch(resource, requestOptions);
+        const responseJSON: types.APIResponse<any> = await response.clone().json();
 
-                continue;
-            }
+        if (responseJSON.code == 403){
+            await this.generateNewAT();
         }
+        
+        return response;
     }
 
     async generateNewAT(): Promise<void> {
         const { at, rt } = (
             await this.client.mutate(
-                { mutation: serverQueries.AuthQueries.createAT() }
+                { mutation: queries.webQueries.AuthQueries.createAT() }
             )
         ).data.createAT.data[0];
 
@@ -115,7 +66,6 @@ export default class ServerAC {
 
     async generateNewRT(): Promise<void> {
         const r = await createRT({ userId: null, role: "SUPERUSER" });
-
         
         if (!r.success){
             throw new errors.RTCreationError();
@@ -123,37 +73,6 @@ export default class ServerAC {
 
         // update or set tokens into client instance
         this.tokenStorage.set(r.data[0].at, r.data[0].rt);
-    }
-
-    async setConfig(): Promise<this> {
-        const config = (
-            await this.client.query(
-                { 
-                    query: serverQueries.SiteConfigQueries.getOne(), 
-                    variables: { id: "1" } 
-                },
-            )
-        ).data.siteConfig.data[0];
-
-        this.siteConfig = {
-            openingAt: dayjs(config["opening_at"]),
-            closingAt: dayjs(config["closing_at"]),
-            minDuration: config["min_duration"],
-            supportEmail: config["support_email"],
-            phoneNumber: config["phone_number"],
-            timezone: config["timezone"],
-            cCountry: config["cCountry"]
-        }
-
-        return this;
-    }
-
-    async init() {
-
-        // set start auth pair
-        await this.generateNewRT();
-
-        return this;
     }
 }
 

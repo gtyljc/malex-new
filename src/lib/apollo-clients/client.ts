@@ -2,7 +2,7 @@
 "use client";
 
 import "client-only";
-import * as clientQueries from "./queries/web";
+import { CreateAtDocument } from "./queries/Auth.generated";
 import { BaseAC } from "./base";
 import { useEffect, useState } from "react";
 import { dayjs } from "@lib/dayjs/client";
@@ -37,9 +37,7 @@ export default class ClientAC extends BaseAC {
     // gets new 
     async generateNewAT(){
         return (
-            await this.client.mutate(
-                { mutation: clientQueries.AuthQueries.createAT() }
-            )
+            await this.client.mutate({ mutation: CreateAtDocument })
         );
     }
 }

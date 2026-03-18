@@ -6,9 +6,10 @@ import { useState, useContext, createContext } from "react";
 import clsx from "clsx";
 import { FormCtx } from "../ctx";
 import { useQuery } from "@apollo/client/react";
-import { AppointmentQueries } from "@src/lib/apollo-clients/queries/web";
+import { BusyInRangeDocument } from "@src/lib/apollo-clients/queries/resources/Appointments.generated";
 import * as tools from "@lib/tools";
 import { dayjs } from "@lib/dayjs/client";
+import * as types from "@lib/types";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -82,8 +83,8 @@ function Day({ date, isBusy }: DayParams ){
 function Calendar(){
     const { currentMonth } = useContext(CalenderCtx);
     const { data, loading } = useQuery(
-        AppointmentQueries.busyInRange(),
-        { variables: { date: currentMonth.toISOString(), unit: "DAY" } }
+        BusyInRangeDocument,
+        { variables: { date: currentMonth.toISOString(), unit: types.TimeUnitEnum.Day } }
     );
 
     // wait until loaded

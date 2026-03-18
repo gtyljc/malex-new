@@ -1,12 +1,12 @@
 
-import * as queries from "./queries/web";
+import * as queries from "@lib/apollo-clients/queries";
 import dayjs from "dayjs";
 import { CountryCode } from "libphonenumber-js";
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry";
 import { InMemoryCacheConfig } from "@apollo/client";
 
-interface SiteConfig {
+export interface SiteConfig {
     openingAt: dayjs.Dayjs;
     closingAt: dayjs.Dayjs;
     minDuration: number;
@@ -77,7 +77,7 @@ export class BaseAC {
     async setConfig(): Promise<void> {
         const config = (
             await this.client.query(
-                { query: queries.SiteConfigQueries.publicConfig() },
+                { query: queries.PublicConfigDocument },
             )
         ).data.publicConfig.data[0];
 

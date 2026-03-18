@@ -1,4 +1,5 @@
 
+import "server-only";
 import { env } from "./tools"; 
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
@@ -32,13 +33,15 @@ function stableStringify(value: Record<any, any>): string {
     ).join(",") + "}";
 }
 
-export async function createRT(
-    { userId, role }: 
-    { userId: string, role: types.Role }
-): Promise<types.APIResponse<{ rt: string, at: string }>> {
+interface SendTokenCreateRequestParams {
+    userId?: string,
+    role: types.RoleEnum
+    path: string
+}
+
+async function sendTokenCreateRequest({ userId, role, path }: SendTokenCreateRequestParams){
     const body = { userId, role };
     const hashedBody = await hashRaw(stableStringify(body));
-    const path = "/rt/create";
     const method = "POST";
     const timestamp = dayjs().unix();
     const nonce = nanoid(16);
@@ -67,4 +70,18 @@ export async function createRT(
             }
         )
     ).json();
+}
+
+export async function createRT(
+    { userId, role }: 
+    { userId: string, role: types.RoleEnum }
+): Promise<types.CreateRtResponseType> {
+    return await sendTokenCreateRequest({ userId, role, path: "/rt/create" });
+}
+
+export async function createAT(
+    { userId, role }: 
+    { userId: string, role: types.RoleEnum }
+): Promise<types.CreateRtResponseType> {
+   return await sendTokenCreateRequest({ userId, role, path: "/at/create" });
 }

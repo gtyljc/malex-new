@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { FormCtx } from "./ctx";
 import Image from "next/image";
 import { useApolloClient } from "@apollo/client/react";
-import { AppointmentQueries } from "@src/lib/apollo-clients/queries/web";
+import * as queries from "@lib/apollo-clients/queries";
 
 // components
 import ClientDataStep from "./client-data-step/component";
@@ -30,7 +30,6 @@ export default function Form() {
         isScrolling, 
         sDirection, 
         inputData,
-        sclForward,
         setWaitingState,
         setResponseState
     } = useContext(FormCtx);
@@ -54,7 +53,7 @@ export default function Form() {
 
                     const { error, data } = await client.mutate(
                         {
-                            mutation: AppointmentQueries.createAppointment(),
+                            mutation: queries.RegisterAppontmentDocument,
                             variables: { 
                                 data: {
                                     name: inputData.name,
@@ -71,7 +70,7 @@ export default function Form() {
                 
                     setWaitingState(false);
 
-                    if (error || !data.createAppointment.success) setResponseState(false);
+                    if (error || !data.registerAppointment.success) setResponseState(false);
                     else setResponseState(true);
                 }
             }

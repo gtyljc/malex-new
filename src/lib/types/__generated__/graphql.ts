@@ -12,16 +12,16 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  CountryCode: { input: unknown; output: unknown; }
-  DateTimeISO: { input: unknown; output: unknown; }
-  EmailAddress: { input: unknown; output: unknown; }
-  JSONObject: { input: unknown; output: unknown; }
-  JWT: { input: unknown; output: unknown; }
-  PhoneNumber: { input: unknown; output: unknown; }
-  PositiveFloat: { input: unknown; output: unknown; }
-  PositiveInt: { input: unknown; output: unknown; }
-  TimeZone: { input: unknown; output: unknown; }
-  URL: { input: unknown; output: unknown; }
+  CountryCode: { input: any; output: any; }
+  DateTimeISO: { input: any; output: any; }
+  EmailAddress: { input: any; output: any; }
+  JSONObject: { input: any; output: any; }
+  JWT: { input: any; output: any; }
+  PhoneNumber: { input: any; output: any; }
+  PositiveFloat: { input: any; output: any; }
+  PositiveInt: { input: any; output: any; }
+  TimeZone: { input: any; output: any; }
+  URL: { input: any; output: any; }
 };
 
 export type ApiResponseInterface = {
@@ -35,7 +35,7 @@ export type ApiResponseInterface = {
 };
 
 export type AdminPanelKeyResponse = ApiResponseInterface & {
-  __typename: 'AdminPanelKeyResponse';
+  __typename?: 'AdminPanelKeyResponse';
   code: Scalars['Int']['output'];
   data: Array<Maybe<Scalars['String']['output']>>;
   message: Scalars['String']['output'];
@@ -53,16 +53,16 @@ export type AppointmentCreateInput = {
 };
 
 export type AppointmentResponseType = ApiResponseInterface & {
-  __typename: 'AppointmentResponseType';
+  __typename?: 'AppointmentResponseType';
   code: Scalars['Int']['output'];
   data: Array<Maybe<AppointmentType>>;
   message: Scalars['String']['output'];
-  pagination: Maybe<PaginationType>;
+  pagination?: Maybe<PaginationType>;
   success: Scalars['Boolean']['output'];
 };
 
 export type AppointmentType = {
-  __typename: 'AppointmentType';
+  __typename?: 'AppointmentType';
   address: Scalars['String']['output'];
   bwt: BestWayToTouchEnum;
   completed: Scalars['Boolean']['output'];
@@ -87,6 +87,14 @@ export type AppointmentUpdateInput = {
   surname?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type AuthResponseType = ApiResponseInterface & {
+  __typename?: 'AuthResponseType';
+  code: Scalars['Int']['output'];
+  data: Array<Maybe<Scalars['Boolean']['output']>>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export enum BestWayToTouchEnum {
   Phone = 'PHONE',
   Text = 'TEXT',
@@ -94,7 +102,7 @@ export enum BestWayToTouchEnum {
 }
 
 export type BusyResponseType = ApiResponseInterface & {
-  __typename: 'BusyResponseType';
+  __typename?: 'BusyResponseType';
   code: Scalars['Int']['output'];
   data: Array<Maybe<BusyType>>;
   message: Scalars['String']['output'];
@@ -102,13 +110,27 @@ export type BusyResponseType = ApiResponseInterface & {
 };
 
 export type BusyType = {
-  __typename: 'BusyType';
+  __typename?: 'BusyType';
   busy: Scalars['Boolean']['output'];
   date: Scalars['DateTimeISO']['output'];
 };
 
+export type CreateRtResponseType = ApiResponseInterface & {
+  __typename?: 'CreateRTResponseType';
+  code: Scalars['Int']['output'];
+  data: Array<Maybe<CreateRtType>>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateRtType = {
+  __typename?: 'CreateRTType';
+  at?: Maybe<Scalars['JWT']['output']>;
+  rt?: Maybe<Scalars['JWT']['output']>;
+};
+
 export type FinalizeUploadImageResponseType = ApiResponseInterface & {
-  __typename: 'FinalizeUploadImageResponseType';
+  __typename?: 'FinalizeUploadImageResponseType';
   code: Scalars['Int']['output'];
   data: Array<Maybe<FinalizeUploadImageType>>;
   message: Scalars['String']['output'];
@@ -116,35 +138,21 @@ export type FinalizeUploadImageResponseType = ApiResponseInterface & {
 };
 
 export type FinalizeUploadImageType = {
-  __typename: 'FinalizeUploadImageType';
+  __typename?: 'FinalizeUploadImageType';
   id: Scalars['ID']['output'];
   url: Scalars['URL']['output'];
 };
 
-export type JwtResponseType = ApiResponseInterface & {
-  __typename: 'JWTResponseType';
-  code: Scalars['Int']['output'];
-  data: Array<Maybe<JwtType>>;
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-};
-
-export type JwtType = {
-  __typename: 'JWTType';
-  at: Scalars['JWT']['output'];
-  rt: Scalars['JWT']['output'];
-};
-
 export type Mutation = {
-  __typename: 'Mutation';
-  adminLogin: JwtResponseType;
-  adminLogout: JwtResponseType;
-  createAT: JwtResponseType;
-  createAppointment: AppointmentResponseType;
+  __typename?: 'Mutation';
+  adminLogin: AuthResponseType;
+  adminLogout: AuthResponseType;
+  createAT: AuthResponseType;
   createWork: WorkResponseType;
   deleteManyWorks: WorkResponseType;
   deleteWork: WorkResponseType;
   finalizeImageUpload: FinalizeUploadImageResponseType;
+  registerAppointment: AppointmentResponseType;
   startImageUpload: StartUploadImageResponseType;
   updateAppointment: AppointmentResponseType;
   updateManyAppointments: AppointmentResponseType;
@@ -157,11 +165,6 @@ export type Mutation = {
 export type MutationAdminLoginArgs = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
-};
-
-
-export type MutationCreateAppointmentArgs = {
-  data: AppointmentCreateInput;
 };
 
 
@@ -185,19 +188,24 @@ export type MutationFinalizeImageUploadArgs = {
 };
 
 
+export type MutationRegisterAppointmentArgs = {
+  data: AppointmentCreateInput;
+};
+
+
 export type MutationStartImageUploadArgs = {
   id: Scalars['ID']['input'];
 };
 
 
 export type MutationUpdateAppointmentArgs = {
-  data?: InputMaybe<AppointmentUpdateInput>;
+  data: AppointmentUpdateInput;
   id: Scalars['ID']['input'];
 };
 
 
 export type MutationUpdateManyAppointmentsArgs = {
-  data?: InputMaybe<AppointmentUpdateInput>;
+  data: AppointmentUpdateInput;
   ids: Array<InputMaybe<Scalars['ID']['input']>>;
 };
 
@@ -225,7 +233,7 @@ export enum OrderEnum {
 }
 
 export type PageInfoType = {
-  __typename: 'PageInfoType';
+  __typename?: 'PageInfoType';
   hasNextPage: Scalars['Boolean']['output'];
   hasPreviousPage: Scalars['Boolean']['output'];
 };
@@ -236,13 +244,13 @@ export type PaginationInput = {
 };
 
 export type PaginationType = {
-  __typename: 'PaginationType';
+  __typename?: 'PaginationType';
   pageInfo: PageInfoType;
   total: Scalars['Int']['output'];
 };
 
 export type PublicConfigResponseType = ApiResponseInterface & {
-  __typename: 'PublicConfigResponseType';
+  __typename?: 'PublicConfigResponseType';
   code: Scalars['Int']['output'];
   data: Array<Maybe<PublicConfigType>>;
   message: Scalars['String']['output'];
@@ -250,7 +258,7 @@ export type PublicConfigResponseType = ApiResponseInterface & {
 };
 
 export type PublicConfigType = {
-  __typename: 'PublicConfigType';
+  __typename?: 'PublicConfigType';
   c_country: Scalars['CountryCode']['output'];
   closing_at: Scalars['DateTimeISO']['output'];
   min_duration: Scalars['PositiveFloat']['output'];
@@ -261,27 +269,28 @@ export type PublicConfigType = {
 };
 
 export type PublicWorkResponseType = ApiResponseInterface & {
-  __typename: 'PublicWorkResponseType';
+  __typename?: 'PublicWorkResponseType';
   code: Scalars['Int']['output'];
   data: Array<Maybe<PublicWorkType>>;
   message: Scalars['String']['output'];
-  pagination: Maybe<PaginationType>;
+  pagination?: Maybe<PaginationType>;
   success: Scalars['Boolean']['output'];
 };
 
 export type PublicWorkType = {
-  __typename: 'PublicWorkType';
+  __typename?: 'PublicWorkType';
   category: WorkCategoryEnum;
   img_url: Scalars['URL']['output'];
   timestamp: Scalars['DateTimeISO']['output'];
 };
 
 export type Query = {
-  __typename: 'Query';
-  adminPanelKey: Maybe<AdminPanelKeyResponse>;
+  __typename?: 'Query';
+  adminPanelKey: AdminPanelKeyResponse;
   appointment: AppointmentResponseType;
   appointments: AppointmentResponseType;
   busyInRange: BusyResponseType;
+  checkAdmin: AuthResponseType;
   getWorks: PublicWorkResponseType;
   newWorks: PublicWorkResponseType;
   publicConfig: PublicConfigResponseType;
@@ -339,6 +348,12 @@ export type QueryWorksArgs = {
   sort?: InputMaybe<SortInput>;
 };
 
+export enum ResourceEnum {
+  Appointment = 'appointment',
+  SiteConfig = 'siteConfig',
+  Work = 'work'
+}
+
 export enum RoleEnum {
   Admin = 'ADMIN',
   Guest = 'GUEST',
@@ -348,7 +363,7 @@ export enum RoleEnum {
 }
 
 export type SiteConfigResponseType = ApiResponseInterface & {
-  __typename: 'SiteConfigResponseType';
+  __typename?: 'SiteConfigResponseType';
   code: Scalars['Int']['output'];
   data: Array<Maybe<SiteConfigType>>;
   message: Scalars['String']['output'];
@@ -356,7 +371,7 @@ export type SiteConfigResponseType = ApiResponseInterface & {
 };
 
 export type SiteConfigType = {
-  __typename: 'SiteConfigType';
+  __typename?: 'SiteConfigType';
   c_country: Scalars['CountryCode']['output'];
   closing_at: Scalars['DateTimeISO']['output'];
   id: Scalars['ID']['output'];
@@ -384,7 +399,7 @@ export type SortInput = {
 };
 
 export type StartUploadImageResponseType = ApiResponseInterface & {
-  __typename: 'StartUploadImageResponseType';
+  __typename?: 'StartUploadImageResponseType';
   code: Scalars['Int']['output'];
   data: Array<Maybe<StartUploadImageType>>;
   message: Scalars['String']['output'];
@@ -392,7 +407,7 @@ export type StartUploadImageResponseType = ApiResponseInterface & {
 };
 
 export type StartUploadImageType = {
-  __typename: 'StartUploadImageType';
+  __typename?: 'StartUploadImageType';
   id: Scalars['ID']['output'];
   url: Scalars['URL']['output'];
 };
@@ -416,16 +431,16 @@ export type WorkCreateInput = {
 };
 
 export type WorkResponseType = ApiResponseInterface & {
-  __typename: 'WorkResponseType';
+  __typename?: 'WorkResponseType';
   code: Scalars['Int']['output'];
   data: Array<Maybe<WorkType>>;
   message: Scalars['String']['output'];
-  pagination: Maybe<PaginationType>;
+  pagination?: Maybe<PaginationType>;
   success: Scalars['Boolean']['output'];
 };
 
 export type WorkType = {
-  __typename: 'WorkType';
+  __typename?: 'WorkType';
   category: WorkCategoryEnum;
   id: Scalars['ID']['output'];
   img_id: Scalars['ID']['output'];
@@ -439,57 +454,3 @@ export type WorkUpdateInput = {
   img_url?: InputMaybe<Scalars['URL']['input']>;
   timestamp?: InputMaybe<Scalars['DateTimeISO']['input']>;
 };
-
-export type BusyInRangeQueryVariables = Exact<{
-  date: Scalars['DateTimeISO']['input'];
-  unit: TimeUnitEnum;
-}>;
-
-
-export type BusyInRangeQuery = { busyInRange: { __typename: 'BusyResponseType', code: number, success: boolean, message: string, data: Array<{ __typename: 'BusyType', date: unknown, busy: boolean } | null> } };
-
-export type CreateAppointmentMutationVariables = Exact<{
-  data: AppointmentCreateInput;
-}>;
-
-
-export type CreateAppointmentMutation = { createAppointment: { __typename: 'AppointmentResponseType', code: number, success: boolean, message: string } };
-
-export type PublicConfigQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type PublicConfigQuery = { publicConfig: { __typename: 'PublicConfigResponseType', code: number, success: boolean, message: string, data: Array<{ __typename: 'PublicConfigType', opening_at: unknown, closing_at: unknown, support_email: unknown, phone_number: unknown, min_duration: unknown, timezone: unknown, c_country: unknown } | null> } };
-
-export type GetWorksQueryVariables = Exact<{
-  filter: Scalars['JSONObject']['input'];
-  pagination: PaginationInput;
-  sort?: InputMaybe<SortInput>;
-}>;
-
-
-export type GetWorksQuery = { getWorks: { __typename: 'PublicWorkResponseType', code: number, success: boolean, message: string, data: Array<{ __typename: 'PublicWorkType', img_url: unknown, category: WorkCategoryEnum, timestamp: unknown } | null> } };
-
-export type NewWorksQueryVariables = Exact<{
-  num?: InputMaybe<Scalars['PositiveInt']['input']>;
-}>;
-
-
-export type NewWorksQuery = { newWorks: { __typename: 'PublicWorkResponseType', code: number, success: boolean, message: string, data: Array<{ __typename: 'PublicWorkType', img_url: unknown, category: WorkCategoryEnum, timestamp: unknown } | null> } };
-
-export type AdminLoginMutationVariables = Exact<{
-  username: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-}>;
-
-
-export type AdminLoginMutation = { adminLogin: { __typename: 'JWTResponseType', code: number, success: boolean, message: string, data: Array<{ __typename: 'JWTType', at: unknown, rt: unknown } | null> } };
-
-export type CreateAtMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CreateAtMutation = { createAT: { __typename: 'JWTResponseType', code: number, success: boolean, message: string, data: Array<{ __typename: 'JWTType', at: unknown, rt: unknown } | null> } };
-
-export type AdminLogoutMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AdminLogoutMutation = { adminLogout: { __typename: 'JWTResponseType', code: number, success: boolean, message: string, data: Array<{ __typename: 'JWTType', at: unknown, rt: unknown } | null> } };

@@ -1,0 +1,131 @@
+
+fragment PubliWorkFields on PublicWorkType {
+    img_url
+    category
+    timestamp
+}
+
+fragment WorkFields on WorkType {
+    id
+    img_url
+    img_id
+    category
+    timestamp
+}
+
+query GetWorks($filter: JSONObject!, $pagination: PaginationInput!, $sort: SortInput){
+    getWorks(filter: $filter, pagination: $pagination, sort: $sort) {
+        code
+        success
+        message
+        data {
+            img_url
+            category
+            timestamp
+        }
+    }
+}
+
+query NewWorks($num: PositiveInt){
+    newWorks(num: $num) {
+        code
+        success
+        message
+        data {
+            img_url
+            category
+            timestamp
+        }
+    }
+}
+
+query GetListWorks($filter: JSONObject!, $pagination: PaginationInput!, $sort: SortInput) {
+    works (filter: $filter, pagination: $pagination, sort: $sort) {
+        code
+        success
+        message
+        data {
+            ...WorkFields
+        }
+        pagination {
+            ...PaginationFields
+        }
+    }
+}
+
+query GetWork($id: ID!) {
+    work (id: $id){
+        code
+        success
+        message
+        data {
+            ...WorkFields
+        }
+    }
+}
+
+query GetManyWorks($ids: [ID]!) {
+    works (ids: $ids) {
+        code
+        success
+        message
+        data {
+            ...WorkFields
+        }
+    }
+}
+
+mutation CreateWork($data: WorkCreateInput!){
+    createWork(data: $data) {
+        code
+        success
+        message
+        data {
+            ...WorkFields
+        }
+    }
+}
+
+mutation UpdateWork($id: ID!, $data: WorkUpdateInput!){
+    updateWork(id: $id, data: $data) {
+        code
+        success
+        message
+        data{
+            ...WorkFields            
+        }
+    }
+}
+
+mutation UpdateManyWorks($ids: [ID]!, $data: WorkUpdateInput!){
+    updateManyWorks(ids: $ids, data: $data) {
+        code
+        success
+        message
+        data {
+            ...WorkFields
+        }
+    }
+}
+
+mutation DeleteWork($id: ID!){
+    deleteWork(id: $id) {
+        code
+        success
+        message
+        data {
+            ...WorkFields
+        }
+    }
+}
+
+mutation DeleteManyWorks($ids: [ID]!){
+    deleteManyWorks(ids: $ids) {
+        code
+        success
+        message
+        data {
+            ...WorkFields
+        }
+    }
+}

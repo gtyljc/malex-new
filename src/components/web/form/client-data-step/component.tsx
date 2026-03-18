@@ -10,7 +10,7 @@ import * as z from "zod";
 import * as tools from "@src/lib/tools";
 import { AsYouType } from "libphonenumber-js/min";
 import { UseFormProps } from "react-hook-form";
-import { SiteConfig } from "@src/lib/apollo-clients/client";
+import { SiteConfig } from "@lib/apollo-clients/base";
 import * as types from "@lib/types";
 
 // components
@@ -23,7 +23,7 @@ type FormValues = {
     surname: string;
     address: string;
     jobDesc: string;
-    bwt: types.BWT;
+    bwt: types.BestWayToTouchEnum;
     phoneNumber: string;
 };
 
@@ -161,7 +161,7 @@ function createValidationSchema(siteConfig: SiteConfig) {
             surname: z.string().min(1).max(50).regex(tools.ENG_LANGUAGE_REGEX),
             address: z.string().min(1).max(255),
             jobDesc: z.string().min(1).max(500),
-            bwt: z.enum(["WHATSAPP", "TEXT", "PHONE"]),
+            bwt: z.enum(types.BestWayToTouchEnum),
             phoneNumber: z.string().refine(
                 v => {
                     const ast = new AsYouType(siteConfig.cCountry);
@@ -182,7 +182,7 @@ const useFormHookProps = (siteConfig: SiteConfig): UseFormProps<FormValues> => (
             surname: "",
             address: "",
             jobDesc: "",
-            bwt: "WHATSAPP",
+            bwt: types.BestWayToTouchEnum.Whatsapp,
             phoneNumber: "",
         },
         resetOptions: { keepDefaultValues: true },

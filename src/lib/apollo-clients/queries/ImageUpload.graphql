@@ -1,0 +1,24 @@
+
+mutation StartImageUpload($id: ID!){
+    startImageUpload(id: $id) {
+        code
+        success
+        message
+        data {
+            id
+            url
+        }
+    }
+}
+
+mutation FinalizeImageUpload($id: ID!){
+    finalizeImageUpload(id: $id) {
+        code
+        success
+        message
+        data {
+            id
+            url
+        }
+    }
+}

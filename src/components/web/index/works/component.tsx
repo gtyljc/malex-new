@@ -9,9 +9,8 @@ import {
 } from "@web/points-scrollbar/ctx";
 import { useContext } from "react";
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/lib/apollo-clients/queries/web";
 import { dayjs } from "@lib/dayjs/client";
-import * as types from "@lib/types";
+import * as queries from "@lib/apollo-clients/queries";
 
 // components
 import ScrollProgressBar from "@web/points-scrollbar/component";
@@ -92,18 +91,12 @@ function WorksSector({ offset, works, perSector }: WorksSectorParams){
     )
 }
 
-interface SourceWorkData {
-    img_url: string,
-    timestamp: string,
-    category: types.WorkCategory
-}
-
 const PER_SECTOR = 3;
 const SECTOR_NUM = 3;
 
 function WorksRow(){
     const { data, loading } = useQuery(
-        WorkQueries.newWorks(),
+        queries.NewWorksDocument,
         { variables: { num: SECTOR_NUM * 3 } }
     )
     const { index } = useContext(PointsScrollbarCtx);
@@ -120,7 +113,7 @@ function WorksRow(){
                 offset={ offset } 
                 works={ 
                     data.newWorks.data.map(
-                        (workData: SourceWorkData): WorkData => (
+                        (workData): WorkData => (
                             { 
                                 imgUrl: workData.img_url,  
                                 category: workData.category,

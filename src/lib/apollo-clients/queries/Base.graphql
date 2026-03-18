@@ -1,0 +1,8 @@
+
+fragment PaginationFields on PaginationType {
+    pageInfo {
+        hasNextPage
+        hasPreviousPage
+    }
+    total
+}

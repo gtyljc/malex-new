@@ -3,7 +3,7 @@
 
 // others
 import { useQuery } from "@apollo/client/react";
-import { WorkQueries } from "@src/lib/apollo-clients/queries/web";
+import * as queries from "@lib/apollo-clients/queries";
 import { dayjs } from "@lib/dayjs/client";
 import Image from "next/image";
 import { ViewerProvider, ViewerCtx } from "./viewer/ctx";
@@ -21,7 +21,7 @@ import img_placeholder from "./img-placeholder.svg";
 
 interface WorksCtx {
     setWorks: Function | undefined,
-    works: WorkData[] | undefined;
+    works: types.PublicWorkType[] | undefined;
 }
 
 export const WorksCtx = createContext<WorksCtx>(
@@ -86,19 +86,17 @@ function Work({ date, imgUrl, index }: WorkParams){
 
 interface WorkSectionParams {
     title: string,
-    category: types.WorkCategory
+    category: types.WorkCategoryEnum
 }
 
 function WorkSection({ title, category }: WorkSectionParams){
     const { works } = useContext(WorksCtx);
-    const filteredWorks = works.filter(
-        e => e.category == category
-    ).map(
-        e => <Work 
+    const filteredWorks = works.filter(e => e.category == category).map(
+        (e, i) => <Work 
             date={ e.timestamp } 
-            imgUrl={ e.imgUrl }
-            index={ e.index }
-            key={ e.index }
+            imgUrl={ e.img_url }
+            index={ i }
+            key={ i }
         />
     );
 
@@ -112,23 +110,10 @@ function WorkSection({ title, category }: WorkSectionParams){
     )
 }
 
-interface WorkData {
-    index: number,
-    imgUrl: string,
-    timestamp: string,
-    category: types.WorkCategory
-}
-
-interface SourceWorkData {
-    img_url: string,
-    timestamp: string,
-    category: types.WorkCategory
-}
-
 export default function OurWorks(){
-    const [ works, setWorks ] = useState<WorkData[] | null>(null);
-    const { data, loading } = useQuery(
-        WorkQueries.getWorks(),
+    const [ works, setWorks ] = useState<types.PublicWorkType[] | null>(null);
+    const { loading } = useQuery(
+        queries.GetWorksDocument,
         {
             variables: {
                 filter: {},
@@ -143,19 +128,6 @@ export default function OurWorks(){
     // wait until data will be loaded
     if (loading) return <LoadingSection />;
 
-    !works && setWorks(
-        data.getWorks.data.map(
-            (e: SourceWorkData, i: number): WorkData => (
-                {
-                    index: i,
-                    imgUrl: e.img_url, 
-                    timestamp: e.timestamp, 
-                    category: e.category
-                }
-            )
-        )
-    );
-
     return (
         <main>
             <WorksCtx.Provider value={ { works, setWorks } }>
@@ -163,9 +135,9 @@ export default function OurWorks(){
                     <Viewer />
                     <PathToPageSection pageName="Our Works"/>
                     <PanelSection />
-                    <WorkSection title="Plumbing" category="PLUMBING" />
-                    <WorkSection title="Assembling" category="ASSEMBLING" />
-                    <WorkSection title="Mounting" category="MOUNTING" />
+                    <WorkSection title="Plumbing" category={ types.WorkCategoryEnum.Plumbing } />
+                    <WorkSection title="Assembling" category={ types.WorkCategoryEnum.Assembling } />
+                    <WorkSection title="Mounting" category={ types.WorkCategoryEnum.Mounting } />
                 </ViewerProvider>
             </WorksCtx.Provider>
         </main>

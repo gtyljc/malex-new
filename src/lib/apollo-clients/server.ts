@@ -1,7 +1,6 @@
 
 import "server-only";
-import * as queries from "./queries/server";
-import { createRT } from "../auth";
+import { createRT, createAT } from "../auth";
 import * as types from "@lib/types";
 import * as errors from "@src/lib/errors";
 import { BaseAC } from "./base";
@@ -44,7 +43,7 @@ export default class ServerAC extends BaseAC {
         requestOptions.headers = headers;
 
         const response = await super.customFetch(resource, requestOptions);
-        const responseJSON: types.APIResponse<any> = await response.clone().json();
+        const responseJSON: types.APIResponse = await response.clone().json();
 
         if (responseJSON.code == 403){
             await this.generateNewAT();
@@ -54,25 +53,25 @@ export default class ServerAC extends BaseAC {
     }
 
     async generateNewAT(): Promise<void> {
-        const { at, rt } = (
-            await this.client.mutate(
-                { mutation: queries.webQueries.AuthQueries.createAT() }
-            )
-        ).data.createAT.data[0];
-
-        // update or set tokens into client instance
-        this.tokenStorage.set(rt, at);
-    }
-
-    async generateNewRT(): Promise<void> {
-        const r = await createRT({ userId: null, role: "SUPERUSER" });
+        const r = await createAT({ userId: null, role: types.RoleEnum.Superuser });
         
         if (!r.success){
             throw new errors.RTCreationError();
         }
 
         // update or set tokens into client instance
-        this.tokenStorage.set(r.data[0].at, r.data[0].rt);
+        this.tokenStorage.set(r.data[0].rt, r.data[0].at);
+    }
+
+    async generateNewRT(): Promise<void> {
+        const r = await createRT({ userId: null, role: types.RoleEnum.Superuser });
+        
+        if (!r.success){
+            throw new errors.RTCreationError();
+        }
+
+        // update or set tokens into client instance
+        this.tokenStorage.set(r.data[0].rt, r.data[0].at);
     }
 }
 

@@ -8,8 +8,8 @@ import { env } from "@src/lib/tools";
 import * as types from "@lib/types";
 
 interface RedirectWithNewPairOptions {
-    userId: string,
-    role: types.Role
+    userId?: string,
+    role: types.RoleEnum
 }
 
 async function redirectWithNewPair(
@@ -68,7 +68,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     if (rt === undefined) {
         return await redirectWithNewPair(
             request,
-            { userId: null, role: "GUEST" }
+            { role: types.RoleEnum.Guest }
         );
     }
 
@@ -78,7 +78,7 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
     if (rtClaims.exp < dayjs().unix()) {
         return await redirectWithNewPair(
             request,
-            { userId: rtClaims.sub, role: rtClaims.aud as types.Role }
+            { userId: rtClaims.sub, role: rtClaims.aud as types.RoleEnum }
         );
     }
 

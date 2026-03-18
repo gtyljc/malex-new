@@ -1,6 +1,6 @@
 
 // others
-import { SiteConfigQueries } from "@src/lib/apollo-clients/queries/admin";
+import * as types from "@lib/types";
 
 // componenents
 import {
@@ -16,7 +16,7 @@ import {
 function Actions (){
     return (
         <TopToolbar>
-            <EditButton resource={ SiteConfigQueries.resourceName } />
+            <EditButton resource={ types.ResourceEnum.SiteConfig } />
         </TopToolbar>
     )
 }
@@ -42,7 +42,7 @@ export default function SiteConfigShow(){
     return (
         <Show 
             id={ 1 }
-            resource={ SiteConfigQueries.resourceName }
+            resource={ types.ResourceEnum.SiteConfig }
             title="Site Config"
             actions={ <Actions /> }
         > 

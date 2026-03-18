@@ -12,7 +12,7 @@ interface InputData {
     surname: null | string,
     address: null | string,
     jobDesc: null | string,
-    bwt: types.BWT | null,
+    bwt: types.BestWayToTouchEnum | null,
     phoneNumber: string | null,
     date: dayjs.Dayjs | null
 }

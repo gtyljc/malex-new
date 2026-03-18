@@ -91,7 +91,7 @@ export default function Viewer(){
                         <ScrollForwardBtn />
                         {
                             works.length != 0 && <Image
-                                src={ works[index].imgUrl }
+                                src={ works[index].img_url }
                                 alt="Opened work"
                                 width={ 300 }
                                 height={ 300 }

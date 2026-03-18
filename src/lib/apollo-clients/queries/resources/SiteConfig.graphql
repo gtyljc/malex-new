@@ -1,0 +1,49 @@
+
+fragment SiteConfigFields on SiteConfigType {
+    opening_at
+    closing_at
+    support_email
+    phone_number
+    min_duration
+    timezone
+    c_country
+}
+
+query PublicConfig {
+    publicConfig {
+        code
+        success
+        message
+        data {
+            opening_at
+            closing_at
+            support_email
+            phone_number
+            min_duration
+            timezone
+            c_country
+        }
+    }
+}
+
+query GetSiteConfig($id: ID!) {
+    siteConfig (id: $id){
+        code
+        success
+        message
+        data {
+            ...SiteConfigFields
+        }
+    }
+}
+
+mutation UpdateSiteConfig($id: ID!, $data: SiteConfigUpdateInput!){
+    updateSiteConfig(id: $id, data: $data) {
+        code
+        success
+        message
+        data{
+            ...SiteConfigFields      
+        }
+    }
+}

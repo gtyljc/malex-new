@@ -5,8 +5,9 @@ import clsx from "clsx";
 import { dayjs } from "@lib/dayjs/client";
 import { useState, createContext, useContext } from "react";
 import { FormCtx } from "../ctx";
-import { AppointmentQueries } from "@src/lib/apollo-clients/queries/web";
+import { BusyInRangeDocument } from "@src/lib/apollo-clients/queries/resources/Appointments.generated";
 import { clientAC } from "@src/lib/apollo-clients/client";
+import * as types from "@lib/types";
 
 // components
 import StepWrapper from "../step-wrapper/component";
@@ -70,8 +71,8 @@ function TimeSelect(){
     const { inputData: { date } } = useContext(FormCtx);
     const { siteConfig } = clientAC;
     const busyTimesAtDay = useQuery(
-        AppointmentQueries.busyInRange(),
-        { variables: { date, unit: "APPOINTMENT" } }
+        BusyInRangeDocument,
+        { variables: { date, unit: types.TimeUnitEnum.Appointment } }
     );
 
     // wait until loading

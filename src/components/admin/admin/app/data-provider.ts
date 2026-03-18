@@ -1,5 +1,9 @@
 
-import * as queries from "@src/lib/apollo-clients/queries/admin";
+import { 
+    StartImageUploadDocument,
+    FinalizeImageUploadDocument 
+} from "@src/lib/apollo-clients/queries";
+import { TypedDocumentNode } from "@apollo/client";
 import { nanoid } from "nanoid";
 import { capitalize } from "@lib/tools";
 import { ApolloClient } from "@apollo/client";
@@ -43,9 +47,9 @@ export class DataProviderError extends Error {
 
 class DataProvider {
     apolloClient: ApolloClient;
-    resourceQueries: Record<string, queries.ResourceQueries>;
+    resourceQueries: Record<types.ResourceEnum, TypedDocumentNode[]>;
 
-    constructor(apolloClient: ApolloClient, resourceQueries: Record<string, queries.ResourceQueries>) {
+    constructor(apolloClient: ApolloClient, resourceQueries: Record<types.ResourceEnum, TypedDocumentNode[]>) {
         this.apolloClient = apolloClient;
         this.resourceQueries = resourceQueries;
     }
@@ -60,7 +64,7 @@ class DataProvider {
             // get upload link
             const startResponse = await this.apolloClient.mutate(
                 {
-                    mutation:queries.ImageUploadQueries.startImageUpload(),
+                    mutation: StartImageUploadDocument,
                     variables: { id: imgId }
                 }
             );
@@ -71,14 +75,14 @@ class DataProvider {
             body.append("file", data.img_url.rawFile);
 
             await fetch(
-                startResponse.data.startImageUpload.data[0].url,
+                startResponse.data.startImageUpload.data[0].url as string,
                 { method: "POST", body }
             );
 
             // get info about uploaded image
             const finalizeResponse = await this.apolloClient.mutate(
                 {
-                    mutation: queries.ImageUploadQueries.finalizeImageUpload(),
+                    mutation: FinalizeImageUploadDocument,
                     variables: { id: imgId }
                 }
             );
@@ -93,9 +97,9 @@ class DataProvider {
         return data;
     }
 
-    private catch(fieldName: string, response: Record<string, any>){
+    private catch(fieldName: string, response: ApolloClient.MutateResult | ApolloClient.QueryResult){
         if (response.error){
-            throw new DataProviderError();
+            throw new DataProviderError({ code: 400, message: response.error.message });
         }
 
         if (response.data && !response.data[fieldName].success){
@@ -111,12 +115,16 @@ class DataProvider {
     }
 
     // get a list of records based on sort, filter, and pagination
-    async getList(resource: types.Resource, params: GetListParams): Promise<GetListResult> {
+    async getList(resource: types.ResourceEnum, params: GetListParams): Promise<GetListResult> {
+        const query = this.resourceQueries[resource][`GetList${ capitalize(resource) }sDocument`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+        
         const responseData = this.catch(
             `${resource}s`,
             await this.apolloClient.query(
                 {
-                    query: this.resourceQueries[resource].getList(),
+                    query,
                     variables: {
                         filter: params.filter,
                         sort: params.sort,
@@ -134,12 +142,16 @@ class DataProvider {
     }
 
     // get a single record by id
-    async getOne(resource: types.Resource, params: GetOneParams): Promise<GetOneResult> {
+    async getOne(resource: types.ResourceEnum, params: GetOneParams): Promise<GetOneResult> {
+        const query = this.resourceQueries[resource][`Get${ capitalize(resource) }`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+
         const responseData = this.catch(
             resource,
             await this.apolloClient.query(
                 {
-                    query: this.resourceQueries[resource].getOne(),
+                    query,
                     variables: { id: params.id }
                 }
             )
@@ -149,12 +161,16 @@ class DataProvider {
     }
 
     // get a list of records based on an array of ids
-    async getMany(resource: types.Resource, params: GetManyParams): Promise<GetManyResult> {
+    async getMany(resource: types.ResourceEnum, params: GetManyParams): Promise<GetManyResult> {
+        const query = this.resourceQueries[resource][`GetMany${ capitalize(resource) }s`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+
         const responseData = this.catch(
             `${resource}s`,
             await this.apolloClient.query(
                 {
-                    query: this.resourceQueries[resource].getMany(),
+                    query,
                     variables: { ids: params.ids }
                 }
             )
@@ -164,12 +180,16 @@ class DataProvider {
     }
 
     // get the records referenced to another record, e.g. comments for a post
-    async getManyReference(resource: types.Resource, params: GetManyReferenceParams): Promise<GetManyReferenceResult> {
+    async getManyReference(resource: types.ResourceEnum, params: GetManyReferenceParams): Promise<GetManyReferenceResult> {
+        const query = this.resourceQueries[resource][`GetList${ capitalize(resource) }sDocument`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+        
         const responseData = this.catch(
             `${resource}s`,
             await this.apolloClient.query(
                 {
-                    query: this.resourceQueries[resource].getList(),
+                    query,
                     variables: { 
                         filter: {
                             
@@ -190,7 +210,11 @@ class DataProvider {
     }
 
     // create a record
-    async create(resource: types.Resource, params: CreateParams): Promise<CreateResult> {
+    async create(resource: types.ResourceEnum, params: CreateParams): Promise<CreateResult> {
+        const query = this.resourceQueries[resource][`Create${ capitalize(resource) }`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+        
         let { data } = params;
 
         // check if img was inserted
@@ -200,7 +224,7 @@ class DataProvider {
             `create${capitalize(resource)}`,
             await this.apolloClient.mutate(
                 {
-                    mutation: this.resourceQueries[resource].create(),
+                    mutation: query,
                     variables: { data }
                 }
             )
@@ -210,7 +234,11 @@ class DataProvider {
     }
 
     // update a record based on a patch
-    async update(resource: types.Resource, params: UpdateParams): Promise<UpdateResult> {
+    async update(resource: types.ResourceEnum, params: UpdateParams): Promise<UpdateResult> {
+        const query = this.resourceQueries[resource][`Update${ capitalize(resource) }`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+
         let { data } = params;
 
         delete data.id;
@@ -222,7 +250,7 @@ class DataProvider {
             `update${capitalize(resource)}`,
             await this.apolloClient.mutate(
                 {
-                    mutation: this.resourceQueries[resource].update(),
+                    mutation: query,
                     variables: { id: params.id, data }
                 }
             )
@@ -232,7 +260,11 @@ class DataProvider {
     }
 
     // update a list of records based on an array of ids and a common patch
-    async updateMany(resource: types.Resource, params: UpdateManyParams): Promise<UpdateManyResult> {
+    async updateMany(resource: types.ResourceEnum, params: UpdateManyParams): Promise<UpdateManyResult> {
+        const query = this.resourceQueries[resource][`UpdateMany${ capitalize(resource) }s`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+        
         let { data } = params;
 
         delete data.id;
@@ -244,7 +276,7 @@ class DataProvider {
             `updateMany${capitalize(resource)}s`,
             await this.apolloClient.mutate(
                 {
-                    mutation: this.resourceQueries[resource].updateMany(),
+                    mutation: query,
                     variables: { ids: params.ids, data }
                 }
             )
@@ -254,12 +286,16 @@ class DataProvider {
     }
 
     // delete a record by id
-    async delete(resource: types.Resource, params: DeleteParams): Promise<DeleteResult> {
+    async delete(resource: types.ResourceEnum, params: DeleteParams): Promise<DeleteResult> {
+        const query = this.resourceQueries[resource][`Delete${ capitalize(resource) }`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+
         const responseData = this.catch(
             `delete${capitalize(resource)}`,
             await this.apolloClient.mutate(
                 {
-                    mutation: this.resourceQueries[resource].delete(),
+                    mutation: query,
                     variables: { id: params.id }
                 }
             )
@@ -269,13 +305,17 @@ class DataProvider {
     }
 
     // delete a list of records based on an array of ids
-    async deleteMany(resource: types.Resource, params: DeleteManyParams): Promise<DeleteManyResult> {
+    async deleteMany(resource: types.ResourceEnum, params: DeleteManyParams): Promise<DeleteManyResult> {
+        const query = this.resourceQueries[resource][`DeleteMany${ capitalize(resource) }`];
+
+        if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
+        
         const responseData = this.catch(
             `deleteMany${capitalize(resource)}s`,
             (
                 await this.apolloClient.mutate(
                     {
-                        mutation: this.resourceQueries[resource].deleteMany(),
+                        mutation: query,
                         variables: { ids: params.ids }
                     }
                 )

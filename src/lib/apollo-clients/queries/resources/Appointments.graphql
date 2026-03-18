@@ -1,0 +1,95 @@
+
+fragment AppointmentFields on AppointmentType {
+    id
+    name
+    surname
+    address
+    job_desc
+    bwt
+    phone_number
+    date
+    completed
+    duration
+}
+
+query BusyInRange($date: DateTimeISO!, $unit: TimeUnitEnum!){
+    busyInRange(date: $date, unit: $unit) {
+        code
+        success
+        message
+        data {
+            date
+            busy
+        }
+    }
+}
+
+query GetListAppointments($filter: JSONObject!, $pagination: PaginationInput!, $sort: SortInput) {
+    appointments (filter: $filter, pagination: $pagination, sort: $sort) {
+        code
+        success
+        message
+        data {
+            ...AppointmentFields
+        }
+        pagination {
+            ...PaginationFields
+        }
+    }
+}
+
+query GetAppointment($id: ID!) {
+    appointment (id: $id){
+        code
+        success
+        message
+        data {
+            ...AppointmentFields
+        }
+    }
+}
+
+query GetManyAppointments($ids: [ID]!) {
+    appointments (ids: $ids) {
+        code
+        success
+        message
+        data {
+            ...AppointmentFields
+        }
+    }
+}
+
+mutation UpdateAppointment($id: ID!, $data: AppointmentUpdateInput!){
+    updateAppointment(id: $id, data: $data) {
+        code
+        success
+        message
+        data{
+            ...AppointmentFields            
+        }
+    }
+}
+
+mutation UpdateManyAppointments($ids: [ID]!, $data: AppointmentUpdateInput!){
+    updateManyAppointments(ids: $ids, data: $data) {
+        code
+        success
+        message
+        data {
+            ...AppointmentFields
+        }
+    }
+}
+
+mutation RegisterAppontment($data: AppointmentCreateInput!){
+    registerAppointment(data: $data) {
+        code
+        success
+        message
+        data {
+            ...AppointmentFields
+        }
+    }
+}
+

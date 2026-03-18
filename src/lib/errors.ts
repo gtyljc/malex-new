@@ -2,7 +2,7 @@
 import * as types from "@lib/types";
 
 class LoggedError extends Error {
-    apiResponse!: types.APIResponse<any>;
+    apiResponse!: types.APIResponse;
 
     logError(logLevel: "error" | "debug" | "info" = "error"){
         // console.log(`Error ${ this.name } was occured! Check logs to get more info.`);

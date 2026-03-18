@@ -1,5 +1,9 @@
 
-import * as queries from "@src/lib/apollo-clients/queries/admin";
+import { 
+    AdminLoginDocument, 
+    CheckAdminDocument, 
+    AdminLogoutDocument
+} from "@src/lib/apollo-clients/queries/Auth.generated";
 import { ApolloClient } from "@apollo/client";
 import { DataProviderError } from "./data-provider";
 
@@ -32,7 +36,7 @@ class AuthProvider {
     async login({ username, password }: LoginParams) {        
         const r = await this.apolloClient.mutate(
             {
-                mutation: queries.AuthQueries.adminLogin(),
+                mutation: AdminLoginDocument,
                 variables: { username, password }
             }
         );
@@ -60,7 +64,7 @@ class AuthProvider {
 
         this.apolloClient.cache.gc();
 
-        const r = await this.apolloClient.query({ query: queries.AuthQueries.checkAdmin() });
+        const r = await this.apolloClient.query({ query: CheckAdminDocument });
 
         if ((r.error || !r.data.checkAdmin.success) && r.data.checkAdmin.code != 403) {
             throw new AuthError("Authentication has failed!");
@@ -73,7 +77,7 @@ class AuthProvider {
     
     // remove local credentials and notify the auth server that the user logged out
     async logout() {
-        await this.apolloClient.mutate({ mutation: queries.AuthQueries.adminLogout() });
+        await this.apolloClient.mutate({ mutation: AdminLogoutDocument });
 
         return "/login";
     }

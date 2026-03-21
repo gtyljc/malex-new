@@ -112,7 +112,7 @@ function WorkSection({ title, category }: WorkSectionParams){
 
 export default function OurWorks(){
     const [ works, setWorks ] = useState<types.PublicWorkType[] | null>(null);
-    const { loading } = useQuery(
+    const { loading, data } = useQuery(
         queries.GetWorksDocument,
         {
             variables: {
@@ -127,6 +127,8 @@ export default function OurWorks(){
 
     // wait until data will be loaded
     if (loading) return <LoadingSection />;
+
+    if (!works) setWorks(data.getWorks.data);
 
     return (
         <main>

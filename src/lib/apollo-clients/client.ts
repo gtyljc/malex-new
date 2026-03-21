@@ -14,12 +14,14 @@ export default class ClientAC extends BaseAC {
         )
     }
 
-    async customFetch(resource: string | URL | Request, options: RequestInit): Promise<Response> {
+    async customFetch(resource: string | URL | Request, options: RequestInit): Promise<Response> {    
         const requestOptions = options;
 
         requestOptions.credentials = "include";
 
         const response = await super.customFetch(resource, requestOptions);
+
+        if (response.status == 401) window.location.reload();
 
         // if AT is too old
         if (response.status == 403) {

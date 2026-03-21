@@ -33,15 +33,20 @@ function stableStringify(value: Record<any, any>): string {
     ).join(",") + "}";
 }
 
-interface SendTokenCreateRequestParams {
-    userId?: string,
-    role: types.RoleEnum
+interface CreateTokenRequestParams {
+    userId?: string;
+    role: types.RoleEnum;
+}
+
+interface SendTokenCreateRequestParams extends CreateTokenRequestParams {
     path: string
 }
 
 async function sendTokenCreateRequest({ userId, role, path }: SendTokenCreateRequestParams){
-    const body = { userId, role };
-    const hashedBody = await hashRaw(stableStringify(body));
+    userId = userId ? userId: null;
+    
+    const body = stableStringify({ userId, role });
+    const hashedBody = await hashRaw(body);
     const method = "POST";
     const timestamp = dayjs().unix();
     const nonce = nanoid(16);
@@ -63,25 +68,21 @@ async function sendTokenCreateRequest({ userId, role, path }: SendTokenCreateReq
     return await (
         await fetch(
             env("NEXT_PUBLIC_API_BASE_URL") + path,
-            {
-                method,
-                headers,
-                body: stableStringify(body)
-            }
+            { method, headers, body }
         )
     ).json();
 }
 
 export async function createRT(
     { userId, role }: 
-    { userId: string, role: types.RoleEnum }
+    CreateTokenRequestParams
 ): Promise<types.CreateRtResponseType> {
     return await sendTokenCreateRequest({ userId, role, path: "/rt/create" });
 }
 
 export async function createAT(
     { userId, role }: 
-    { userId: string, role: types.RoleEnum }
+    CreateTokenRequestParams
 ): Promise<types.CreateRtResponseType> {
    return await sendTokenCreateRequest({ userId, role, path: "/at/create" });
 }

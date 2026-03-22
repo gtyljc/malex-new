@@ -8,8 +8,6 @@ import { RemoveTypenameFromVariablesLink } from "@apollo/client/link/remove-type
 import { useClientAC } from "@src/lib/apollo-clients/client";
 import { ApolloLink } from "@apollo/client";
 import * as types from "@lib/types";
-import * as queries from "@lib/apollo-clients/queries";
-import { TypedDocumentNode } from "@apollo/client";
 
 // components
 import { AppointmentEdit, AppointmentList } from "@admin/appointment/component";
@@ -17,30 +15,6 @@ import { WorkCreate, WorkEdit, WorkList } from "@admin/work/component";
 import { SiteConfigShow, SiteConfigEdit } from "@admin/site-config/component";
 import CustomLayout from "@admin/custom-layout/component";
 import { ApolloProvider } from "@apollo/client/react";
-
-const RESOURCE_QUERIES: Record<types.ResourceEnum, TypedDocumentNode[]> = {
-    "appointment": [
-        queries.GetListAppointmentsDocument,
-        queries.GetManyAppointmentsDocument,
-        queries.GetAppointmentDocument,
-        queries.UpdateAppointmentDocument,
-        queries.UpdateManyAppointmentsDocument
-    ],
-    "siteConfig": [
-        queries.GetSiteConfigDocument,
-        queries.UpdateSiteConfigDocument
-    ],
-    "work": [
-        queries.GetWorkDocument,
-        queries.GetListWorksDocument,
-        queries.GetManyWorksDocument,
-        queries.UpdateManyWorksDocument,
-        queries.UpdateWorkDocument,
-        queries.CreateWorkDocument,
-        queries.DeleteWorkDocument,
-        queries.DeleteManyWorksDocument
-    ]
-}
 
 export default function AdminApp(){
     const { isInitialized, link, client } = useClientAC();
@@ -53,7 +27,7 @@ export default function AdminApp(){
     return(
         <ApolloProvider client={ client }>
             <Admin 
-                dataProvider={ new DataProvider(client, RESOURCE_QUERIES) }
+                dataProvider={ new DataProvider(client) }
                 authProvider={ new AuthProvider(client) }
                 layout={ CustomLayout }
                 requireAuth

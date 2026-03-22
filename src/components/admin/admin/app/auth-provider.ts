@@ -41,8 +41,7 @@ class AuthProvider {
             }
         );
 
-        // validation successful
-        if(!r.data.adminLogin.success){
+        if(!r.data.adminLogin.data[0] == false){
             throw new AuthError("Not authenticated! Are you sure that you are admin?)");
         }
 
@@ -70,7 +69,7 @@ class AuthProvider {
             throw new AuthError("Authentication has failed!");
         }
 
-        if (r.data.checkAdmin.code == 403){
+        if (r.data.checkAdmin.data[0] == false){
             throw new AuthError("Can't identicate you as admin!");
         }
     }

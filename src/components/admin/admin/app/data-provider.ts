@@ -3,7 +3,7 @@ import {
     StartImageUploadDocument,
     FinalizeImageUploadDocument 
 } from "@src/lib/apollo-clients/queries";
-import { TypedDocumentNode } from "@apollo/client";
+import * as queries from "@lib/apollo-clients/queries";
 import { nanoid } from "nanoid";
 import { capitalize } from "@lib/tools";
 import { ApolloClient } from "@apollo/client";
@@ -47,11 +47,9 @@ export class DataProviderError extends Error {
 
 class DataProvider {
     apolloClient: ApolloClient;
-    resourceQueries: Record<types.ResourceEnum, TypedDocumentNode[]>;
 
-    constructor(apolloClient: ApolloClient, resourceQueries: Record<types.ResourceEnum, TypedDocumentNode[]>) {
+    constructor(apolloClient: ApolloClient) {
         this.apolloClient = apolloClient;
-        this.resourceQueries = resourceQueries;
     }
 
     // checks if in data has img field and then
@@ -116,7 +114,7 @@ class DataProvider {
 
     // get a list of records based on sort, filter, and pagination
     async getList(resource: types.ResourceEnum, params: GetListParams): Promise<GetListResult> {
-        const query = this.resourceQueries[resource][`GetList${ capitalize(resource) }sDocument`];
+        const query = queries[`GetList${ capitalize(resource) }sDocument`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
         
@@ -143,7 +141,7 @@ class DataProvider {
 
     // get a single record by id
     async getOne(resource: types.ResourceEnum, params: GetOneParams): Promise<GetOneResult> {
-        const query = this.resourceQueries[resource][`Get${ capitalize(resource) }`];
+        const query = queries[`Get${ capitalize(resource) }`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
 
@@ -162,7 +160,7 @@ class DataProvider {
 
     // get a list of records based on an array of ids
     async getMany(resource: types.ResourceEnum, params: GetManyParams): Promise<GetManyResult> {
-        const query = this.resourceQueries[resource][`GetMany${ capitalize(resource) }s`];
+        const query = queries[`GetMany${ capitalize(resource) }s`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
 
@@ -181,7 +179,7 @@ class DataProvider {
 
     // get the records referenced to another record, e.g. comments for a post
     async getManyReference(resource: types.ResourceEnum, params: GetManyReferenceParams): Promise<GetManyReferenceResult> {
-        const query = this.resourceQueries[resource][`GetList${ capitalize(resource) }sDocument`];
+        const query = queries[`GetList${ capitalize(resource) }sDocument`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
         
@@ -211,7 +209,7 @@ class DataProvider {
 
     // create a record
     async create(resource: types.ResourceEnum, params: CreateParams): Promise<CreateResult> {
-        const query = this.resourceQueries[resource][`Create${ capitalize(resource) }`];
+        const query = queries[`Create${ capitalize(resource) }`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
         
@@ -235,7 +233,7 @@ class DataProvider {
 
     // update a record based on a patch
     async update(resource: types.ResourceEnum, params: UpdateParams): Promise<UpdateResult> {
-        const query = this.resourceQueries[resource][`Update${ capitalize(resource) }`];
+        const query = queries[`Update${ capitalize(resource) }`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
 
@@ -261,7 +259,7 @@ class DataProvider {
 
     // update a list of records based on an array of ids and a common patch
     async updateMany(resource: types.ResourceEnum, params: UpdateManyParams): Promise<UpdateManyResult> {
-        const query = this.resourceQueries[resource][`UpdateMany${ capitalize(resource) }s`];
+        const query = queries[`UpdateMany${ capitalize(resource) }s`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
         
@@ -287,7 +285,7 @@ class DataProvider {
 
     // delete a record by id
     async delete(resource: types.ResourceEnum, params: DeleteParams): Promise<DeleteResult> {
-        const query = this.resourceQueries[resource][`Delete${ capitalize(resource) }`];
+        const query = queries[`Delete${ capitalize(resource) }`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
 
@@ -306,7 +304,7 @@ class DataProvider {
 
     // delete a list of records based on an array of ids
     async deleteMany(resource: types.ResourceEnum, params: DeleteManyParams): Promise<DeleteManyResult> {
-        const query = this.resourceQueries[resource][`DeleteMany${ capitalize(resource) }`];
+        const query = queries[`DeleteMany${ capitalize(resource) }`];
 
         if (!query) throw new DataProviderError({ code: 500, message: "The method is not supported!" });
         

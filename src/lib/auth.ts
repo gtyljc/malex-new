@@ -17,7 +17,7 @@ async function hashRaw(raw: string){
     return Buffer.from(buffer).toString(env("RT_CREATE_REQUEST_ENCODING") as BufferEncoding);
 }
 
-function stableStringify(value: Record<any, any>): string {
+function stableStringify(value: Record<string, any>): string {
     if (value === null || typeof value !== "object") {
         return JSON.stringify(value);
     }
@@ -33,20 +33,14 @@ function stableStringify(value: Record<any, any>): string {
     ).join(",") + "}";
 }
 
-interface CreateTokenRequestParams {
-    userId?: string;
-    role: types.RoleEnum;
-}
-
-interface SendTokenCreateRequestParams extends CreateTokenRequestParams {
+interface SendTokenCreateRequestParams {
+    body: Record<string, any>
     path: string
 }
 
-async function sendTokenCreateRequest({ userId, role, path }: SendTokenCreateRequestParams){
-    userId = userId ? userId: null;
-    
-    const body = stableStringify({ userId, role });
-    const hashedBody = await hashRaw(body);
+async function sendTokenCreateRequest({ body, path }: SendTokenCreateRequestParams){    
+    const strBody = stableStringify(body);
+    const hashedBody = await hashRaw(strBody);
     const method = "POST";
     const timestamp = dayjs().unix();
     const nonce = nanoid(16);
@@ -68,21 +62,24 @@ async function sendTokenCreateRequest({ userId, role, path }: SendTokenCreateReq
     return await (
         await fetch(
             env("NEXT_PUBLIC_API_BASE_URL") + path,
-            { method, headers, body }
+            { method, headers, body: strBody }
         )
     ).json();
 }
 
-export async function createRT(
-    { userId, role }: 
-    CreateTokenRequestParams
-): Promise<types.CreateRtResponseType> {
-    return await sendTokenCreateRequest({ userId, role, path: "/rt/create" });
+interface CreateRTParams {
+    userId?: string,
+    role: types.RoleEnum
 }
 
-export async function createAT(
-    { userId, role }: 
-    CreateTokenRequestParams
-): Promise<types.CreateRtResponseType> {
-   return await sendTokenCreateRequest({ userId, role, path: "/at/create" });
+export async function createRT(
+    { userId, role }: CreateRTParams
+): Promise<types.CreateTokensResponseType> {
+    userId = userId ? userId: null;
+
+    return await sendTokenCreateRequest({ path: "/rt/create", body: { userId, role } });
+}
+
+export async function createAT(rt: string): Promise<types.CreateTokensResponseType> {
+   return await sendTokenCreateRequest({ path: "/at/create", body: { rt } });
 }

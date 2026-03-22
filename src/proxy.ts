@@ -3,50 +3,34 @@ import { NextRequest } from "next/server";
 import { decodeJwt } from "jose";
 import { dayjs } from "@lib/dayjs/server";
 import { NextResponse } from "next/server";
-import { createRT } from "@src/lib/auth";
+import { createRT, createAT } from "@src/lib/auth";
 import { env } from "@src/lib/tools";
 import * as types from "@lib/types";
 
-interface RedirectWithNewPairOptions {
-    userId?: string,
-    role: types.RoleEnum
-}
-
-async function redirectWithNewPair(
-    request: NextRequest,
-    { userId, role }: RedirectWithNewPairOptions
-): Promise<NextResponse> {
-    const newPair = await createRT({ role, userId });
-
-    if (!newPair.success) {
-        return new NextResponse(null, { status: 500 });
-    }
-
+async function redirectWithNewPair(request: NextRequest, tokens: types.TokensType): Promise<NextResponse> {
     const response = NextResponse.redirect(new URL(request.url));
-    const newRT = newPair.data[0].rt;
-    const newRTClaims = decodeJwt(newRT);
-    const newAT = newPair.data[0].at;
-    const newATClaims = decodeJwt(newAT);
-
-    response.cookies.set(
-        "r_token",
-        newRT,
-        {
-            httpOnly: true,
-            secure: env("NODE_ENV") == "development" ? false : true,
-            domain: env("API_HOST"),
-            maxAge: newRTClaims.exp - newRTClaims.iat
-        }
-    )
+    const newRTClaims = decodeJwt(tokens.rt);
+    const newATClaims = decodeJwt(tokens.at);
 
     response.cookies.set(
         "a_token",
-        newAT,
+        tokens.at,
         {
             httpOnly: true,
             secure: env("NODE_ENV") == "development" ? false : true,
             domain: env("API_HOST"),
             maxAge: newATClaims.exp - newATClaims.iat
+        }
+    )
+
+    response.cookies.set(
+        "r_token",
+        tokens.rt,
+        {
+            httpOnly: true,
+            secure: env("NODE_ENV") == "development" ? false : true,
+            domain: env("API_HOST"),
+            maxAge: newRTClaims.exp - newRTClaims.iat
         }
     )
 
@@ -62,24 +46,39 @@ export const config = {
 }
 
 export default async function proxy(request: NextRequest): Promise<NextResponse> {
-    let rt = request.cookies.get("r_token");
+    const rt = request.cookies.get("r_token");
+    const at = request.cookies.get("a_token");
 
-    // user is absolutly new or his RT is expired
-    if (rt === undefined) {
-        return await redirectWithNewPair(
-            request,
-            { role: types.RoleEnum.Guest }
-        );
+    // user is absolutly new or guest
+    if (rt === undefined || at === undefined) {
+        const r = await createRT({ role: types.RoleEnum.Guest });
+
+        if (!r.success) return new NextResponse(null, { status: 500 });
+
+        return await redirectWithNewPair(request, r.data[0]);
+    }
+
+    const atClaims = decodeJwt(at.value);
+
+    // at is expired or not
+    if (atClaims.exp < dayjs().unix()){
+        const r = await createAT(rt.value);
+
+        if (!r.success) return new NextResponse(null, { status: 500 });
+
+        return await redirectWithNewPair(request, r.data[0]);
     }
 
     const rtClaims = decodeJwt(rt.value);
 
-    // is expired or not
+    // rt is expired and return 
     if (rtClaims.exp < dayjs().unix()) {
-        return await redirectWithNewPair(
-            request,
-            { userId: rtClaims.sub, role: rtClaims.aud as types.RoleEnum }
-        );
+        const rtClaims = decodeJwt(rt.value);
+        const r = await createRT({ role: rtClaims.aud as types.RoleEnum, userId: rtClaims.sub });
+
+        if (!r.success) return new NextResponse(null, { status: 500 });
+
+        return await redirectWithNewPair(request, r.data[0]);
     }
 
     return NextResponse.next();

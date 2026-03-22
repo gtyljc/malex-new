@@ -115,18 +115,12 @@ export type BusyType = {
   date: Scalars['DateTimeISO']['output'];
 };
 
-export type CreateRtResponseType = ApiResponseInterface & {
-  __typename?: 'CreateRTResponseType';
+export type CreateTokensResponseType = ApiResponseInterface & {
+  __typename?: 'CreateTokensResponseType';
   code: Scalars['Int']['output'];
-  data: Array<Maybe<CreateRtType>>;
+  data: Array<Maybe<TokensType>>;
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
-};
-
-export type CreateRtType = {
-  __typename?: 'CreateRTType';
-  at?: Maybe<Scalars['JWT']['output']>;
-  rt?: Maybe<Scalars['JWT']['output']>;
 };
 
 export type FinalizeUploadImageResponseType = ApiResponseInterface & {
@@ -147,7 +141,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   adminLogin: AuthResponseType;
   adminLogout: AuthResponseType;
-  createAT: AuthResponseType;
   createWork: WorkResponseType;
   deleteManyWorks: WorkResponseType;
   deleteWork: WorkResponseType;
@@ -349,6 +342,7 @@ export type QueryWorksArgs = {
 };
 
 export enum ResourceEnum {
+  Admin = 'admin',
   Appointment = 'appointment',
   SiteConfig = 'siteConfig',
   Work = 'work'
@@ -416,6 +410,12 @@ export enum TimeUnitEnum {
   Appointment = 'APPOINTMENT',
   Day = 'DAY'
 }
+
+export type TokensType = {
+  __typename?: 'TokensType';
+  at?: Maybe<Scalars['JWT']['output']>;
+  rt?: Maybe<Scalars['JWT']['output']>;
+};
 
 export enum WorkCategoryEnum {
   Assembling = 'ASSEMBLING',

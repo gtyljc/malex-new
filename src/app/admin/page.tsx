@@ -9,6 +9,8 @@ async function AdminLoader({ searchParams }){
     const key = (await searchParams).key;
     const { data } = await serverAC.client.query({ query: AdminPanelKeyDocument });
 
+    console.log(data);
+
     // if key corresponds current Admin Panel key
     if(key == data.adminPanelKey.data[0]){
         return <Admin /> 

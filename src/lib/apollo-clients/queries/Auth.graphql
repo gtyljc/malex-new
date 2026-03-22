@@ -35,11 +35,11 @@ mutation AdminLogout {
     }
 }
 
-mutation CreateAT {
-    createAT {
-        code
-        success
-        message
-        data
-    }
-}
+# mutation CreateAT {
+#     createAT {
+#         code
+#         success
+#         message
+#         data
+#     }
+# }

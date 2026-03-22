@@ -2,7 +2,7 @@
 "use client";
 
 import "client-only";
-import { CreateAtDocument } from "./queries/Auth.generated";
+// import { CreateAtDocument } from "./queries/Auth.generated";
 import { BaseAC } from "./base";
 import { useEffect, useState } from "react";
 import { dayjs } from "@lib/dayjs/client";
@@ -21,26 +21,10 @@ export default class ClientAC extends BaseAC {
 
         const response = await super.customFetch(resource, requestOptions);
 
-        if (response.status == 401) window.location.reload();
-
         // if AT is too old
-        if (response.status == 403) {
-            const atResponse = await this.generateNewAT();
-            
-            // if RT is too old
-            if (atResponse.data.createAT.code == 403){
-                window.location.reload();
-            }
-        }
+        if (response.status == 403 || response.status == 401) { window.location.reload(); }
 
         return response;
-    }
-
-    // gets new 
-    async generateNewAT(){
-        return (
-            await this.client.mutate({ mutation: CreateAtDocument })
-        );
     }
 }
 

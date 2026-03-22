@@ -27,7 +27,12 @@ export default class ServerAC extends BaseAC {
     tokenStorage: AuthTokenStorage;
 
     constructor() {
-        super({ toLoad: [ () => dayjs.tz.setDefault(this.siteConfig.timezone) ] });
+        super(
+            { 
+                inMemoryCacheConfig: { resultCaching: false },
+                toLoad: [ () => dayjs.tz.setDefault(this.siteConfig.timezone) ] 
+            }
+        );
 
         this.toLoad = [ this.generateNewRT.bind(this) ].concat(this.toLoad)
 
@@ -53,7 +58,7 @@ export default class ServerAC extends BaseAC {
     }
 
     async generateNewAT(): Promise<void> {
-        const r = await createAT({ userId: null, role: types.RoleEnum.Superuser });
+        const r = await createAT(this.tokenStorage.get().rt);
         
         if (!r.success){
             throw new errors.RTCreationError();
@@ -64,11 +69,13 @@ export default class ServerAC extends BaseAC {
     }
 
     async generateNewRT(): Promise<void> {
-        const r = await createRT({ userId: null, role: types.RoleEnum.Superuser });
+        const r = await createRT({ role: types.RoleEnum.Superuser });
         
         if (!r.success){
             throw new errors.RTCreationError();
         }
+
+        console.log(r);
 
         // update or set tokens into client instance
         this.tokenStorage.set(r.data[0].rt, r.data[0].at);
